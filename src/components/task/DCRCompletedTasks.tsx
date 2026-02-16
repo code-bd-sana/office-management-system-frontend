@@ -18,7 +18,7 @@ export function DCRCompletedTasks({ tasks }: DCRCompletedTasksProps) {
       {tasks.map((task) => (
         <div
           key={task.id}
-          className="group flex items-start gap-3 rounded-lg bg-gray-50/80 p-3.5 ring-1 ring-border/20 transition-colors hover:bg-gray-100"
+          className="group flex items-start gap-3 rounded-sm bg-gray-50/80 p-3.5 ring-1 ring-border/20 transition-colors hover:bg-gray-100"
         >
           {/* Green checkbox */}
           <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-[#16A34A] shadow-sm">

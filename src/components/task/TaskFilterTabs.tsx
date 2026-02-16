@@ -24,7 +24,7 @@ export function TaskFilterTabs({
             type="button"
             onClick={() => onTabChange(tab.value)}
             className={cn(
-              "rounded-md px-5 py-2 text-sm font-medium transition-colors border",
+              "rounded-sm px-5 py-2 text-sm font-medium transition-colors border",
               isActive
                 ? "border-brand-navy bg-brand-navy text-white shadow-sm"
                 : "border-border bg-white text-muted-foreground hover:bg-muted hover:text-foreground"

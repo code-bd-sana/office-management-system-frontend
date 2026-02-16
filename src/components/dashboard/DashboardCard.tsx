@@ -13,7 +13,7 @@ export function DashboardCard({ data }: DashboardCardProps) {
     <Link href={data.href} className="group block">
       <div
         className={cn(
-          "relative rounded-lg border border-transparent p-5 transition-all",
+          "relative rounded-sm border border-transparent p-5 transition-all",
           "hover:shadow-md hover:border-border/50",
           data.cardColor
         )}
@@ -21,7 +21,7 @@ export function DashboardCard({ data }: DashboardCardProps) {
         {/* Icon */}
         <div
           className={cn(
-            "mb-4 flex h-11 w-11 items-center justify-center rounded-lg",
+            "mb-4 flex h-11 w-11 items-center justify-center rounded-sm",
             data.iconColor
           )}
         >

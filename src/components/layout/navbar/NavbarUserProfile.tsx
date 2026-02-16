@@ -16,7 +16,7 @@ export function NavbarUserProfile({ user }: NavbarUserProfileProps) {
   return (
     <button
       type="button"
-      className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted"
+      className="flex items-center gap-2.5 rounded-sm px-2 py-1.5 transition-colors hover:bg-muted"
     >
       <Avatar className="h-9 w-9">
         {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} />}

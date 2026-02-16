@@ -11,7 +11,7 @@ export function DCRPanel() {
   );
 
   return (
-    <div className="h-full rounded-lg bg-white p-6 shadow-sm ring-1 ring-black/5">
+    <div className="h-full rounded-sm bg-white p-6 shadow-sm ring-1 ring-black/5">
       {/* Heading */}
       <h2 className="text-xl font-bold text-brand-navy/90">
         Daily Completion Report (DCR)

@@ -15,7 +15,7 @@ export function TaskList() {
   }, [activeTab]);
 
   return (
-    <div className="h-full rounded-lg bg-white p-6 shadow-sm ring-1 ring-black/5">
+    <div className="h-full rounded-sm bg-white p-6 shadow-sm ring-1 ring-black/5">
       {/* Section heading + Filters */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold text-foreground">

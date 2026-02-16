@@ -11,7 +11,7 @@ export function TaskPipelineStep({ step }: TaskPipelineStepProps) {
   return (
     <div
       className={cn(
-        "flex w-full flex-col items-center justify-center gap-4 rounded-lg py-10 transition-shadow hover:shadow-sm",
+        "flex w-full flex-col items-center justify-center gap-4 rounded-sm py-10 transition-shadow hover:shadow-sm",
         step.bgColor
       )}
     >

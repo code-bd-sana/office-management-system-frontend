@@ -1,13 +1,22 @@
+"use client";
+
+import { useState } from "react";
 import { TaskPageHeader } from "./TaskPageHeader";
 import { TaskPipeline } from "./TaskPipeline";
 import { TaskList } from "./TaskList";
 import { DCRPanel } from "./DCRPanel";
+import { AddTaskModal } from "./AddTaskModal";
 
 export function TaskContent() {
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Header: description + Add Task button */}
-      <TaskPageHeader />
+      <TaskPageHeader onAddTask={() => setIsAddTaskOpen(true)} />
+
+      {/* Add Task Modal */}
+      <AddTaskModal open={isAddTaskOpen} onOpenChange={setIsAddTaskOpen} />
 
       {/* Pipeline flow: All Tasks → To Do → Submit DCR */}
       <div className="py-2">

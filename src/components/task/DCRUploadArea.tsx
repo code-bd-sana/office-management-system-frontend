@@ -7,7 +7,7 @@ export function DCRUploadArea() {
         Attach Documents <span className="text-red-500">*</span>
       </p>
 
-      <div className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border/60 bg-gray-50 py-10 transition-colors hover:border-brand-navy/30 hover:bg-gray-100">
+      <div className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-sm border-2 border-dashed border-border/60 bg-gray-50 py-10 transition-colors hover:border-brand-navy/30 hover:bg-gray-100">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
           <CloudUpload className="h-5 w-5 text-brand-navy-light" />
         </div>

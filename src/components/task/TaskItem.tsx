@@ -31,7 +31,7 @@ export function TaskItem({ task }: TaskItemProps) {
   const config = STATUS_CONFIG[task.status];
 
   return (
-    <div className="group mb-3 flex items-start gap-4 rounded-lg bg-white p-4 shadow-sm ring-1 ring-border/60 transition-all hover:shadow-md hover:ring-border">
+    <div className="group mb-3 flex items-start gap-4 rounded-sm bg-white p-4 shadow-sm ring-1 ring-border/60 transition-all hover:shadow-md hover:ring-border">
       {/* Checkbox */}
       <div
         className={cn(
