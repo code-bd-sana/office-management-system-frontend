@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FB International BD - Office Management System",
+  title: "Office Management System",
   description: "Office Management System for FB International BD",
 };
 
