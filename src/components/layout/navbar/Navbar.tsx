@@ -10,7 +10,7 @@ interface NavbarProps {
 
 export function Navbar({ title }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-white px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between  bg-[#f1eeee] px-6">
       {/* Page title */}
       <h1 className="text-xl font-semibold text-foreground">{title}</h1>
 

@@ -13,9 +13,8 @@ export interface DashboardCardData {
   title: string;
   count: number;
   subtitle: string;
-  icon: LucideIcon;
+  iconPath: string;
   cardColor: string;
-  iconColor: string;
   href: string;
 }
 

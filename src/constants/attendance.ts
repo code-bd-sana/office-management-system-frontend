@@ -1,8 +1,8 @@
-import { IAttendance } from "@/types/IAttendance";
+import type { AttendanceRecord, TodayAttendance } from "@/types/attendance";
 
 export const ATTENDANCE_DESCRIPTION = "Check In and Check Out your daily attendance . Track your attendance records and view your daily attendance history conveniently.";
 
-export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
+export const DEMO_ATTENDANCE_RECORDS: AttendanceRecord[] = [
   {
     id: "1",
     rowNumber: 1,
@@ -10,7 +10,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Saturday",
     checkIn: "9:00 AM",
     checkOut: "6:00 PM",
-    status: "Present",
+    status: "present",
   },
   {
     id: "1",
@@ -19,7 +19,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Sunday",
     checkIn: "9:05 AM",
     checkOut: "6:30 PM",
-    status: "Late",
+    status: "late",
   },
   {
     id: "1",
@@ -28,7 +28,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Monday",
     checkIn: "-",
     checkOut: "-",
-    status: "Leave",
+    status: "leave",
   },
   {
     id: "1",
@@ -37,7 +37,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Tuesday",
     checkIn: "9:30 AM",
     checkOut: "-",
-    status: "Absent",
+    status: "absent",
   },
   {
     id: "1",
@@ -46,7 +46,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Tuesday",
     checkIn: "-",
     checkOut: "-",
-    status: "Exchange",
+    status: "exchange",
   },
   {
     id: "1",
@@ -55,7 +55,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Saturday",
     checkIn: "9:00 AM",
     checkOut: "6:00 PM",
-    status: "Present",
+    status: "present",
   },
   {
     id: "1",
@@ -64,7 +64,7 @@ export const DEMO_ATTENDANCE_RECORDS: IAttendance[] = [
     day: "Sunday",
     checkIn: "9:05 AM",
     checkOut: "6:30 PM",
-    status: "Late",
+    status: "late",
   },
 ];
 
@@ -80,3 +80,10 @@ export const ATTENDANCE_TABLE_COLUMNS = [
 export const ATTENDANCE_ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
 export const ATTENDANCE_TOTAL_RECORDS = 97;
+
+export const TODAY_ATTENDANCE: TodayAttendance = {
+  date: "Jan 27, 2026",
+  dayOfWeek: "Tuesday",
+  checkedInAt: "09:30 AM",
+  checkedOutAt: null,
+};
