@@ -5,12 +5,14 @@ import { DashboardCard } from "./DashboardCard";
 import { TasksModal } from "@/components/task/TasksModal";
 import { ProjectsModal } from "@/components/project/ProjectsModal";
 import { LearningModal } from "@/components/learning/LearningModal";
+import { AttendanceModal } from "@/components/attendance/AttendanceModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
 
 export function DashboardGrid() {
   const [isTasksModalOpen, setIsTasksModalOpen] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const [isLearningModalOpen, setIsLearningModalOpen] = useState(false);
+  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {
@@ -19,6 +21,8 @@ export function DashboardGrid() {
       setIsProjectsModalOpen(true);
     } else if (cardId === "learning-training") {
       setIsLearningModalOpen(true);
+    } else if (cardId === "my-attendance") {
+      setIsAttendanceModalOpen(true);
     }
   };
 
@@ -46,6 +50,9 @@ export function DashboardGrid() {
 
       {/* Learning & Training Modal */}
       <LearningModal open={isLearningModalOpen} onOpenChange={setIsLearningModalOpen} />
+
+      {/* Attendance Modal */}
+      <AttendanceModal open={isAttendanceModalOpen} onClose={() => setIsAttendanceModalOpen(false)} />
     </section>
   );
 }

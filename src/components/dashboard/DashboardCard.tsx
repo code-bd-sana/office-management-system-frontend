@@ -9,8 +9,8 @@ interface DashboardCardProps {
 }
 
 export function DashboardCard({ data, onClick }: DashboardCardProps) {
-  // For tasks, projects, and learning-training cards, use onClick handler to open modal
-  if ((data.id === "tasks" || data.id === "projects" || data.id === "learning-training") && onClick) {
+  // For tasks, projects, learning-training, and my-attendance cards, use onClick handler to open modal
+  if ((data.id === "tasks" || data.id === "projects" || data.id === "learning-training" || data.id === "my-attendance") && onClick) {
     return (
       <button
         onClick={() => onClick(data.id)}
