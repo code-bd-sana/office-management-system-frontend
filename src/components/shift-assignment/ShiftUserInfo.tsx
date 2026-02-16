@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const MONTHS = [
@@ -8,17 +7,13 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-export function ShiftUserInfo() {
-  const [currentMonth, setCurrentMonth] = useState(0); // 0 = January
+interface ShiftUserInfoProps {
+  currentMonth: number;
+  onPrevMonth: () => void;
+  onNextMonth: () => void;
+}
 
-  const handlePrevMonth = () => {
-    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
-  };
-
+export function ShiftUserInfo({ currentMonth, onPrevMonth, onNextMonth }: ShiftUserInfoProps) {
   return (
     <div className="mb-2 flex items-center justify-between rounded-sm p-4">
       {/* User Info */}
@@ -40,7 +35,7 @@ export function ShiftUserInfo() {
       {/* Month Navigation */}
       <div className="flex items-center border rounded-sm py-1">
         <button
-          onClick={handlePrevMonth}
+          onClick={onPrevMonth}
           className="flex h-8 w-8 items-center justify-center rounded-sm hover:bg-muted transition-colors"
           aria-label="Previous month"
         >
@@ -50,7 +45,7 @@ export function ShiftUserInfo() {
           {MONTHS[currentMonth]}
         </span>
         <button
-          onClick={handleNextMonth}
+          onClick={onNextMonth}
           className="flex h-8 w-8 items-center justify-center rounded-sm hover:bg-muted transition-colors"
           aria-label="Next month"
         >
