@@ -1,6 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { RequestShiftChangeModal } from "./RequestShiftChangeModal";
+
+interface ShiftLegendProps {
+  onShiftChangeSubmit: () => void;
+}
 
 interface ShiftType {
   icon: string;
@@ -30,11 +36,8 @@ const SHIFT_TYPES: ShiftType[] = [
   },
 ];
 
-export function ShiftLegend() {
-  const handleRequestChange = () => {
-    // TODO: Implement shift change request
-    console.log("Request shift change");
-  };
+export function ShiftLegend({ onShiftChangeSubmit }: ShiftLegendProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="mb-2 bg-[#eef0f3] p-3 rounded-sm flex items-center justify-between">
@@ -57,11 +60,18 @@ export function ShiftLegend() {
 
       {/* Request Shift Change Button */}
       <Button
-        onClick={handleRequestChange}
+        onClick={() => setIsModalOpen(true)}
         className="rounded-sm bg-[#14804A] px-5 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90"
       >
         Request Shift Change
       </Button>
+
+      {/* Request Shift Change Modal */}
+      <RequestShiftChangeModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={onShiftChangeSubmit}
+      />
     </div>
   );
 }
