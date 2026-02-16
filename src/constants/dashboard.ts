@@ -1,12 +1,3 @@
-import {
-  ClipboardList,
-  FolderOpen,
-  FileText,
-  LayoutGrid,
-  Megaphone,
-  CircleCheckBig,
-} from "lucide-react";
-
 import type { DashboardCardData, UserProfile } from "@/types";
 
 export const DASHBOARD_CARDS: DashboardCardData[] = [
@@ -15,9 +6,8 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Tasks",
     count: 5,
     subtitle: "Active Projects",
-    icon: ClipboardList,
-    cardColor: "bg-card-teal",
-    iconColor: "bg-icon-teal",
+    iconPath: "/icons/task-icons.png",
+    cardColor: "bg-[#E7E3FA]",
     href: "/task",
   },
   {
@@ -25,9 +15,8 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Projects",
     count: 12,
     subtitle: "Active Projects",
-    icon: FolderOpen,
-    cardColor: "bg-card-blue",
-    iconColor: "bg-icon-blue",
+    iconPath: "/icons/project-icons.png",
+    cardColor: "bg-[#E6F1FD]",
     href: "/projects",
   },
   {
@@ -35,9 +24,8 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "DCR Submission",
     count: 6,
     subtitle: "Submission Report",
-    icon: FileText,
-    cardColor: "bg-card-peach",
-    iconColor: "bg-icon-orange",
+    iconPath: "/icons/dcr-icons.png",
+    cardColor: "bg-[#FBE4D0]",
     href: "/dcr-submission",
   },
   {
@@ -45,9 +33,8 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Shift Assignment",
     count: 6,
     subtitle: "Total Members",
-    icon: LayoutGrid,
-    cardColor: "bg-card-steel",
-    iconColor: "bg-icon-steel",
+    iconPath: "/icons/shift-assignment-icons.png",
+    cardColor: "bg-[#E0ECED]",
     href: "/shift-assignment",
   },
   {
@@ -55,9 +42,8 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Learning & Training",
     count: 5,
     subtitle: "Active Projects",
-    icon: Megaphone,
-    cardColor: "bg-card-lime",
-    iconColor: "bg-icon-lime",
+    iconPath: "/icons/learning-icons.png",
+    cardColor: "bg-[#E6F1FD]",
     href: "/learning-training",
   },
   {
@@ -65,9 +51,8 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "My Attendance",
     count: 12,
     subtitle: "Active Projects",
-    icon: CircleCheckBig,
-    cardColor: "bg-card-green",
-    iconColor: "bg-icon-green",
+    iconPath: "/icons/attandance-icons.png",
+    cardColor: "bg-[#E0ECED]",
     href: "/attendance",
   },
 ];

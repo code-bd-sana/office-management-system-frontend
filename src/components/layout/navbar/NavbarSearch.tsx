@@ -8,7 +8,7 @@ export function NavbarSearch() {
       <Input
         type="search"
         placeholder="Search"
-        className="h-9 w-56 rounded-full border-border bg-muted/50 pl-9 text-sm focus-visible:ring-brand-navy/30"
+        className="h-9 w-56 rounded-sm border-border bg-muted/50 pl-9 text-sm focus-visible:ring-brand-navy/30"
       />
     </div>
   );
