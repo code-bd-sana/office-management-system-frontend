@@ -6,6 +6,7 @@ import { TasksModal } from "@/components/task/TasksModal";
 import { ProjectsModal } from "@/components/project/ProjectsModal";
 import { LearningModal } from "@/components/learning/LearningModal";
 import { AttendanceModal } from "@/components/attendance/AttendanceModal";
+import { DCRSubmissionModal } from "@/components/dcr/DCRSubmissionModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
 
 export function DashboardGrid() {
@@ -13,6 +14,7 @@ export function DashboardGrid() {
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const [isLearningModalOpen, setIsLearningModalOpen] = useState(false);
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [isDCRModalOpen, setIsDCRModalOpen] = useState(false);
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {
@@ -23,6 +25,8 @@ export function DashboardGrid() {
       setIsLearningModalOpen(true);
     } else if (cardId === "my-attendance") {
       setIsAttendanceModalOpen(true);
+    } else if (cardId === "dcr-submission") {
+      setIsDCRModalOpen(true);
     }
   };
 
@@ -53,6 +57,9 @@ export function DashboardGrid() {
 
       {/* Attendance Modal */}
       <AttendanceModal open={isAttendanceModalOpen} onClose={() => setIsAttendanceModalOpen(false)} />
+
+      {/* DCR Submission Modal */}
+      <DCRSubmissionModal open={isDCRModalOpen} onClose={() => setIsDCRModalOpen(false)} />
     </section>
   );
 }
