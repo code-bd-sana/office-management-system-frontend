@@ -4,17 +4,21 @@ import { useState } from "react";
 import { DashboardCard } from "./DashboardCard";
 import { TasksModal } from "@/components/task/TasksModal";
 import { ProjectsModal } from "@/components/project/ProjectsModal";
+import { LearningModal } from "@/components/learning/LearningModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
 
 export function DashboardGrid() {
   const [isTasksModalOpen, setIsTasksModalOpen] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
+  const [isLearningModalOpen, setIsLearningModalOpen] = useState(false);
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {
       setIsTasksModalOpen(true);
     } else if (cardId === "projects") {
       setIsProjectsModalOpen(true);
+    } else if (cardId === "learning-training") {
+      setIsLearningModalOpen(true);
     }
   };
 
@@ -39,6 +43,9 @@ export function DashboardGrid() {
 
       {/* Projects Modal */}
       <ProjectsModal open={isProjectsModalOpen} onOpenChange={setIsProjectsModalOpen} />
+
+      {/* Learning & Training Modal */}
+      <LearningModal open={isLearningModalOpen} onOpenChange={setIsLearningModalOpen} />
     </section>
   );
 }
