@@ -29,7 +29,7 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
   },
   {
     label: "Leave Management",
-    href: "/leave-management",
+    href: "/leave",
     icon: CalendarOff,
   },
   {
