@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { SHIFT_STYLES } from "@/constants/shift";
 import type { ShiftType } from "@/types/shift";
 
@@ -10,7 +11,7 @@ export function ShiftCalendarLegend() {
         const style = SHIFT_STYLES[type];
         return (
           <div key={type} className="flex items-center gap-2">
-            <span className="text-base">{style.icon}</span>
+            <Image src={style.icon} alt={style.label} width={18} height={18} />
             <span className="text-sm font-medium text-foreground/70">
               {style.label}
             </span>

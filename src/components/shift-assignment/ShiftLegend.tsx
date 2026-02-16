@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { RequestShiftChangeModal } from "./RequestShiftChangeModal";
 
@@ -17,19 +18,19 @@ interface ShiftType {
 
 const SHIFT_TYPES: ShiftType[] = [
   {
-    icon: "☀️",
+    icon: "/icons/sun-icons.png",
     label: "Morning Shift",
     time: "(07:00 AM - 03:00 PM)",
     color: "text-orange-500",
   },
   {
-    icon: "🌙",
+    icon: "/icons/night-icons.png",
     label: "Night Shift",
     time: "(11:00 PM - 07:00 AM)",
     color: "text-red-500",
   },
   {
-    icon: "🌙",
+    icon: "/icons/evening-icons.png",
     label: "Evening Shift",
     time: "(03:00 PM - 11:00 PM)",
     color: "text-blue-500",
@@ -45,7 +46,7 @@ export function ShiftLegend({ onShiftChangeSubmit }: ShiftLegendProps) {
       <div className="grid grid-cols-2 gap-4">
         {SHIFT_TYPES.map((shift, index) => (
           <div key={index} className="flex items-center gap-2">
-            <span className={`text-lg ${shift.color}`}>{shift.icon}</span>
+            <Image src={shift.icon} alt={shift.label} width={20} height={20} />
             <div className="flex items-center gap-1.5">
               <span className="text-sm font-medium text-foreground">
                 {shift.label}

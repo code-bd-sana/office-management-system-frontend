@@ -5,25 +5,25 @@ export const SHIFT_STYLES: Record<ShiftType, ShiftStyle> = {
     bg: "bg-[#FEE6C9]",
     text: "text-[#2C3E50]",
     label: "Morning Shift",
-    icon: "☀️",
+    icon: "/icons/sun-icons.png",
   },
   evening: {
     bg: "bg-[#3A5AD0]",
     text: "text-white",
     label: "Evening Shift",
-    icon: "🌙",
+    icon: "/icons/evening-icons.png",
   },
   night: {
     bg: "bg-[#654DBA]",
     text: "text-white",
     label: "Night Shift",
-    icon: "🌙",
+    icon: "/icons/night-icons.png",
   },
   off: {
     bg: "bg-[#F7F7F7]",
     text: "text-[#555]",
     label: "Off Day",
-    icon: "📅",
+    icon: "/icons/off-day-icons.png",
   },
 };
 
