@@ -1,8 +1,33 @@
-import { ATTENDANCE_DESCRIPTION } from "@/constants/attendance";
-import { AttendanceTable } from "./AttendanceTable";
-import { Calendar, CheckCircle, PowerCircle, PowerOff } from "lucide-react";
+"use client";
+
+import { ATTENDANCE_DESCRIPTION, DEMO_ATTENDANCE_RECORDS, TODAY_ATTENDANCE } from "@/constants/attendance";
+import { AttendanceTable, ColumnDef } from "./AttendanceTable";
+import { Calendar } from "lucide-react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { AttendanceRecord } from "@/types/attendance";
+import { AttendanceTableRow } from "./AttendanceTableRow";
+
+const COLUMNS: ColumnDef[] = [
+  { key: "#", label: "#" },
+  { key: "date", label: "DATE" },
+  { key: "day", label: "DAY" },
+  { key: "checkIn", label: "CHECK-IN" },
+  { key: "checkOut", label: "CHECK-OUT" },
+  { key: "status", label: "STATUS" },
+];
 
 export function AttendanceContent() {
+  const handleCheckIn = () => {
+    // TODO: Implement check-in functionality
+    console.log("Check In clicked");
+  };
+
+  const handleCheckOut = () => {
+    // TODO: Implement check-out functionality
+    console.log("Check Out clicked");
+  };
+
   return (
     <div className="space-y-6">
       {/* Description */}
@@ -10,32 +35,76 @@ export function AttendanceContent() {
         {ATTENDANCE_DESCRIPTION}
       </p>
 
-      <div>
-        <div className="flex flex-wrap items-center justify-between mb-2">
-          <div className="text-sm text-gray-600">
-            <span className="font-medium text-gray-800">
-              <Calendar className="inline-block mr-2" />
-              Today : Jan 27, 2026 (Tuesday)
-            </span>
-            <span className="ml-6">
-              Checked in at : <span className="font-medium">09:30 AM</span>
-            </span>
+      {/* Today's Attendance Info Section */}
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Left: Date and Check-in Info */}
+          <div className="flex items-center gap-6">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">
+                <Calendar className="h-4 w-4 text-muted-foreground inline-block mr-2" />
+                Today: {TODAY_ATTENDANCE.date} ({TODAY_ATTENDANCE.dayOfWeek})
+              </h3>
+            </div>
+            {TODAY_ATTENDANCE.checkedInAt && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-foreground/70">
+                  Checked in at:
+                </span>
+                <span className="text-sm font-semibold text-foreground">
+                  {TODAY_ATTENDANCE.checkedInAt}
+                </span>
+              </div>
+            )}
           </div>
 
-          <div className="flex gap-3 mt-3 sm:mt-0">
-            <button className="px-4 py-2 rounded-md bg-green-600 text-white text-sm hover:bg-green-700">
-              <CheckCircle className="inline-block mr-2" />
+          {/* Right: Action Buttons */}
+          <div className="flex items-center gap-3">
+            <Button
+              // onClick={handleCheckIn}
+              // disabled={!!TODAY_ATTENDANCE.checkedInAt}
+              className="flex items-center gap-2 rounded-sm bg-[#14804A] px-6 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90 disabled:opacity-50"
+            >
+              <Image
+                src="/icons/tick-icons.png"
+                alt="Check In"
+                width={16}
+                height={16}
+                className="h-4 w-4"
+              />
               Check In
-            </button>
-            <button className="px-4 py-2 rounded-md bg-red-500 text-white text-sm hover:bg-red-600">
-              <PowerCircle className="inline-block mr-2" />
+            </Button>
+            <Button
+              // onClick={handleCheckOut}
+              disabled={
+                !TODAY_ATTENDANCE.checkedInAt || !!TODAY_ATTENDANCE.checkedOutAt
+              }
+              className="flex items-center gap-2 rounded-sm bg-[#DC3545] px-6 py-2 text-sm font-medium text-white hover:bg-[#DC3545]/90 disabled:opacity-50"
+            >
+              <Image
+                src="/icons/checkout-icons.png"
+                alt="Check Out"
+                width={16}
+                height={16}
+                className="h-4 w-4"
+              />
               Check Out
-            </button>
+            </Button>
           </div>
         </div>
       </div>
+
       {/* Table */}
-      <AttendanceTable />
+      <AttendanceTable
+        data={DEMO_ATTENDANCE_RECORDS}
+        columns={COLUMNS}
+        totalRecords={DEMO_ATTENDANCE_RECORDS.length}
+        enableSearch={false}
+        enableCheckboxes={false}
+        renderRow={(record: AttendanceRecord) => (
+          <AttendanceTableRow key={record.rowNumber} record={record} />
+        )}
+      />
 
       {/* summary */}
       <div className="flex justify-between items-center text-sm text-gray-600 ">
@@ -48,7 +117,6 @@ export function AttendanceContent() {
           <span className="text-blue-600 font-medium ml-1">2 Leave</span>
           <span className="ml-4 text-blue-600 font-medium">Work Days : 18</span>
         </div>
-
       </div>
     </div>
   );

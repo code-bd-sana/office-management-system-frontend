@@ -1,9 +1,9 @@
 import { MainLayout } from "@/components/layout";
-import { AttendanceContent } from "../../components/attendance/AttendanceContent";
+import { AttendanceContent } from "../../components/attendance";
 
 export default function LeavePage() {
   return (
-    <MainLayout pageTitle="Attendancey">
+    <MainLayout pageTitle="Attendance">
       <AttendanceContent />
     </MainLayout>
   );
