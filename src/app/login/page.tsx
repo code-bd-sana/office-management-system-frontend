@@ -149,11 +149,14 @@ export default function LoginPage() {
           {/* Sign In Button */}
           <div className="max-w-sm mx-auto">
             <Button
-            type="submit"
-            className="w-full h-11 rounded-sm bg-[#8FA3C1] hover:bg-[#044192] text-white font-medium text-sm transition-colors"
-          >
-            Sign In
-          </Button>
+              type="submit"
+              className="w-full h-11 rounded-sm bg-[#8FA3C1] hover:bg-[#044192] text-white font-medium text-sm transition-colors"
+              onClick={() => {
+                window.location.href = "/";
+              }}
+            >
+              Sign In
+            </Button>
           </div>
 
           {/* Sign Up Link */}

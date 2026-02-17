@@ -1,10 +1,10 @@
-import type { LucideIcon } from "lucide-react";
+import React from "react";
 
 /** Navigation item for sidebar */
 export interface NavItem {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 /** Dashboard overview card data */

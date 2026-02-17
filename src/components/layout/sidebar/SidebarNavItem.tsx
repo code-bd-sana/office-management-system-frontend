@@ -22,7 +22,7 @@ export function SidebarNavItem({ item, onNavigate }: SidebarNavItemProps) {
       className={cn(
         "flex items-center gap-3 rounded-sm px-4 py-2.5 text-sm font-medium transition-colors",
         isActive
-          ? "bg-white/15 text-white"
+          ? "bg-white text-brand-navy"
           : "text-white/70 hover:bg-white/10 hover:text-white",
       )}
     >
