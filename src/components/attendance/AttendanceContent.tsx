@@ -1,6 +1,10 @@
 "use client";
 
-import { ATTENDANCE_DESCRIPTION, DEMO_ATTENDANCE_RECORDS, TODAY_ATTENDANCE } from "@/constants/attendance";
+import {
+  ATTENDANCE_DESCRIPTION,
+  DEMO_ATTENDANCE_RECORDS,
+  TODAY_ATTENDANCE,
+} from "@/constants/attendance";
 import { AttendanceTable, ColumnDef } from "./AttendanceTable";
 import { Calendar } from "lucide-react";
 import Image from "next/image";
@@ -39,19 +43,25 @@ export function AttendanceContent() {
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Left: Date and Check-in Info */}
-          <div className="flex items-center gap-6">
+          <div className="flex text-base items-center gap-6">
             <div>
-              <h3 className="text-sm font-semibold text-foreground">
-                <Calendar className="h-4 w-4 text-muted-foreground inline-block mr-2" />
+              <h3 className="font-semibold text-foreground flex items-center">
+                <Image
+                  src="/icons/schedule.png"
+                  alt="Check In"
+                  width={28}
+                  height={24}
+                  className="mr-2"
+                />
                 Today: {TODAY_ATTENDANCE.date} ({TODAY_ATTENDANCE.dayOfWeek})
               </h3>
             </div>
             {TODAY_ATTENDANCE.checkedInAt && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-foreground/70">
+                <span className=" text-foreground/70">
                   Checked in at:
                 </span>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="font-semibold text-foreground">
                   {TODAY_ATTENDANCE.checkedInAt}
                 </span>
               </div>
