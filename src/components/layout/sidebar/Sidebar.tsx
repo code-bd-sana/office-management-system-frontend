@@ -49,6 +49,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <button
           type="button"
           className="flex items-center gap-3 px-6 py-4 text-sm font-medium text-white/80 transition-colors hover:text-white"
+          onClick={() => {
+            window.location.href = "/login";
+          }}
         >
           <LogOut className="h-5 w-5" />
           Log Out

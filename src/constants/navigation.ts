@@ -1,14 +1,13 @@
-import {
-  LayoutDashboard,
-  ClipboardList,
-  Users,
-  UserCheck,
-  CalendarOff,
-  Settings2,
-  GraduationCap,
-  Bell,
-  MessageSquare,
-} from "lucide-react";
+// Custom SVG icon components for sidebar
+import DashboardIcon from "@/components/icons/DashboardIcon";
+import TasksIcon from "@/components/icons/TasksIcon";
+import TeamMemberIcon from "@/components/icons/TeamMemberIcon";
+import AttendanceIcon from "@/components/icons/AttendanceIcon";
+import LeaveManagementIcon from "@/components/icons/LeaveManagementIcon";
+import ShiftAssignmentIcon from "@/components/icons/ShiftAssignmentIcon";
+import LearningIcon from "@/components/icons/LearningIcon";
+import NotificationIcon from "@/components/icons/NotificationIcon";
+import FeedbackIcon from "@/components/icons/FeedbackIcon";
 
 import type { NavItem } from "@/types";
 
@@ -16,46 +15,46 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
   {
     label: "Dashboard",
     href: "/",
-    icon: LayoutDashboard,
+    icon: DashboardIcon,
   },
   {
     label: "Task",
     href: "/task",
-    icon: ClipboardList,
+    icon: TasksIcon,
   },
   {
     label: "Team Members",
     href: "/team-members",
-    icon: Users,
+    icon: TeamMemberIcon,
   },
   {
     label: "Attendance",
     href: "/attendance",
-    icon: UserCheck,
+    icon: AttendanceIcon,
   },
   {
     label: "Leave Management",
     href: "/leave",
-    icon: CalendarOff,
+    icon: LeaveManagementIcon,
   },
   {
     label: "Shift Assignment",
     href: "/shift-assignment",
-    icon: Settings2,
+    icon: ShiftAssignmentIcon,
   },
   {
     label: "Learning & Training",
     href: "/learning-training",
-    icon: GraduationCap,
+    icon: LearningIcon,
   },
   {
     label: "Notification",
     href: "/notification",
-    icon: Bell,
+    icon: NotificationIcon,
   },
   {
     label: "Feedback",
     href: "/feedback",
-    icon: MessageSquare,
+    icon: FeedbackIcon,
   },
 ];
