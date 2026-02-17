@@ -2,12 +2,12 @@ import { CloudUpload } from "lucide-react";
 
 export function DCRUploadArea() {
   return (
-    <div className="mt-4">
+    <div className="mt-3 sm:mt-4">
       <p className="mb-2 text-sm font-semibold text-foreground/80">
         Attach Documents <span className="text-red-500">*</span>
       </p>
 
-      <div className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-sm border-2 border-dashed border-border/60 bg-gray-50 py-10 transition-colors hover:border-brand-navy/30 hover:bg-gray-100">
+      <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-sm border-2 border-dashed border-border/60 bg-gray-50 py-6 transition-colors hover:border-brand-navy/30 hover:bg-gray-100 sm:gap-3 sm:py-10">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
           <CloudUpload className="h-5 w-5 text-brand-navy-light" />
         </div>

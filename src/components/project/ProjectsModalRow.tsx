@@ -7,7 +7,10 @@ interface ProjectsModalRowProps {
   rowNumber: number;
 }
 
-const STATUS_STYLES: Record<ProjectStatus, { bg: string; text: string; label: string }> = {
+const STATUS_STYLES: Record<
+  ProjectStatus,
+  { bg: string; text: string; label: string }
+> = {
   running: {
     bg: "bg-blue-100",
     text: "text-blue-700",
@@ -25,7 +28,10 @@ const STATUS_STYLES: Record<ProjectStatus, { bg: string; text: string; label: st
   },
 };
 
-export function ProjectsModalRow({ project, rowNumber }: ProjectsModalRowProps) {
+export function ProjectsModalRow({
+  project,
+  rowNumber,
+}: ProjectsModalRowProps) {
   const statusStyle = STATUS_STYLES[project.status];
 
   return (
@@ -37,22 +43,22 @@ export function ProjectsModalRow({ project, rowNumber }: ProjectsModalRowProps) 
           aria-label={`Select project ${rowNumber}`}
         />
       </TableCell>
-      <TableCell className="py-3.5 text-sm font-medium text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm font-medium text-foreground/70">
         {rowNumber}
       </TableCell>
-      <TableCell className="py-3.5 text-sm font-semibold text-foreground">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm font-semibold text-foreground">
         {project.projectName}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {project.client}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {project.orderId}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {project.profile}
       </TableCell>
-      <TableCell className="py-3.5 text-sm">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm">
         <Link
           href={project.projectFileUrl}
           className="font-medium text-brand-navy underline underline-offset-2 hover:text-brand-navy-dark"
@@ -60,7 +66,7 @@ export function ProjectsModalRow({ project, rowNumber }: ProjectsModalRowProps) 
           {project.projectFile}
         </Link>
       </TableCell>
-      <TableCell className="py-3.5">
+      <TableCell className="whitespace-nowrap py-3.5">
         <span
           className={`inline-block rounded-sm px-2.5 py-1 text-xs font-semibold ${statusStyle.bg} ${statusStyle.text}`}
         >

@@ -20,15 +20,15 @@ export function ShiftAssignmentModal({
 }: ShiftAssignmentModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] min-w-6xl overflow-y-auto p-0">
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] overflow-y-auto p-0 sm:max-w-6xl">
         <DialogTitle className="sr-only">Shift Assignment</DialogTitle>
         <DialogDescription className="sr-only">
           View and manage your shift assignments
         </DialogDescription>
 
         {/* Header with title and close */}
-        <div className="flex items-center justify-between px-6 py-4">
-          <h2 className="text-xl font-semibold text-foreground">
+        <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
+          <h2 className="text-lg font-semibold text-foreground sm:text-xl">
             Shift Assignment
           </h2>
           <button
@@ -40,7 +40,7 @@ export function ShiftAssignmentModal({
         </div>
 
         {/* Reuse the same content from shift assignment page */}
-        <div className="px-6 pb-6 pt-2">
+        <div className="px-4 pb-4 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
           <ShiftAssignmentContent />
         </div>
       </DialogContent>

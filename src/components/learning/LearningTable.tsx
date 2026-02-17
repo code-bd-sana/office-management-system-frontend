@@ -34,32 +34,34 @@ export function LearningTable() {
   };
 
   return (
-    <div className="overflow-hidden rounded-sm ">
-      {/* Table */}
-      <Table>
-        <TableHeader>
-          <TableRow className="border-b-0 bg-[#E7EFFF]">
-            {LEARNING_TABLE_COLUMNS.map((col) => (
-              <TableHead
-                key={col}
-                className="py-3 text-xs font-bold uppercase tracking-wider text-gray-400 first:pl-5"
-              >
-                <span className="flex items-center gap-1.5">
-                  {col}
-                  {col === "#" && (
-                    <ArrowUpDown className="h-3 w-3 text-brand-navy/40" />
-                  )}
-                </span>
-              </TableHead>
+    <div className="overflow-hidden rounded-sm">
+      {/* Table with horizontal scroll on mobile */}
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b-0 bg-[#E7EFFF]">
+              {LEARNING_TABLE_COLUMNS.map((col) => (
+                <TableHead
+                  key={col}
+                  className="whitespace-nowrap py-3 text-xs font-bold uppercase tracking-wider text-gray-400 first:pl-5"
+                >
+                  <span className="flex items-center gap-1.5">
+                    {col}
+                    {col === "#" && (
+                      <ArrowUpDown className="h-3 w-3 text-brand-navy/40" />
+                    )}
+                  </span>
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {DEMO_LEARNING_RECORDS.map((record) => (
+              <LearningTableRow key={record.id} record={record} />
             ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {DEMO_LEARNING_RECORDS.map((record) => (
-            <LearningTableRow key={record.id} record={record} />
-          ))}
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Pagination */}
       <LearningPagination

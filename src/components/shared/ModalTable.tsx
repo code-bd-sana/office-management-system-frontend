@@ -69,7 +69,9 @@ export function ModalTable<TData, TFilter = string>({
   defaultRowsPerPage = 10,
   showDCRButton = false,
 }: ModalTableProps<TData, TFilter>) {
-  const [activeFilter, setActiveFilter] = useState<TFilter | undefined>(defaultFilter);
+  const [activeFilter, setActiveFilter] = useState<TFilter | undefined>(
+    defaultFilter,
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
@@ -97,10 +99,10 @@ export function ModalTable<TData, TFilter = string>({
     <div className="rounded-sm">
       {/* Filter Tabs + Search */}
       {(filterTabs || enableSearch) && (
-        <div className="mb-4 flex items-center justify-between gap-4 flex-wrap">
+        <div className="mb-3 flex flex-col gap-3 sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           {/* Search with Filter Icon */}
           {enableSearch && (
-            <div className="flex items-center gap-3">
+            <div className="flex flex-1 items-center gap-3">
               {/* Filter Icon */}
               <button
                 type="button"
@@ -117,7 +119,7 @@ export function ModalTable<TData, TFilter = string>({
               </button>
 
               {/* Search Input */}
-              <div className="relative w-64">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
@@ -132,12 +134,12 @@ export function ModalTable<TData, TFilter = string>({
 
           {/* Filter Tabs */}
           {filterTabs && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
               {filterTabs.map((tab) => (
                 <button
                   key={String(tab.value)}
                   onClick={() => setActiveFilter(tab.value)}
-                  className={`rounded-sm px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`rounded-sm px-2 py-1 text-xs font-medium transition-colors sm:px-4 sm:py-2 sm:text-sm ${
                     activeFilter === tab.value
                       ? "bg-brand-navy text-white"
                       : "bg-gray-100 text-foreground/70 hover:bg-gray-200"
@@ -157,29 +159,29 @@ export function ModalTable<TData, TFilter = string>({
           <TableHeader>
             <TableRow className="border-b-0 bg-[#E7EFFF]">
               {enableCheckboxes && (
-              <TableHead className="w-12 py-3 pl-5">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300"
-                  aria-label="Select all"
-                />
-              </TableHead>
-            )}
-            {columns.map((col) => (
-              <TableHead
-                key={col.key}
-                className={`py-3 text-xs font-bold uppercase tracking-wider text-gray-400 ${
-                  col.className || ""
-                }`}
-              >
-                {col.label}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredData.map((item, index) => renderRow(item, index))}
-        </TableBody>
+                <TableHead className="w-12 py-3 pl-5">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300"
+                    aria-label="Select all"
+                  />
+                </TableHead>
+              )}
+              {columns.map((col) => (
+                <TableHead
+                  key={col.key}
+                  className={`whitespace-nowrap py-3 text-xs font-bold uppercase tracking-wider text-gray-400 ${
+                    col.className || ""
+                  }`}
+                >
+                  {col.label}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.map((item, index) => renderRow(item, index))}
+          </TableBody>
         </Table>
       </div>
 

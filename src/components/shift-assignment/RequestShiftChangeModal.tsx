@@ -39,15 +39,15 @@ export function RequestShiftChangeModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="min-w-xl p-0">
+      <DialogContent className="w-[calc(100vw-2rem)] p-0 sm:max-w-xl">
         <DialogTitle className="sr-only">Request Shift Change</DialogTitle>
         <DialogDescription className="sr-only">
           Submit a request to change your shift assignment
         </DialogDescription>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-2">
-          <h2 className="text-xl font-semibold text-foreground">
+        <div className="flex items-center justify-between px-4 pt-4 pb-2 sm:px-6 sm:pt-6">
+          <h2 className="text-lg font-semibold text-foreground sm:text-xl">
             Request Shift Change
           </h2>
           <button
@@ -59,12 +59,12 @@ export function RequestShiftChangeModal({
         </div>
 
         {/* User Info */}
-        <div className="flex items-center gap-3 px-6 pb-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#044192] text-sm font-semibold text-white">
+        <div className="flex items-center gap-3 px-4 pb-4 sm:px-6">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#044192] text-xs font-semibold text-white sm:h-12 sm:w-12 sm:text-sm">
             RD
           </div>
           <div>
-            <h3 className="text-base font-semibold text-foreground">
+            <h3 className="text-sm font-semibold text-foreground sm:text-base">
               Robbi Darwis
             </h3>
             <p className="text-xs text-muted-foreground">
@@ -74,7 +74,7 @@ export function RequestShiftChangeModal({
         </div>
 
         {/* Form */}
-        <div className="space-y-5 px-6 pb-6">
+        <div className="space-y-4 px-4 pb-4 sm:space-y-5 sm:px-6 sm:pb-6">
           {/* Original Shift */}
           <div>
             <label className="mb-1.5 block text-sm font-medium text-foreground">
@@ -121,7 +121,7 @@ export function RequestShiftChangeModal({
           <div className="flex justify-end">
             <Button
               onClick={handleSubmit}
-              className="rounded-sm bg-[#044192] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#033174]"
+              className="w-50 rounded-sm bg-[#044192] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#033174] sm:w-auto"
             >
               Submit Request
             </Button>

@@ -15,10 +15,10 @@ export function TaskList() {
   }, [activeTab]);
 
   return (
-    <div className="h-full rounded-sm bg-white p-6 shadow-sm ring-1 ring-black/5">
+    <div className="h-full rounded-sm bg-white p-4 shadow-sm ring-1 ring-black/5 sm:p-6">
       {/* Section heading + Filters */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-foreground">
+      <div className="space-y-3 sm:space-y-4">
+        <h2 className="text-lg font-semibold text-foreground sm:text-xl">
           My Assigned Tasks
         </h2>
 
@@ -30,7 +30,7 @@ export function TaskList() {
       </div>
 
       {/* Task items */}
-      <div className="mt-6">
+      <div className="mt-4 sm:mt-6">
         {filteredTasks.map((task) => (
           <TaskItem key={task.id} task={task} />
         ))}

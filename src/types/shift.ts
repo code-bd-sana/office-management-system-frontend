@@ -11,6 +11,8 @@ export interface ShiftDay {
 export interface ShiftStyle {
   bg: string;
   text: string;
+  bgHex: string;
+  textHex: string;
   label: string;
   icon: string;
 }

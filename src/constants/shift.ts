@@ -4,24 +4,32 @@ export const SHIFT_STYLES: Record<ShiftType, ShiftStyle> = {
   morning: {
     bg: "bg-[#FEE6C9]",
     text: "text-[#2C3E50]",
+    bgHex: "#FEE6C9",
+    textHex: "#2C3E50",
     label: "Morning Shift",
     icon: "/icons/sun-icons.png",
   },
   evening: {
     bg: "bg-[#3A5AD0]",
     text: "text-white",
+    bgHex: "#3A5AD0",
+    textHex: "#ffffff",
     label: "Evening Shift",
     icon: "/icons/evening-icons.png",
   },
   night: {
     bg: "bg-[#654DBA]",
     text: "text-white",
+    bgHex: "#654DBA",
+    textHex: "#ffffff",
     label: "Night Shift",
     icon: "/icons/night-icons.png",
   },
   off: {
     bg: "bg-[#F7F7F7]",
     text: "text-[#555]",
+    bgHex: "#F7F7F7",
+    textHex: "#555555",
     label: "Off Day",
     icon: "/icons/off-day-icons.png",
   },
@@ -52,7 +60,7 @@ export const SHIFT_ROTATION: ShiftType[][] = [
 export function getShiftForDate(
   date: number,
   dayOfWeek: number,
-  weekIndex: number
+  weekIndex: number,
 ): ShiftType {
   const rotation = SHIFT_ROTATION[weekIndex % SHIFT_ROTATION.length];
   return rotation[dayOfWeek];
@@ -65,7 +73,7 @@ export function getShiftForDate(
  */
 export function generateCalendarDays(
   month: number,
-  year: number
+  year: number,
 ): {
   date: number;
   month: number;

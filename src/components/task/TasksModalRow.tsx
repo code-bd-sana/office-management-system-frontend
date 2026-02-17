@@ -6,7 +6,10 @@ interface TasksModalRowProps {
   rowNumber: number;
 }
 
-const STATUS_STYLES: Record<TaskStatus, { bg: string; text: string; label: string }> = {
+const STATUS_STYLES: Record<
+  TaskStatus,
+  { bg: string; text: string; label: string }
+> = {
   "in-progress": {
     bg: "bg-blue-100",
     text: "text-blue-700",
@@ -36,25 +39,25 @@ export function TasksModalRow({ task, rowNumber }: TasksModalRowProps) {
           aria-label={`Select task ${rowNumber}`}
         />
       </TableCell>
-      <TableCell className="py-3.5 text-sm font-medium text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm font-medium text-foreground/70">
         {rowNumber}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground">
         {task.title}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {task.client}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {task.profile}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {task.project}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {task.dueDate}
       </TableCell>
-      <TableCell className="py-3.5">
+      <TableCell className="whitespace-nowrap py-3.5">
         <span
           className={`inline-block rounded-sm px-2.5 py-1 text-xs font-semibold ${statusStyle.bg} ${statusStyle.text}`}
         >

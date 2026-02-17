@@ -7,9 +7,10 @@ import type { NavItem } from "@/types";
 
 interface SidebarNavItemProps {
   item: NavItem;
+  onNavigate?: () => void;
 }
 
-export function SidebarNavItem({ item }: SidebarNavItemProps) {
+export function SidebarNavItem({ item, onNavigate }: SidebarNavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === item.href;
   const Icon = item.icon;
@@ -17,14 +18,15 @@ export function SidebarNavItem({ item }: SidebarNavItemProps) {
   return (
     <Link
       href={item.href}
+      onClick={onNavigate}
       className={cn(
         "flex items-center gap-3 rounded-sm px-4 py-2.5 text-sm font-medium transition-colors",
         isActive
-          ? "bg-white text-brand-navy shadow-sm"
-          : "text-white/80 hover:bg-white/10 hover:text-white"
+          ? "bg-white/15 text-white"
+          : "text-white/70 hover:bg-white/10 hover:text-white",
       )}
     >
-      <Icon className="h-4.5 w-4.5 shrink-0" />
+      <Icon className="h-4.5 w-4.5" />
       <span>{item.label}</span>
     </Link>
   );

@@ -2,12 +2,85 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* SF UI Display Font Family */
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-ultralight-58646b19bf205.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-thin-58646e9b26e8b.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-light-58646b33e0551.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-medium-58646be638f96.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-medium-58646be638f96.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-semibold-58646eddcae92.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-bold-58646a511e3d9.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-heavy-586470160b9e5.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-black-58646a6b80d5a.woff') format('woff');
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: 'SF UI Display', ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -105,26 +178,26 @@
 
   /* Brand colors - Navy */
   --brand-navy: #044192;
-  --brand-navy-light: #2A4A72;
-  --brand-navy-dark: #152E4D;
+  --brand-navy-light: #2a4a72;
+  --brand-navy-dark: #152e4d;
 
   /* Content area background */
   --content-bg: #f9fafb;
 
   /* Dashboard card backgrounds (pastel) */
-  --card-teal: #E6F5EE;
-  --card-blue: #E3F0FC;
-  --card-peach: #FFF0E0;
-  --card-steel: #E8EFF8;
-  --card-lime: #EEF5E2;
-  --card-green: #E0F5EC;
+  --card-teal: #e6f5ee;
+  --card-blue: #e3f0fc;
+  --card-peach: #fff0e0;
+  --card-steel: #e8eff8;
+  --card-lime: #eef5e2;
+  --card-green: #e0f5ec;
 
   /* Dashboard card icon backgrounds */
-  --icon-teal: #2196F3;
-  --icon-blue: #1976D2;
-  --icon-orange: #FF9800;
-  --icon-steel: #3F51B5;
-  --icon-lime: #4CAF50;
+  --icon-teal: #2196f3;
+  --icon-blue: #1976d2;
+  --icon-orange: #ff9800;
+  --icon-steel: #3f51b5;
+  --icon-lime: #4caf50;
   --icon-green: #009688;
 }
 
@@ -168,5 +241,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 }
