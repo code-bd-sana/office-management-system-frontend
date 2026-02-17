@@ -18,7 +18,7 @@ export function MainLayout({ children, pageTitle }: MainLayoutProps) {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main content area — no offset on mobile, ml-60 on lg+ */}
-      <div className="flex flex-1 flex-col lg:ml-60">
+      <div className="flex max-w-full flex-1 flex-col overflow-x-hidden lg:ml-60">
         <Navbar
           title={pageTitle}
           onMenuToggle={() => setIsSidebarOpen((prev) => !prev)}

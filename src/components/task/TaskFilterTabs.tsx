@@ -15,7 +15,7 @@ export function TaskFilterTabs({
   onTabChange,
 }: TaskFilterTabsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-1 sm:gap-2">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.value;
         return (
@@ -24,10 +24,10 @@ export function TaskFilterTabs({
             type="button"
             onClick={() => onTabChange(tab.value)}
             className={cn(
-              "rounded-sm px-5 py-2 text-sm font-medium transition-colors border",
+              "rounded-sm px-2 py-1.5 text-xs font-medium transition-colors border sm:px-3 sm:py-1 sm:text-sm",
               isActive
                 ? "border-brand-navy bg-brand-navy text-white shadow-sm"
-                : "border-border bg-white text-muted-foreground hover:bg-muted hover:text-foreground"
+                : "border-border bg-white text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             {tab.label} ({tab.count})

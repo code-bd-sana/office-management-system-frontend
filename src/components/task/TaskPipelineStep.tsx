@@ -11,13 +11,14 @@ export function TaskPipelineStep({ step }: TaskPipelineStepProps) {
   return (
     <div
       className={cn(
-        "flex w-full flex-col items-center justify-center gap-4 rounded-sm py-10 transition-shadow hover:shadow-sm",
-        step.bgColor
+        "flex w-full flex-col items-center justify-center gap-2 rounded-sm py-5 transition-shadow hover:shadow-sm sm:gap-4 sm:py-10",
+        step.bgColor,
       )}
     >
-      <Icon className="h-10 w-10 text-brand-navy-light stroke-[1.5]" />
-      <div className="text-xl font-medium text-foreground">
-        {step.label} {step.count > 0 && <span className="font-bold">{step.count}</span>}
+      <Icon className="h-7 w-7 text-brand-navy-light stroke-[1.5] sm:h-10 sm:w-10" />
+      <div className="text-sm font-medium text-foreground sm:text-xl">
+        {step.label}{" "}
+        {step.count > 0 && <span className="font-bold">{step.count}</span>}
       </div>
     </div>
   );
