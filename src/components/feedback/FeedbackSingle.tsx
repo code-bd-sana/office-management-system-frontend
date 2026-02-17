@@ -1,6 +1,12 @@
+"use client";
 import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export function FeedbackSingle() {
+  const [isReplyVisible, setIsReplyVisible] = useState(false);
+
   return (
     <div className="feedback border border-green-600 rounded-sm p-5 mb-4">
       <div className="user flex items-start gap-3">
@@ -62,7 +68,7 @@ export function FeedbackSingle() {
         </ol>
       </div>
 
-      <h2 className="mt-8 text-2xl text-[#044192]">Feedback</h2>
+      <h2 className="mt-8 text-2xl text-[#044192] font-semibold">Feedback</h2>
       <p className="text-gray-600 mt-3">
         Lorem ipsum dolor sit amet consectetur. Fames sagittis metus iaculis
         adipiscing egestas arcu amet mi mauris. Vitae aliquet scelerisque sit
@@ -75,10 +81,37 @@ export function FeedbackSingle() {
 
       <div className="footer mt-6 flex items-center justify-between">
         <p className="text-xs text-gray-600 ">5 minutes ago</p>
-        <button className="p-2 w-30 text-base text-white font-sm border border-[#044192] rounded-sm bg-[#044192] mt-2">
+
+        <Button
+          type="button"
+          className="h-10 rounded-xs bg-brand-navy px-8 text-base font-semibold transition-all hover:bg-brand-navy-dark hover:shadow-md active:scale-[0.98]"
+          onClick={() => setIsReplyVisible((prev) => !prev)}
+        >
           Replay
-        </button>
+        </Button>
       </div>
+
+      {/* Reply Section */}
+      {isReplyVisible && (
+        <div className="reply mt-6 space-y-4">
+          <h2 className="mt-8 text-2xl text-[#044192] font-semibold">Replay</h2>
+
+          <Textarea
+            id="message"
+            placeholder="Type here..."
+            className="w-full h-30 resize-none border-gray-300 rounded-0 bg-white placeholder:text-muted-foreground/50"
+          />
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="h-10 rounded-xs bg-brand-navy px-8 text-sm font-semibold transition-all hover:bg-brand-navy-dark hover:shadow-md active:scale-[0.98]"
+            >
+              Send
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
