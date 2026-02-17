@@ -36,13 +36,9 @@ export function DashboardGrid() {
 
   return (
     <section>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {DASHBOARD_CARDS.map((card) => (
-          <DashboardCard
-            key={card.id}
-            data={card}
-            onClick={handleCardClick}
-          />
+          <DashboardCard key={card.id} data={card} onClick={handleCardClick} />
         ))}
       </div>
 
@@ -54,19 +50,34 @@ export function DashboardGrid() {
       <TasksModal open={isTasksModalOpen} onOpenChange={setIsTasksModalOpen} />
 
       {/* Projects Modal */}
-      <ProjectsModal open={isProjectsModalOpen} onOpenChange={setIsProjectsModalOpen} />
+      <ProjectsModal
+        open={isProjectsModalOpen}
+        onOpenChange={setIsProjectsModalOpen}
+      />
 
       {/* Learning & Training Modal */}
-      <LearningModal open={isLearningModalOpen} onOpenChange={setIsLearningModalOpen} />
+      <LearningModal
+        open={isLearningModalOpen}
+        onOpenChange={setIsLearningModalOpen}
+      />
 
       {/* Attendance Modal */}
-      <AttendanceModal open={isAttendanceModalOpen} onClose={() => setIsAttendanceModalOpen(false)} />
+      <AttendanceModal
+        open={isAttendanceModalOpen}
+        onClose={() => setIsAttendanceModalOpen(false)}
+      />
 
       {/* DCR Submission Modal */}
-      <DCRSubmissionModal open={isDCRModalOpen} onClose={() => setIsDCRModalOpen(false)} />
+      <DCRSubmissionModal
+        open={isDCRModalOpen}
+        onClose={() => setIsDCRModalOpen(false)}
+      />
 
       {/* Shift Assignment Modal */}
-      <ShiftAssignmentModal open={isShiftModalOpen} onClose={() => setIsShiftModalOpen(false)} />
+      <ShiftAssignmentModal
+        open={isShiftModalOpen}
+        onClose={() => setIsShiftModalOpen(false)}
+      />
     </section>
   );
 }

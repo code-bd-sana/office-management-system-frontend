@@ -48,7 +48,6 @@ export function AttendanceContent() {
           <span className="text-blue-600 font-medium ml-1">2 Leave</span>
           <span className="ml-4 text-blue-600 font-medium">Work Days : 18</span>
         </div>
-
       </div>
     </div>
   );

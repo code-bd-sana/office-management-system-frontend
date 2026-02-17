@@ -10,7 +10,15 @@ interface DashboardCardProps {
 
 export function DashboardCard({ data, onClick }: DashboardCardProps) {
   // For tasks, projects, learning-training, my-attendance, dcr-submission, and shift-assignment cards, use onClick handler to open modal
-  if ((data.id === "tasks" || data.id === "projects" || data.id === "learning-training" || data.id === "my-attendance" || data.id === "dcr-submission" || data.id === "shift-assignment") && onClick) {
+  if (
+    (data.id === "tasks" ||
+      data.id === "projects" ||
+      data.id === "learning-training" ||
+      data.id === "my-attendance" ||
+      data.id === "dcr-submission" ||
+      data.id === "shift-assignment") &&
+    onClick
+  ) {
     return (
       <button
         onClick={() => onClick(data.id)}
@@ -18,9 +26,9 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
       >
         <div
           className={cn(
-            "relative rounded-sm border p-5 transition-all",
+            "relative rounded-sm border p-4 sm:p-5 transition-all",
             "hover:shadow-md hover:border-border/50",
-            data.cardColor
+            data.cardColor,
           )}
         >
           {/* Icon */}
@@ -44,7 +52,9 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
             <span className="text-2xl font-bold text-foreground">
               {data.count}
             </span>
-            <span className="text-sm text-muted-foreground">{data.subtitle}</span>
+            <span className="text-sm text-muted-foreground">
+              {data.subtitle}
+            </span>
           </div>
         </div>
       </button>
@@ -56,9 +66,9 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
     <Link href={data.href} className="group block">
       <div
         className={cn(
-          "relative rounded-sm border p-5 transition-all",
+          "relative rounded-sm border p-4 sm:p-5 transition-all",
           "hover:shadow-md hover:border-border/50",
-          data.cardColor
+          data.cardColor,
         )}
       >
         {/* Icon */}
