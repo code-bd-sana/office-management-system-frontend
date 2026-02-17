@@ -20,6 +20,15 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     href: "/projects",
   },
   {
+    id: "team-members",
+    title: "Team Members",
+    count: 3,
+    subtitle: "Total Members",
+    iconPath: "/icons/team-icons.png",
+    cardColor: "bg-[#E0ECED]",
+    href: "/team-members",
+  },
+  {
     id: "dcr-submission",
     title: "DCR Submission",
     count: 6,
