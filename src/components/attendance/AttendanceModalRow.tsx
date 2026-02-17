@@ -5,7 +5,10 @@ interface AttendanceModalRowProps {
   record: AttendanceRecord;
 }
 
-const STATUS_STYLES: Record<AttendanceStatus, { bg: string; text: string; label: string }> = {
+const STATUS_STYLES: Record<
+  AttendanceStatus,
+  { bg: string; text: string; label: string }
+> = {
   present: {
     bg: "bg-green-100",
     text: "text-green-700",
@@ -38,22 +41,22 @@ export function AttendanceModalRow({ record }: AttendanceModalRowProps) {
 
   return (
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
-      <TableCell className="py-3.5 pl-5 text-sm font-medium text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 pl-5 text-sm font-medium text-foreground/70">
         {record.rowNumber}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {record.date}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {record.day}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {record.checkIn}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {record.checkOut}
       </TableCell>
-      <TableCell className="py-3.5">
+      <TableCell className="whitespace-nowrap py-3.5">
         <span
           className={`inline-block rounded-sm px-2.5 py-1 text-xs font-semibold ${statusStyle.bg} ${statusStyle.text}`}
         >

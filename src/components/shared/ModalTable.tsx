@@ -102,7 +102,7 @@ export function ModalTable<TData, TFilter = string>({
         <div className="mb-3 flex flex-col gap-3 sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           {/* Search with Filter Icon */}
           {enableSearch && (
-            <div className="flex items-center gap-3">
+            <div className="flex flex-1 items-center gap-3">
               {/* Filter Icon */}
               <button
                 type="button"
@@ -119,7 +119,7 @@ export function ModalTable<TData, TFilter = string>({
               </button>
 
               {/* Search Input */}
-              <div className="relative w-40 sm:w-64">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
@@ -134,12 +134,12 @@ export function ModalTable<TData, TFilter = string>({
 
           {/* Filter Tabs */}
           {filterTabs && (
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
               {filterTabs.map((tab) => (
                 <button
                   key={String(tab.value)}
                   onClick={() => setActiveFilter(tab.value)}
-                  className={`rounded-sm px-3 py-1.5 text-xs font-medium transition-colors sm:px-4 sm:py-2 sm:text-sm ${
+                  className={`rounded-sm px-2 py-1 text-xs font-medium transition-colors sm:px-4 sm:py-2 sm:text-sm ${
                     activeFilter === tab.value
                       ? "bg-brand-navy text-white"
                       : "bg-gray-100 text-foreground/70 hover:bg-gray-200"
@@ -170,7 +170,7 @@ export function ModalTable<TData, TFilter = string>({
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
-                  className={`py-3 text-xs font-bold uppercase tracking-wider text-gray-400 ${
+                  className={`whitespace-nowrap py-3 text-xs font-bold uppercase tracking-wider text-gray-400 ${
                     col.className || ""
                   }`}
                 >

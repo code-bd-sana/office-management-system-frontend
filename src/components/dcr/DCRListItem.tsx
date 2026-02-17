@@ -10,7 +10,7 @@ interface DCRListItemProps {
 
 export function DCRListItem({ item, onToggle }: DCRListItemProps) {
   return (
-    <div className="flex items-start gap-4 border-b border-border/40 py-4 last:border-b-0">
+    <div className="flex items-start gap-2.5 border-b border-border/40 py-3 last:border-b-0 sm:gap-4 sm:py-4">
       {/* Checkbox */}
       <div className="shrink-0 pt-1">
         <input
@@ -23,9 +23,14 @@ export function DCRListItem({ item, onToggle }: DCRListItemProps) {
 
       {/* Description */}
       <div className="flex-1 pt-1">
-        <p className="text-sm text-foreground/80 leading-relaxed">
-          {item.description}
+        <p className="hidden md:block text-sm text-foreground/80 leading-relaxed">
+          {item.description.split(" ").slice(0, 30).join(" ")}
+          {item.description.split(" ").length > 30 && "..."}
         </p>
+        <p className="block md:hidden text-sm text-foreground/80 leading-relaxed">
+          {item.description.split(" ").slice(0, 10).join(" ")}
+          {item.description.split(" ").length > 10 && "..."}
+        </p>  
       </div>
 
       {/* Date and Menu */}

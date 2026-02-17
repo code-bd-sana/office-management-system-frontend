@@ -20,7 +20,7 @@ export function ShiftAssignmentModal({
 }: ShiftAssignmentModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-6xl overflow-y-auto p-0 sm:w-full">
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] overflow-y-auto p-0 sm:max-w-6xl">
         <DialogTitle className="sr-only">Shift Assignment</DialogTitle>
         <DialogDescription className="sr-only">
           View and manage your shift assignments

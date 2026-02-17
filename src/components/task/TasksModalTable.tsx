@@ -19,11 +19,13 @@ export function TasksModalTable() {
   const handleFilterData = (
     data: Task[],
     filter: TaskStatus | "all",
-    search: string
+    search: string,
   ): Task[] => {
     return data.filter((task) => {
       const matchesFilter = filter === "all" || task.status === filter;
-      const matchesSearch = task.title.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = task.title
+        .toLowerCase()
+        .includes(search.toLowerCase());
       return matchesFilter && matchesSearch;
     });
   };

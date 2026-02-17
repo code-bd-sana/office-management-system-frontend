@@ -17,7 +17,7 @@ interface LearningModalProps {
 export function LearningModal({ open, onOpenChange }: LearningModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-2rem)] max-w-5xl gap-0 p-0 sm:w-full">
+      <DialogContent className="w-[calc(100vw-2rem)] gap-0 p-0 sm:max-w-5xl">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
           <DialogTitle className="text-lg font-semibold text-foreground sm:text-xl">

@@ -39,7 +39,7 @@ export function RequestShiftChangeModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100vw-2rem)] max-w-xl p-0 sm:w-full">
+      <DialogContent className="w-[calc(100vw-2rem)] p-0 sm:max-w-xl">
         <DialogTitle className="sr-only">Request Shift Change</DialogTitle>
         <DialogDescription className="sr-only">
           Submit a request to change your shift assignment
