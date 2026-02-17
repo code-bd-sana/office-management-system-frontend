@@ -41,17 +41,17 @@ export function ShiftLegend({ onShiftChangeSubmit }: ShiftLegendProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="mb-2 bg-[#eef0f3] p-3 rounded-sm flex items-center justify-between">
+    <div className="mb-2 flex flex-col gap-3 rounded-sm bg-[#eef0f3] p-3 sm:flex-row sm:items-center sm:justify-between">
       {/* Shift Types Legend */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-2 sm:gap-4">
         {SHIFT_TYPES.map((shift, index) => (
           <div key={index} className="flex items-center gap-2">
             <Image src={shift.icon} alt={shift.label} width={20} height={20} />
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-medium text-foreground">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+              <span className="text-xs font-medium text-foreground sm:text-sm">
                 {shift.label}
               </span>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground sm:text-sm">
                 - {shift.time}
               </span>
             </div>
@@ -62,7 +62,7 @@ export function ShiftLegend({ onShiftChangeSubmit }: ShiftLegendProps) {
       {/* Request Shift Change Button */}
       <Button
         onClick={() => setIsModalOpen(true)}
-        className="rounded-sm bg-[#14804A] px-5 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90"
+        className="w-50 rounded-sm bg-[#14804A] px-5 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90 sm:w-auto"
       >
         Request Shift Change
       </Button>
