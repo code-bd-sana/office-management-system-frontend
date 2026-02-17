@@ -2,12 +2,85 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* SF UI Display Font Family */
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-ultralight-58646b19bf205.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-thin-58646e9b26e8b.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-light-58646b33e0551.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-medium-58646be638f96.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-medium-58646be638f96.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-semibold-58646eddcae92.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-bold-58646a511e3d9.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-heavy-586470160b9e5.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/sf-ui-display/sf-ui-display-black-58646a6b80d5a.woff') format('woff');
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: 'SF UI Display', ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
