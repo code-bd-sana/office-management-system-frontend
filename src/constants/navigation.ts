@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   ClipboardList,
+  Users,
   UserCheck,
   CalendarOff,
   Settings2,
@@ -21,6 +22,11 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     label: "Task",
     href: "/task",
     icon: ClipboardList,
+  },
+  {
+    label: "Team Members",
+    href: "/team-members",
+    icon: Users,
   },
   {
     label: "Attendance",
