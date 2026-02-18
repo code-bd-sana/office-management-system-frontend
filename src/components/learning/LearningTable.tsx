@@ -58,7 +58,7 @@ export function LearningTable() {
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 w-full rounded-sm border-border/60 pl-9 pr-3 bg-white border border-gray-400 text-sm  focus-visible:ring-1 focus-visible:ring-offset-0"
+                className="h-9 w-full rounded-sm border-gray-400 pl-9 pr-3 bg-white border text-sm  focus-visible:ring-1 focus-visible:ring-offset-0"
               />
             </div>
           </div>

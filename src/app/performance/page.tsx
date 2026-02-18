@@ -1,6 +1,7 @@
 import { MainLayout } from "@/components/layout/MainLayout";
 import { OverallPerformanceChart } from "@/components/performance/OverallPerformanceChart";
 import { MonthlyComparisonChart } from "@/components/performance/MonthlyComparisonChart";
+import { PerformanceMembersTable } from "@/components/performance/PerformanceMembersTable";
 
 export default function PerformancePage() {
   return (
@@ -17,6 +18,9 @@ export default function PerformancePage() {
         <OverallPerformanceChart />
         <MonthlyComparisonChart />
       </div>
+
+      {/* Team Members Performance Table */}
+      <PerformanceMembersTable />
     </MainLayout>
   );
 }
