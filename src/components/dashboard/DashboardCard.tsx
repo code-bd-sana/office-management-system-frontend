@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { DashboardCardData } from "@/types";
 
@@ -9,10 +8,11 @@ interface DashboardCardProps {
 }
 
 export function DashboardCard({ data, onClick }: DashboardCardProps) {
-  // For tasks, projects, learning-training, my-attendance, dcr-submission, and shift-assignment cards, use onClick handler to open modal
+  // For tasks, projects, team-members, learning-training, my-attendance, dcr-submission, and shift-assignment cards, use onClick handler to open modal
   if (
     (data.id === "tasks" ||
       data.id === "projects" ||
+      data.id === "team-members" ||
       data.id === "learning-training" ||
       data.id === "my-attendance" ||
       data.id === "dcr-submission" ||
@@ -33,13 +33,7 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
         >
           {/* Icon */}
           <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white">
-            <Image
-              src={data.iconPath}
-              alt={data.title}
-              width={24}
-              height={24}
-              className="h-6 w-6 object-contain"
-            />
+            <data.icon className="h-6 w-6" />
           </div>
 
           {/* Title */}
@@ -73,13 +67,7 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
       >
         {/* Icon */}
         <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white">
-          <Image
-            src={data.iconPath}
-            alt={data.title}
-            width={24}
-            height={24}
-            className="h-6 w-6 object-contain"
-          />
+          <data.icon className="h-6 w-6" />
         </div>
 
         {/* Title */}
