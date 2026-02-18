@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { LearningRecord } from "@/types/learning";
+import { SquarePen, Trash2 } from "lucide-react";
 
 interface LearningTableRowProps {
   record: LearningRecord;
@@ -32,6 +33,7 @@ export function LearningTableRow({ record }: LearningTableRowProps) {
       <TableCell className="py-3.5 text-sm text-foreground/70">
         {record.uploadDate}
       </TableCell>
+      {/* View Details for employee & Leader */}
       <TableCell className="py-3.5">
         <Link
           href="#"
@@ -39,6 +41,23 @@ export function LearningTableRow({ record }: LearningTableRowProps) {
         >
           View Details
         </Link>
+      </TableCell>
+      {/* Action Columns only for manager  */}
+      <TableCell className="py-3.5">
+        <div className="flex gap-2">
+          <Link
+            href="#"
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <SquarePen />
+          </Link>
+          <Link
+            href="#"
+            className="text-red-400 hover:text-red-600"
+          >
+            <Trash2 />
+          </Link>
+        </div>
       </TableCell>
     </TableRow>
   );

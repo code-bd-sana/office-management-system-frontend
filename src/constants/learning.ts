@@ -74,6 +74,7 @@ export const LEARNING_TABLE_COLUMNS = [
   "File Name",
   "Upload Date",
   "Status",
+  "Actions"
 ] as const;
 
 export const LEARNING_ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
