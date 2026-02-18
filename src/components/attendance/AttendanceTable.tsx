@@ -149,7 +149,7 @@ export function AttendanceTable<TData, TFilter = string>({
 
       {/* Table */}
       <div className="overflow-x-auto rounded-t-sm border border-b-0">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             <TableRow className="border-b-0 bg-[#E7EFFF]">
               {enableCheckboxes && (
