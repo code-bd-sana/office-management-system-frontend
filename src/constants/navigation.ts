@@ -3,6 +3,7 @@ import DashboardIcon from "@/components/icons/DashboardIcon";
 import TasksIcon from "@/components/icons/TasksIcon";
 import TeamMemberIcon from "@/components/icons/TeamMemberIcon";
 import AttendanceIcon from "@/components/icons/AttendanceIcon";
+import DcrReviewIcon from "@/components/icons/DcrReviewIcon";
 import LeaveManagementIcon from "@/components/icons/LeaveManagementIcon";
 import ShiftAssignmentIcon from "@/components/icons/ShiftAssignmentIcon";
 import LearningIcon from "@/components/icons/LearningIcon";
@@ -26,6 +27,11 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     label: "Team Members",
     href: "/team-members",
     icon: TeamMemberIcon,
+  },
+  {
+    label: "DCR Review",
+    href: "/dcr-review",
+    icon: DcrReviewIcon,
   },
   {
     label: "Attendance",
