@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export function LeaveRequestSingle() {
   return (
     <div>
-      <div className="border border-green-400 rounded-md p-5 mb-4">
+      <div className="border border-green-400 rounded-sm p-5 mb-4">
         <div className="flex items-start gap-3">
           <div>
             <p className="text-gray-600 font-semibold text-xl font-light flex items-center gap-2 mb-6">
@@ -34,7 +34,7 @@ export function LeaveRequestSingle() {
         </div>
       </div>
 
-      <div className="bg-white border rounded-md p-5 mb-4 shadow-sm">
+      <div className="bg-white border rounded-sm p-5 mb-4 shadow-sm">
         <div className="flex items-start gap-3 text-gray-500">
           <div>
             <h3 className="text-xl font-light font-semibold flex mb-6">

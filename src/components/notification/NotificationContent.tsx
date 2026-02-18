@@ -5,7 +5,7 @@ export function NotificationContent() {
     <div className="space-y-6">
       {/* Top Tabs + Button */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex bg-white rounded-md shadow-sm border">
+        <div className="flex bg-white rounded-sm shadow-sm border">
           <button className="px-4 py-2 text-sm font-medium border border-gray-300 bg-[#044192] text-white rounded-l-md">
             All (8)
           </button>
@@ -17,12 +17,12 @@ export function NotificationContent() {
           </button>
         </div>
 
-        <button className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-md bg-white hover:bg-gray-100">
+        <button className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-sm bg-white hover:bg-gray-100">
           Mark All as Read
         </button>
       </div>
 
-      <div className="border border-green-400 rounded-md p-5 mb-4">
+      <div className="border border-green-400 rounded-sm p-5 mb-4">
         <div className="flex items-start gap-3">
           <div>
             <p className="text-gray-600 font-semibold text-xl font-light flex items-center gap-2 mb-6">
@@ -42,7 +42,7 @@ export function NotificationContent() {
         </div>
       </div>
 
-      <div className="bg-white border rounded-md p-5 mb-4 shadow-sm">
+      <div className="bg-white border rounded-sm p-5 mb-4 shadow-sm">
         <div className="flex items-start gap-3 text-gray-500">
           <div>
             <h3 className="text-xl font-light font-semibold flex mb-6">
@@ -65,7 +65,7 @@ export function NotificationContent() {
         </div>
       </div>
 
-      <div className="bg-white border rounded-md p-5 shadow-sm">
+      <div className="bg-white border rounded-sm p-5 shadow-sm">
         <div className="text-gray-500 flex items-start gap-3">
           <div>
             <h3 className="text-xl font-light font-semibold flex mb-6">
