@@ -4,7 +4,7 @@ import FeedbackHeader from "./FeedbackHeader";
 
 export function FeedbackContent() {
   return (
-    <div className="space-y-6 px-6">
+    <div className="space-y-6">
       <FeedbackHeader />
 
       <FeedbackSingle />
