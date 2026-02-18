@@ -24,7 +24,7 @@ export function LeaveTableRow({ record }: LeaveTableRowProps) {
       <TableCell className="py-3.5 text-sm">
         {record.duration}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="py-3.5 text-sm text-foreground/70 ">
         {record.status}
       </TableCell>
     </TableRow>
