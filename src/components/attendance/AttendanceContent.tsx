@@ -35,15 +35,15 @@ export function AttendanceContent() {
   return (
     <div className="space-y-6">
       {/* Description */}
-      <p className="text-2xl pr-8 leading-relaxed text-muted-foreground/80">
+      <p className="text-base pr-0 leading-relaxed text-muted-foreground/80 sm:text-xl sm:pr-8 md:text-2xl">
         {ATTENDANCE_DESCRIPTION}
       </p>
 
       {/* Today's Attendance Info Section */}
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
+      <div className="px-3 py-3 sm:px-6 sm:py-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Left: Date and Check-in Info */}
-          <div className="flex text-base items-center gap-6">
+          <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:gap-6 sm:text-base">
             <div>
               <h3 className="font-semibold text-foreground flex items-center">
                 <Image
@@ -58,9 +58,7 @@ export function AttendanceContent() {
             </div>
             {TODAY_ATTENDANCE.checkedInAt && (
               <div className="flex items-center gap-2">
-                <span className=" text-foreground/70">
-                  Checked in at:
-                </span>
+                <span className="text-foreground/70">Checked in at:</span>
                 <span className="font-semibold text-foreground">
                   {TODAY_ATTENDANCE.checkedInAt}
                 </span>
@@ -69,12 +67,8 @@ export function AttendanceContent() {
           </div>
 
           {/* Right: Action Buttons */}
-          <div className="flex items-center gap-3">
-            <Button
-              // onClick={handleCheckIn}
-              // disabled={!!TODAY_ATTENDANCE.checkedInAt}
-              className="flex items-center gap-2 rounded-sm bg-[#14804A] px-6 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90 disabled:opacity-50"
-            >
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-[#14804A] px-4 py-2 text-xs font-medium text-white hover:bg-[#14804A]/90 disabled:opacity-50 sm:flex-none sm:px-6 sm:text-sm">
               <Image
                 src="/icons/tick-icons.png"
                 alt="Check In"
@@ -85,11 +79,10 @@ export function AttendanceContent() {
               Check In
             </Button>
             <Button
-              // onClick={handleCheckOut}
               disabled={
                 !TODAY_ATTENDANCE.checkedInAt || !!TODAY_ATTENDANCE.checkedOutAt
               }
-              className="flex items-center gap-2 rounded-sm bg-[#DC3545] px-6 py-2 text-sm font-medium text-white hover:bg-[#DC3545]/90 disabled:opacity-50"
+              className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-[#DC3545] px-4 py-2 text-xs font-medium text-white hover:bg-[#DC3545]/90 disabled:opacity-50 sm:flex-none sm:px-6 sm:text-sm"
             >
               <Image
                 src="/icons/checkout-icons.png"
@@ -117,15 +110,17 @@ export function AttendanceContent() {
       />
 
       {/* summary */}
-      <div className="flex justify-between items-center text-sm text-gray-600 ">
-        <div>
-          Total :
+      <div className="flex flex-wrap gap-y-1 items-center text-xs text-gray-600 sm:text-sm">
+        <div className="flex flex-wrap gap-x-1 gap-y-1">
+          Total:
           <span className="text-green-600 font-medium ml-1">12 Present</span>,
           <span className="text-orange-600 font-medium ml-1">2 Absent</span>,
           <span className="text-purple-600 font-medium ml-1">1 Exchange</span>,
           <span className="text-red-600 font-medium ml-1">1 Late</span>,
           <span className="text-blue-600 font-medium ml-1">2 Leave</span>
-          <span className="ml-4 text-blue-600 font-medium">Work Days : 18</span>
+          <span className="ml-2 text-blue-600 font-medium sm:ml-4">
+            Work Days: 18
+          </span>
         </div>
       </div>
     </div>
