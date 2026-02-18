@@ -16,7 +16,8 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
       data.id === "learning-training" ||
       data.id === "my-attendance" ||
       data.id === "dcr-submission" ||
-      data.id === "shift-assignment") &&
+      data.id === "shift-assignment" ||
+      data.id === "leave-request") &&
     onClick
   ) {
     return (
