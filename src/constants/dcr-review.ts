@@ -1,4 +1,4 @@
-import type { DcrReviewMember } from "@/types/dcr-review";
+import type { DcrReviewMember, DcrViewDetails } from "@/types/dcr-review";
 
 export const DCR_REVIEW_DESCRIPTION =
   "Lorem ipsum dolor sit amet consectetur. Volutpat a hendrerit sed dui netus aliquam fermentum placerat. Tempus scelerisque donec blandit lectus urna proin cursus.";
@@ -125,3 +125,86 @@ export const DCR_REVIEW_ROLES = [
 ] as const;
 
 export const DCR_REVIEW_TOTAL_RECORDS = 97;
+
+// ---------------------------------------------------------------------------
+// View Details demo data
+// ---------------------------------------------------------------------------
+
+export const DEMO_DCR_VIEW_DETAILS: DcrViewDetails = {
+  memberId: "1",
+  memberName: "Robbi Darwis",
+  employeeId: "Op 1033",
+  tasks: [
+    {
+      id: "1",
+      task: "Lorem ipsum dolor sit amet consectetur. Facilisis egestas enim mattis est.",
+      orderId: "FO62F64434748",
+      client: "Ann Culhane",
+      profile: "Code_bd",
+      value: "$270.00",
+    },
+    {
+      id: "2",
+      task: "Lorem ipsum dolor sit amet consectetur. Facilisis egestas enim mattis est.",
+      orderId: "FO62F64434748",
+      client: "Ann Culhane",
+      profile: "Code_bd",
+      value: "$270.00",
+    },
+    {
+      id: "3",
+      task: "Lorem ipsum dolor sit amet consectetur. Facilisis egestas enim mattis est.",
+      orderId: "FO62F64434748",
+      client: "Ann Culhane",
+      profile: "Code_bd",
+      value: "$270.00",
+    },
+    {
+      id: "4",
+      task: "Lorem ipsum dolor sit amet consectetur. Facilisis egestas enim mattis est.",
+      orderId: "FO62F64434748",
+      client: "Ann Culhane",
+      profile: "Code_bd",
+      value: "$270.00",
+    },
+    {
+      id: "5",
+      task: "Lorem ipsum dolor sit amet consectetur. Facilisis egestas enim mattis est.",
+      orderId: "FO62F64434748",
+      client: "Ann Culhane",
+      profile: "Code_bd",
+      value: "$270.00",
+    },
+    {
+      id: "6",
+      task: "Lorem ipsum dolor sit amet consectetur. Facilisis egestas enim mattis est.",
+      orderId: "FO62F64434748",
+      client: "Ann Culhane",
+      profile: "Code_bd",
+      value: "$270.00",
+    },
+  ],
+  attachments: [
+    {
+      id: "1",
+      fileName: "DCR Report.pdf",
+      fileSize: "1.2 MB",
+      fileUrl: "#",
+    },
+  ],
+  feedback: {
+    id: "1",
+    content:
+      "Lorem ipsum dolor sit amet consectetur. Fames sagittis metus iaculis adipiscing egestas arcu amet mi mauris. Vitae aliquet scelerisque sit vestibulum in a sed. Eu interdum quis imperdiet amet nulla lobortis interdum. Magna pellentesque vulputate ac est lorem leo. Erat ultricies consectetur tortor elit. Nunc placerat neque amet fermentum porta commodo. Mi vitae congue dui nisi sem. Bibendum sit arcu curabitur urna. Velit congue sed ultricies nunc.",
+    timeAgo: "5 minutes ago",
+  },
+};
+
+export const DCR_VIEW_DETAILS_TABLE_COLUMNS = [
+  "#",
+  "TASK",
+  "ORDER ID",
+  "CLIENT",
+  "PROFILE",
+  "VALUE",
+] as const;

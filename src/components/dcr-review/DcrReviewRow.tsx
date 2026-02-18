@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import type { DcrReviewMember } from "@/types/dcr-review";
@@ -12,6 +13,8 @@ interface DcrReviewRowProps {
 }
 
 export function DcrReviewRow({ member, rowNumber, checked, onCheckChange }: DcrReviewRowProps) {
+  const router = useRouter();
+
   // Generate initials from name
   const getInitials = (name: string) => {
     return name
@@ -94,6 +97,7 @@ export function DcrReviewRow({ member, rowNumber, checked, onCheckChange }: DcrR
           variant="default"
           size="sm"
           className="rounded-sm bg-[#044192] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#044192]/90 sm:px-4"
+          onClick={() => router.push(`/dcr-review/${member.id}`)}
         >
           View Details
         </Button>
