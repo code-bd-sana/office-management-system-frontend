@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { DashboardCardData } from "@/types";
 
@@ -33,13 +32,7 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
         >
           {/* Icon */}
           <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white">
-            <Image
-              src={data.iconPath}
-              alt={data.title}
-              width={24}
-              height={24}
-              className="h-6 w-6 object-contain"
-            />
+            <data.icon className="h-6 w-6" />
           </div>
 
           {/* Title */}
@@ -73,13 +66,7 @@ export function DashboardCard({ data, onClick }: DashboardCardProps) {
       >
         {/* Icon */}
         <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white">
-          <Image
-            src={data.iconPath}
-            alt={data.title}
-            width={24}
-            height={24}
-            className="h-6 w-6 object-contain"
-          />
+          <data.icon className="h-6 w-6" />
         </div>
 
         {/* Title */}

@@ -1,12 +1,18 @@
 import type { DashboardCardData, UserProfile } from "@/types";
-
+import TasksDashboardIcon from "@/components/icons/dashboard-home/TasksDashboardIcon";
+import ProjectIcon from "@/components/icons/dashboard-home/ProjectIcon";
+import TeamIcon from "@/components/icons/dashboard-home/TeamIcon";
+import DcrIcon from "@/components/icons/dashboard-home/DcrIcon";
+import ShiftIcon from "@/components/icons/dashboard-home/ShiftIcon";
+import LearningDashboardIcon from "@/components/icons/dashboard-home/LearningDashboardIcon";
+import AttendanceDashboardIcon from "@/components/icons/dashboard-home/AttendanceDashboardIcon";
 export const DASHBOARD_CARDS: DashboardCardData[] = [
   {
     id: "tasks",
     title: "Tasks",
     count: 5,
     subtitle: "Active Projects",
-    iconPath: "/icons/task-icons.png",
+    icon: TasksDashboardIcon,
     cardColor: "bg-[#E7E3FA]",
     href: "/task",
   },
@@ -15,7 +21,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Projects",
     count: 12,
     subtitle: "Active Projects",
-    iconPath: "/icons/project-icons.png",
+    icon: ProjectIcon,
     cardColor: "bg-[#E6F1FD]",
     href: "/projects",
   },
@@ -24,7 +30,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Team Members",
     count: 3,
     subtitle: "Total Members",
-    iconPath: "/icons/team-icons.png",
+    icon: TeamIcon,
     cardColor: "bg-[#E0ECED]",
     href: "/team-members",
   },
@@ -33,7 +39,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "DCR Submission",
     count: 6,
     subtitle: "Submission Report",
-    iconPath: "/icons/dcr-icons.png",
+    icon: DcrIcon,
     cardColor: "bg-[#FBE4D0]",
     href: "/dcr-submission",
   },
@@ -42,7 +48,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Shift Assignment",
     count: 6,
     subtitle: "Total Members",
-    iconPath: "/icons/shift-assignment-icons.png",
+    icon: ShiftIcon,
     cardColor: "bg-[#E0ECED]",
     href: "/shift-assignment",
   },
@@ -51,7 +57,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "Learning & Training",
     count: 5,
     subtitle: "Active Projects",
-    iconPath: "/icons/learning-icons.png",
+    icon: LearningDashboardIcon,
     cardColor: "bg-[#E6F1FD]",
     href: "/learning-training",
   },
@@ -60,7 +66,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     title: "My Attendance",
     count: 12,
     subtitle: "Active Projects",
-    iconPath: "/icons/attandance-icons.png",
+    icon: AttendanceDashboardIcon,
     cardColor: "bg-[#E0ECED]",
     href: "/attendance",
   },

@@ -13,7 +13,7 @@ export interface DashboardCardData {
   title: string;
   count: number;
   subtitle: string;
-  iconPath: string;
+  icon: React.ComponentType<{ className?: string }>;
   cardColor: string;
   href: string;
 }
