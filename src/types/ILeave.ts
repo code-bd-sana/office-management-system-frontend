@@ -1,4 +1,5 @@
-/** A single leave record */
+export type ILeaveStatus = "Approved" | "Rejected" | "Pending";
+
 export interface ILeave {
   id: string;
   rowNumber: number;
@@ -6,6 +7,7 @@ export interface ILeave {
   from: string;
   to: string;
   duration: string;
-  fileUrl: string; //remove next time
-  status: string;
+  status: ILeaveStatus;
 }
+
+

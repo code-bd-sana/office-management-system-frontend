@@ -11,7 +11,12 @@ import {
 } from "@/components/ui/table";
 import { LeaveTableRow } from "./LeaveTableRow";
 import { LeavePagination } from "./LeavePagination";
-import { DEMO_LEAVE_RECORDS, LEAVE_ROWS_PER_PAGE_OPTIONS, LEAVE_TABLE_COLUMNS, LEAVE_TOTAL_RECORDS } from "@/constants/leave";
+import {
+  DEMO_LEAVE_RECORDS,
+  LEAVE_ROWS_PER_PAGE_OPTIONS,
+  LEAVE_TABLE_COLUMNS,
+  LEAVE_TOTAL_RECORDS,
+} from "@/constants/leave";
 
 export function LeaveTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,7 +61,6 @@ export function LeaveTable() {
         </TableBody>
       </Table>
 
-      {/* Pagination */}
       <LeavePagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -66,6 +70,8 @@ export function LeaveTable() {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
+
+
     </div>
   );
 }
