@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { ProjectsListModal } from "./ProjectsListModal";
 import type { TeamMember } from "@/types/team";
 
 interface TeamMembersRowProps {
@@ -10,6 +12,8 @@ interface TeamMembersRowProps {
 }
 
 export function TeamMembersRow({ member, rowNumber }: TeamMembersRowProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Generate initials from name
   const getInitials = (name: string) => {
     return name
@@ -21,6 +25,7 @@ export function TeamMembersRow({ member, rowNumber }: TeamMembersRowProps) {
   };
 
   return (
+    <>
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
       <TableCell className="whitespace-nowrap py-3 pl-3 text-sm font-medium text-foreground/70 sm:py-3.5 sm:pl-5">
         {rowNumber}
@@ -50,11 +55,20 @@ export function TeamMembersRow({ member, rowNumber }: TeamMembersRowProps) {
         <Button
           variant="default"
           size="sm"
+          onClick={() => setIsModalOpen(true)}
           className="rounded-sm bg-[#044192] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#044192]/90 sm:px-4"
         >
           View Details
         </Button>
       </TableCell>
     </TableRow>
+
+    {/* Projects List Modal */}
+    <ProjectsListModal
+      open={isModalOpen}
+      onOpenChange={setIsModalOpen}
+      memberName={member.name}
+    />
+    </>
   );
 }
