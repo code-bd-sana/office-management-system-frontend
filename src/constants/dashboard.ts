@@ -4,6 +4,7 @@ import ProjectIcon from "@/components/icons/dashboard-home/ProjectIcon";
 import TeamIcon from "@/components/icons/dashboard-home/TeamIcon";
 import DcrIcon from "@/components/icons/dashboard-home/DcrIcon";
 import ShiftIcon from "@/components/icons/dashboard-home/ShiftIcon";
+import LeaveRequestIcon from "@/components/icons/dashboard-home/LeaveRequestIcon";
 import LearningDashboardIcon from "@/components/icons/dashboard-home/LearningDashboardIcon";
 import AttendanceDashboardIcon from "@/components/icons/dashboard-home/AttendanceDashboardIcon";
 export const DASHBOARD_CARDS: DashboardCardData[] = [
@@ -51,6 +52,15 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     icon: ShiftIcon,
     cardColor: "bg-[#E0ECED]",
     href: "/shift-assignment",
+  },
+  {
+    id: "leave-request",
+    title: "Leave Request",
+    count: 2,
+    subtitle: "Pending Requests",
+    icon: LeaveRequestIcon,
+    cardColor: "bg-[#FBE4D0]",
+    href: "/leave/pending-requests",
   },
   {
     id: "learning-training",

@@ -8,6 +8,7 @@ import { LearningModal } from "@/components/learning/LearningModal";
 import { AttendanceModal } from "@/components/attendance/AttendanceModal";
 import { DCRSubmissionModal } from "@/components/dcr/DCRSubmissionModal";
 import { ShiftAssignmentModal } from "@/components/shift-assignment/ShiftAssignmentModal";
+import { LeaveRequestModal } from "@/components/leave/LeaveRequestModal";
 import { TeamMembersModal } from "@/components/team/TeamMembersModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
 
@@ -18,6 +19,7 @@ export function DashboardGrid() {
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
   const [isDCRModalOpen, setIsDCRModalOpen] = useState(false);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
+  const [isLeaveRequestModalOpen, setIsLeaveRequestModalOpen] = useState(false);
   const [isTeamMembersModalOpen, setIsTeamMembersModalOpen] = useState(false);
 
   const handleCardClick = (cardId: string) => {
@@ -33,6 +35,8 @@ export function DashboardGrid() {
       setIsDCRModalOpen(true);
     } else if (cardId === "shift-assignment") {
       setIsShiftModalOpen(true);
+    } else if (cardId === "leave-request") {
+      setIsLeaveRequestModalOpen(true);
     } else if (cardId === "team-members") {
       setIsTeamMembersModalOpen(true);
     }
@@ -81,6 +85,12 @@ export function DashboardGrid() {
       <ShiftAssignmentModal
         open={isShiftModalOpen}
         onClose={() => setIsShiftModalOpen(false)}
+      />
+
+      {/* Leave Request Modal */}
+      <LeaveRequestModal
+        open={isLeaveRequestModalOpen}
+        onOpenChange={setIsLeaveRequestModalOpen}
       />
 
       {/* Team Members Modal */}
