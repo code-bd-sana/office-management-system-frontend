@@ -58,7 +58,7 @@ export function AttendanceModalRow({ record }: AttendanceModalRowProps) {
       </TableCell>
       <TableCell className="whitespace-nowrap py-3.5">
         <span
-          className={`inline-block rounded-sm px-2.5 py-1 text-xs font-semibold ${statusStyle.bg} ${statusStyle.text}`}
+          className={`inline-block rounded-sm px-2.5 py-1 text-xs font-semibold w-25 text-center ${statusStyle.bg} ${statusStyle.text}`}
         >
           {statusStyle.label}
         </span>
