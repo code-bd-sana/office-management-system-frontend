@@ -2,16 +2,15 @@ import { LeaveRequestSingle } from "./RequestSingle";
 
 export function LeaveRequests() {
   return (
-    <div className="space-y-6 ml-4 ">
-      <div className="flex items-center justify-end mb-6">
-        <button className="px-4 py-2 text-sm font-medium border border-gray-300 rounded-sm bg-white hover:bg-gray-100">
+    <div className="space-y-6">
+      <div className="flex items-center justify-end mb-4 sm:mb-6">
+        <button className="w-full rounded-sm border border-gray-300 bg-white px-4 py-2 text-xs font-medium hover:bg-gray-100 sm:w-auto sm:text-sm">
           Mark All as Read
         </button>
       </div>
 
       <LeaveRequestSingle />
       <LeaveRequestSingle />
-
     </div>
   );
 }
