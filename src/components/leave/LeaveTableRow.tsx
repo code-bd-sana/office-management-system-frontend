@@ -31,19 +31,19 @@ export function LeaveTableRow({ record }: LeaveTableRowProps) {
   const statusStyle = STATUS_STYLES[record.status];
   return (
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
-      <TableCell className="py-3.5 pl-5 text-sm font-medium text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 pl-5 text-sm font-medium text-foreground/70">
         {record.rowNumber}
       </TableCell>
-      <TableCell className="py-3.5 text-sm font-semibold ">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm font-semibold ">
         {record.leaveType}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {record.from}
       </TableCell>
-      <TableCell className="py-3.5 text-sm text-foreground/70">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm text-foreground/70">
         {record.to}
       </TableCell>
-      <TableCell className="py-3.5 text-sm">
+      <TableCell className="whitespace-nowrap py-3.5 text-sm">
         {record.duration}
       </TableCell>
       <TableCell className="whitespace-nowrap py-3.5">
