@@ -1,7 +1,10 @@
-import Image from "next/image";
+import { MainLayout } from "@/components/layout";
+import { DashboardGrid } from "@/components/dashboard";
 
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <div className="text-5xl">Hello</div>
+    <MainLayout pageTitle="Overview">
+      <DashboardGrid />
+    </MainLayout>
   );
 }
