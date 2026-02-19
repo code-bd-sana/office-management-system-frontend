@@ -10,6 +10,7 @@ import NotificationIcon from "@/components/icons/NotificationIcon";
 import FeedbackIcon from "@/components/icons/FeedbackIcon";
 
 import type { NavItem } from "@/types";
+import ProjectIcon from "@/components/icons/ProjectIcon";
 
 export const SIDEBAR_NAV_ITEMS: NavItem[] = [
   {
@@ -21,6 +22,11 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     label: "Task",
     href: "/task",
     icon: TasksIcon,
+  },
+  {
+    label: "Projects",
+    href: "/projects",
+    icon: ProjectIcon,
   },
   {
     label: "Team Members",

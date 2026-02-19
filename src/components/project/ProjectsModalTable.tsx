@@ -1,9 +1,11 @@
+"use client";
+
 import { ModalTable, type ColumnDef } from "@/components/shared";
 import { ProjectsModalRow } from "./ProjectsModalRow";
 import { DEMO_PROJECTS, PROJECT_FILTER_TABS } from "@/constants/project";
 import type { Project, ProjectStatus } from "@/types/project";
 
-const TOTAL_RECORDS = 97; // From the screenshot "1-10 of 97"
+const TOTAL_RECORDS = 97;
 
 const COLUMNS: ColumnDef[] = [
   { key: "number", label: "#" },

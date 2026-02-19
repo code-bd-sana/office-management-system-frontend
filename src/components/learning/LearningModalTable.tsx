@@ -3,7 +3,7 @@ import { LearningModalRow } from "./LearningModalRow";
 import { DEMO_LEARNING_RECORDS } from "@/constants/learning";
 import type { LearningRecord } from "@/types/learning";
 
-const TOTAL_RECORDS = 97; // From the screenshot "1-10 of 97"
+const TOTAL_RECORDS = 97;
 
 const COLUMNS: ColumnDef[] = [
   { key: "number", label: "#" },

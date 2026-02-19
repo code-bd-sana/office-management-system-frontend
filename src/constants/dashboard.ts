@@ -67,7 +67,7 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     count: 12,
     subtitle: "Active Projects",
     icon: AttendanceDashboardIcon,
-    cardColor: "bg-[#E0ECED]",
+    cardColor: "bg-[#E7E3FA]",
     href: "/attendance",
   },
 ];

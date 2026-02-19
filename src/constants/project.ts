@@ -4,6 +4,9 @@ import type { Project, ProjectFilterTab } from "@/types/project";
 // Filter tabs
 // ---------------------------------------------------------------------------
 
+export const PROJECT_DESCRIPTION =
+  "Track your team’s projects, monitor progress, and view individual task assignments";
+
 export const PROJECT_FILTER_TABS: ProjectFilterTab[] = [
   { label: "All", value: "all", count: 8 },
   { label: "Running", value: "running", count: 4 },
