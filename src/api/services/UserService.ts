@@ -21,6 +21,7 @@ export class UserService {
     public static userControllerGetUsers({
         pageNo,
         pageSize,
+        authorization,
         searchKey,
         role,
         department,
@@ -35,6 +36,10 @@ export class UserService {
          * Items per page
          */
         pageSize: number,
+        /**
+         * Bearer token
+         */
+        authorization: string,
         /**
          * Optional free-text search term; can be null or empty
          */
@@ -59,6 +64,9 @@ export class UserService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/user',
+            headers: {
+                'Authorization': authorization,
+            },
             query: {
                 'pageNo': pageNo,
                 'pageSize': pageSize,
@@ -77,8 +85,13 @@ export class UserService {
      * @throws ApiError
      */
     public static userControllerGetUser({
+        authorization,
         id,
     }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
         /**
          * The ID of the department to retrieve
          */
@@ -90,6 +103,9 @@ export class UserService {
             path: {
                 'id': id,
             },
+            headers: {
+                'Authorization': authorization,
+            },
         });
     }
     /**
@@ -98,10 +114,20 @@ export class UserService {
      * @returns any
      * @throws ApiError
      */
-    public static userControllerGetProfile(): CancelablePromise<UserProfileSuccessDto> {
+    public static userControllerGetProfile({
+        authorization,
+    }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
+    }): CancelablePromise<UserProfileSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/user/profile/me',
+            headers: {
+                'Authorization': authorization,
+            },
         });
     }
     /**
@@ -111,13 +137,21 @@ export class UserService {
      * @throws ApiError
      */
     public static userControllerUpdateProfile({
+        authorization,
         requestBody,
     }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
         requestBody: UpdateUserProfileDto,
     }): CancelablePromise<UserProfileUpdateSuccessDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/user/profile/me',
+            headers: {
+                'Authorization': authorization,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

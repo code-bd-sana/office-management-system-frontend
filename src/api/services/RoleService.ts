@@ -20,13 +20,21 @@ export class RoleService {
      * @throws ApiError
      */
     public static roleControllerCreate({
+        authorization,
         requestBody,
     }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
         requestBody: CreateRoleDto,
     }): CancelablePromise<RoleCreateSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/role',
+            headers: {
+                'Authorization': authorization,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -95,12 +103,17 @@ export class RoleService {
      */
     public static roleControllerUpdate({
         id,
+        authorization,
         requestBody,
     }: {
         /**
          * The ID of the department to retrieve
          */
         id: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
         requestBody: UpdateRoleDto,
     }): CancelablePromise<RolePatchSuccessDto> {
         return __request(OpenAPI, {
@@ -108,6 +121,9 @@ export class RoleService {
             url: '/api/role/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -121,17 +137,25 @@ export class RoleService {
      */
     public static roleControllerRemove({
         id,
+        authorization,
     }: {
         /**
          * The ID of the department to retrieve
          */
         id: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
     }): CancelablePromise<RoleDeleteSuccessDto> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/role/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Authorization': authorization,
             },
         });
     }

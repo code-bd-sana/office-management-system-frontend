@@ -20,13 +20,21 @@ export class DepartmentService {
      * @throws ApiError
      */
     public static departmentControllerCreate({
+        authorization,
         requestBody,
     }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
         requestBody: CreateDepartmentDto,
     }): CancelablePromise<DepartmentCreateSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/department',
+            headers: {
+                'Authorization': authorization,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -95,12 +103,17 @@ export class DepartmentService {
      */
     public static departmentControllerUpdate({
         id,
+        authorization,
         requestBody,
     }: {
         /**
          * The ID of the department to retrieve
          */
         id: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
         requestBody: UpdateDepartmentDto,
     }): CancelablePromise<DepartmentPatchSuccessDto> {
         return __request(OpenAPI, {
@@ -108,6 +121,9 @@ export class DepartmentService {
             url: '/api/department/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -121,17 +137,25 @@ export class DepartmentService {
      */
     public static departmentControllerRemove({
         id,
+        authorization,
     }: {
         /**
          * The ID of the department to retrieve
          */
         id: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
     }): CancelablePromise<DepartmentDeleteSuccessDto> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/department/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Authorization': authorization,
             },
         });
     }

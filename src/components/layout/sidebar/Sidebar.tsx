@@ -1,11 +1,14 @@
 "use client";
 
 import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { SIDEBAR_NAV_ITEMS } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthenticationService } from "@/api";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -13,6 +16,23 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { logout, token } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      if (token) {
+        await AuthenticationService.authControllerLogout({
+          authorization: `Bearer ${token}`,
+        });
+      }
+    } catch {
+      // Even if the API call fails, still clear local state
+    }
+    logout();
+    router.replace("/login");
+  };
+
   return (
     <>
       {/* Mobile backdrop overlay */}
@@ -49,9 +69,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <button
           type="button"
           className="flex items-center gap-3 px-6 py-4 text-sm font-medium text-white/80 transition-colors hover:text-white"
-          onClick={() => {
-            window.location.href = "/login";
-          }}
+          onClick={handleLogout}
         >
           <LogOut className="h-5 w-5" />
           Log Out

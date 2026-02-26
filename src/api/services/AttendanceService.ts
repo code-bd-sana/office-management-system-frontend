@@ -22,10 +22,20 @@ export class AttendanceService {
      * @returns any
      * @throws ApiError
      */
-    public static attendanceControllerPresentAttendance(): CancelablePromise<MarkAttendanceSuccessDto> {
+    public static attendanceControllerPresentAttendance({
+        authorization,
+    }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
+    }): CancelablePromise<MarkAttendanceSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/attendance/present',
+            headers: {
+                'Authorization': authorization,
+            },
         });
     }
     /**
@@ -37,6 +47,7 @@ export class AttendanceService {
     public static attendanceControllerGetMyAttendance({
         month,
         year,
+        authorization,
     }: {
         /**
          * The month for which to retrieve attendance records (1-12)
@@ -46,10 +57,17 @@ export class AttendanceService {
          * The year for which to retrieve attendance records
          */
         year: number,
+        /**
+         * Bearer token
+         */
+        authorization: string,
     }): CancelablePromise<MyAttendanceSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/attendance/my-attendance',
+            headers: {
+                'Authorization': authorization,
+            },
             query: {
                 'month': month,
                 'year': year,
@@ -62,10 +80,20 @@ export class AttendanceService {
      * @returns any
      * @throws ApiError
      */
-    public static attendanceControllerOutAttendance(): CancelablePromise<MarkOutAttendanceSuccessDto> {
+    public static attendanceControllerOutAttendance({
+        authorization,
+    }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
+    }): CancelablePromise<MarkOutAttendanceSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/attendance/out',
+            headers: {
+                'Authorization': authorization,
+            },
         });
     }
     /**
@@ -78,6 +106,7 @@ export class AttendanceService {
         month,
         year,
         userId,
+        authorization,
     }: {
         /**
          * The month for which to retrieve attendance records (1-12)
@@ -91,12 +120,19 @@ export class AttendanceService {
          * The ID of the user whose attendance records are being retrieved
          */
         userId: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
     }): CancelablePromise<SingleUserAttendanceSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/attendance/user-attendance/{userId}',
             path: {
                 'userId': userId,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             query: {
                 'month': month,
@@ -112,12 +148,17 @@ export class AttendanceService {
      */
     public static attendanceControllerUpdateWeekendOff({
         userId,
+        authorization,
         requestBody,
     }: {
         /**
          * The ID of the user with whom the authenticated user wants to update their weekend off
          */
         userId: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
         /**
          * The weekend off values to be set for the user
          */
@@ -128,6 +169,9 @@ export class AttendanceService {
             url: '/api/attendance/update-weekend-by-authority/{userId}',
             path: {
                 'userId': userId,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -141,12 +185,17 @@ export class AttendanceService {
      */
     public static attendanceControllerMarkAttendanceByAuthority({
         userId,
+        authorization,
         requestBody,
     }: {
         /**
          * The ID of the user for whom the attendance is being marked by the authority
          */
         userId: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
         /**
          * The details of the attendance to be marked
          */
@@ -157,6 +206,9 @@ export class AttendanceService {
             url: '/api/attendance/mark-attendance-by-authority/{userId}',
             path: {
                 'userId': userId,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -170,12 +222,17 @@ export class AttendanceService {
      */
     public static attendanceControllerWeekendExchangeByAuthority({
         userId,
+        authorization,
         requestBody,
     }: {
         /**
          * The ID of the user for whom the weekend exchange is being marked by the authority
          */
         userId: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
         /**
          * The details of the weekend exchange to be marked
          */
@@ -186,6 +243,9 @@ export class AttendanceService {
             url: '/api/attendance/weekend-exchange-by-authority/{userId}',
             path: {
                 'userId': userId,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',

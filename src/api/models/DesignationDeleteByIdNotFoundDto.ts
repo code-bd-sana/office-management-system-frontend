@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type DesignationsForbiddenDto = {
+export type DesignationDeleteByIdNotFoundDto = {
     success: boolean;
     message: string;
     method: Record<string, any>;

@@ -2,13 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type DepartmentGetByIdForbiddenDto = {
+import type { FieldErrorDto } from './FieldErrorDto';
+export type DesignationDeleteValidationDto = {
     success: boolean;
     message: string;
     method: Record<string, any>;
     endpoint: string;
     statusCode: number;
     timestamp: string;
-    error: string;
+    errors: Array<FieldErrorDto>;
 };
 

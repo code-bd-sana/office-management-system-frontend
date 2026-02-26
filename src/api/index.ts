@@ -2,11 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import './config';
+
 export { ApiError } from './core/ApiError';
 export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
-import './config';
 
 export { AttendanceByAuthorityDto } from './models/AttendanceByAuthorityDto';
 export type { ChangePasswordDto } from './models/ChangePasswordDto';
@@ -18,6 +19,7 @@ export type { ChangePasswordValidationDto } from './models/ChangePasswordValidat
 export type { CreateDepartmentDto } from './models/CreateDepartmentDto';
 export type { CreateDesignationDto } from './models/CreateDesignationDto';
 export type { CreateRoleDto } from './models/CreateRoleDto';
+export { CreateSellsShiftManagementDto } from './models/CreateSellsShiftManagementDto';
 export type { CreateUserDto } from './models/CreateUserDto';
 export type { DepartmentByIdSuccessDto } from './models/DepartmentByIdSuccessDto';
 export type { DepartmentCreateConflictDto } from './models/DepartmentCreateConflictDto';
@@ -31,15 +33,11 @@ export type { DepartmentDeleteInternalErrorDto } from './models/DepartmentDelete
 export type { DepartmentDeleteSuccessDto } from './models/DepartmentDeleteSuccessDto';
 export type { DepartmentDeleteUnauthorizedDto } from './models/DepartmentDeleteUnauthorizedDto';
 export type { DepartmentDeleteValidationDto } from './models/DepartmentDeleteValidationDto';
-export type { DepartmentGetByIdForbiddenDto } from './models/DepartmentGetByIdForbiddenDto';
-export type { DepartmentGetByIdUnauthorizedDto } from './models/DepartmentGetByIdUnauthorizedDto';
 export type { DepartmentGetByIdValidationDto } from './models/DepartmentGetByIdValidationDto';
 export type { DepartmentInternalErrorDto } from './models/DepartmentInternalErrorDto';
 export type { DepartmentNotFoundDto } from './models/DepartmentNotFoundDto';
 export type { DepartmentPatchSuccessDto } from './models/DepartmentPatchSuccessDto';
-export type { DepartmentsForbiddenDto } from './models/DepartmentsForbiddenDto';
 export type { DepartmentsListSuccessDto } from './models/DepartmentsListSuccessDto';
-export type { DepartmentsUnauthorizedDto } from './models/DepartmentsUnauthorizedDto';
 export type { DepartmentsValidationDto } from './models/DepartmentsValidationDto';
 export type { DepartmentUpdateByIdNotFoundDto } from './models/DepartmentUpdateByIdNotFoundDto';
 export type { DepartmentUpdateConflictDto } from './models/DepartmentUpdateConflictDto';
@@ -52,16 +50,16 @@ export type { DesignationCreateForbiddenDto } from './models/DesignationCreateFo
 export type { DesignationCreateInternalErrorDto } from './models/DesignationCreateInternalErrorDto';
 export type { DesignationCreateUnauthorizedDto } from './models/DesignationCreateUnauthorizedDto';
 export type { DesignationCreateValidationDto } from './models/DesignationCreateValidationDto';
-export type { DesignationGetByIdForbiddenDto } from './models/DesignationGetByIdForbiddenDto';
-export type { DesignationGetByIdUnauthorizedDto } from './models/DesignationGetByIdUnauthorizedDto';
+export type { DesignationDeleteByIdNotFoundDto } from './models/DesignationDeleteByIdNotFoundDto';
+export type { DesignationDeleteInternalErrorDto } from './models/DesignationDeleteInternalErrorDto';
+export type { DesignationDeleteUnauthorizedDto } from './models/DesignationDeleteUnauthorizedDto';
+export type { DesignationDeleteValidationDto } from './models/DesignationDeleteValidationDto';
 export type { DesignationGetByIdValidationDto } from './models/DesignationGetByIdValidationDto';
 export type { DesignationInternalErrorDto } from './models/DesignationInternalErrorDto';
 export type { DesignationListSuccessDto } from './models/DesignationListSuccessDto';
 export type { DesignationNotFoundDto } from './models/DesignationNotFoundDto';
-export type { DesignationsForbiddenDto } from './models/DesignationsForbiddenDto';
 export type { DesignationsInternalErrorDto } from './models/DesignationsInternalErrorDto';
 export type { DesignationSuccessDto } from './models/DesignationSuccessDto';
-export type { DesignationsUnauthorizedDto } from './models/DesignationsUnauthorizedDto';
 export type { DesignationsValidationDto } from './models/DesignationsValidationDto';
 export type { DesignationUpdateByIdNotFoundDto } from './models/DesignationUpdateByIdNotFoundDto';
 export type { DesignationUpdateConflictDto } from './models/DesignationUpdateConflictDto';
@@ -106,6 +104,7 @@ export type { MarkWeekendExchangeAsAuthorityNotFoundDto } from './models/MarkWee
 export type { MarkWeekendExchangeAsAuthorityUnauthorizedDto } from './models/MarkWeekendExchangeAsAuthorityUnauthorizedDto';
 export type { MarkWeekendExchangeAsAuthorityValidationDto } from './models/MarkWeekendExchangeAsAuthorityValidationDto';
 export type { MarkWeekendExchangeByAuthoritySuccessDto } from './models/MarkWeekendExchangeByAuthoritySuccessDto';
+export type { MongoIdDto } from './models/MongoIdDto';
 export type { MyAttendanceForbiddenDto } from './models/MyAttendanceForbiddenDto';
 export type { MyAttendanceInternalErrorDto } from './models/MyAttendanceInternalErrorDto';
 export type { MyAttendanceSuccessDto } from './models/MyAttendanceSuccessDto';
@@ -135,16 +134,12 @@ export type { RoleDeleteInternalErrorDto } from './models/RoleDeleteInternalErro
 export type { RoleDeleteSuccessDto } from './models/RoleDeleteSuccessDto';
 export type { RoleDeleteUnauthorizedDto } from './models/RoleDeleteUnauthorizedDto';
 export type { RoleDeleteValidationDto } from './models/RoleDeleteValidationDto';
-export type { RoleGetByIdForbiddenDto } from './models/RoleGetByIdForbiddenDto';
-export type { RoleGetByIdUnauthorizedDto } from './models/RoleGetByIdUnauthorizedDto';
 export type { RoleGetByIdValidationDto } from './models/RoleGetByIdValidationDto';
 export type { RoleInternalErrorDto } from './models/RoleInternalErrorDto';
 export type { RoleNotFoundDto } from './models/RoleNotFoundDto';
 export type { RolePatchSuccessDto } from './models/RolePatchSuccessDto';
-export type { RolesForbiddenDto } from './models/RolesForbiddenDto';
 export type { RolesInternalErrorDto } from './models/RolesInternalErrorDto';
 export type { RolesListSuccessDto } from './models/RolesListSuccessDto';
-export type { RolesUnauthorizedDto } from './models/RolesUnauthorizedDto';
 export type { RolesValidationDto } from './models/RolesValidationDto';
 export type { RoleUpdateByIdNotFoundDto } from './models/RoleUpdateByIdNotFoundDto';
 export type { RoleUpdateConflictDto } from './models/RoleUpdateConflictDto';
@@ -173,6 +168,7 @@ export type { UpdateUserProfileDto } from './models/UpdateUserProfileDto';
 export type { UpdateUserProfileInternalErrorDto } from './models/UpdateUserProfileInternalErrorDto';
 export type { UpdateUserProfileUnauthorizedDto } from './models/UpdateUserProfileUnauthorizedDto';
 export type { UserForbiddenDto } from './models/UserForbiddenDto';
+export type { UserIdDto } from './models/UserIdDto';
 export type { UserInternalErrorDto } from './models/UserInternalErrorDto';
 export type { UserNotFoundDto } from './models/UserNotFoundDto';
 export type { UserProfileInternalErrorDto } from './models/UserProfileInternalErrorDto';
@@ -196,4 +192,5 @@ export { AuthenticationService } from './services/AuthenticationService';
 export { DepartmentService } from './services/DepartmentService';
 export { DesignationService } from './services/DesignationService';
 export { RoleService } from './services/RoleService';
+export { SellsShiftManagementService } from './services/SellsShiftManagementService';
 export { UserService } from './services/UserService';

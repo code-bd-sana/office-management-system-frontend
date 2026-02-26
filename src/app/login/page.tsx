@@ -9,9 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AuthenticationService, ApiError } from "@/api";
+import { useAuth } from "@/hooks/useAuth";
+import type { AuthUser } from "@/components/shared/AuthProvider";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -47,20 +50,16 @@ export default function LoginPage() {
       });
 
       // ── Success: extract token + user from response ───────────────────
-      const data = (result as { data?: { accessToken?: string; user?: Record<string, unknown> } }).data;
+      const data = (result as { data?: { accessToken?: string; user?: AuthUser } }).data;
       const token = data?.accessToken;
       const user = data?.user;
 
-      if (token) {
-        // Persist token (localStorage so it survives refresh)
-        localStorage.setItem("accessToken", token);
-      }
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
+      if (token && user) {
+        login(token, user);
       }
 
       // Redirect to dashboard
-      router.push("/");
+      router.replace("/");
     } catch (err) {
       if (err instanceof ApiError) {
         const body = err.body as {

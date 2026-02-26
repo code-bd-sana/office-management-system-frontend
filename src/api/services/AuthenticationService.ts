@@ -96,13 +96,21 @@ export class AuthenticationService {
      * @throws ApiError
      */
     public static authControllerChange({
+        authorization,
         requestBody,
     }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
         requestBody: ChangePasswordDto,
     }): CancelablePromise<ChangePasswordSuccessDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/auth/change-password',
+            headers: {
+                'Authorization': authorization,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -113,10 +121,20 @@ export class AuthenticationService {
      * @returns any
      * @throws ApiError
      */
-    public static authControllerLogout(): CancelablePromise<LogoutSuccessDto> {
+    public static authControllerLogout({
+        authorization,
+    }: {
+        /**
+         * Bearer token
+         */
+        authorization: string,
+    }): CancelablePromise<LogoutSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/logout',
+            headers: {
+                'Authorization': authorization,
+            },
         });
     }
 }
