@@ -34,6 +34,16 @@ const STATUS_STYLES: Record<
     text: "text-purple-700",
     label: "Exchange",
   },
+  weekend: {
+    bg: "bg-yellow-100",
+    text: "text-yellow-700",
+    label: "Weekend",
+  },
+  wfh: {
+    bg: "bg-teal-100",
+    text: "text-teal-700",
+    label: "Work From Home",
+  },
   "-": {
     bg: "bg-gray-100",
     text: "text-gray-700",

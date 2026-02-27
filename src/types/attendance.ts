@@ -1,5 +1,5 @@
 /** Possible statuses for attendance */
-export type AttendanceStatus = "present" | "late" | "absent" | "leave" | "exchange" | "-";
+export type AttendanceStatus = "present" | "late" | "absent" | "leave" | "exchange" | "weekend" | "wfh" | "-";
 
 /** A single attendance record (for table display) */
 export interface AttendanceRecord {
@@ -42,5 +42,7 @@ export interface AttendanceSummary {
   absent: number;
   leave: number;
   exchange: number;
+  weekend: number;
+  wfh: number;
   workDays: number;
 }
