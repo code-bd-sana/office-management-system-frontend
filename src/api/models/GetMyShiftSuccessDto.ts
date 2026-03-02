@@ -2,13 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type GetUserSellsShiftInternalErrorDto = {
+export type GetMyShiftSuccessDto = {
     success: boolean;
     message: string;
     method: Record<string, any>;
     endpoint: string;
     statusCode: number;
     timestamp: string;
-    error: string;
+    data?: Record<string, any>;
 };
 

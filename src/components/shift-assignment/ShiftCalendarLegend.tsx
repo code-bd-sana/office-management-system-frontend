@@ -2,7 +2,7 @@ import Image from "next/image";
 import { SHIFT_STYLES } from "@/constants/shift";
 import type { ShiftType } from "@/types/shift";
 
-const LEGEND_ITEMS: ShiftType[] = ["morning", "evening", "night", "off"];
+const LEGEND_ITEMS: ShiftType[] = ["morning", "evening", "night", "weekend"];
 
 export function ShiftCalendarLegend() {
   return (

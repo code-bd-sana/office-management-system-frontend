@@ -3,7 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export type GetUserSellsShiftUnauthorizedDto = {
+    success: boolean;
+    message: string;
     method: Record<string, any>;
     endpoint: string;
+    statusCode: number;
+    timestamp: string;
+    error: string;
 };
 

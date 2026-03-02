@@ -3,8 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import { RequestShiftChangeModal } from "./RequestShiftChangeModal";
 import { AssignShiftModal } from "./AssignShiftModal";
+import { PendingShiftExchangesModal } from "./PendingShiftExchangesModal";
+
+const PENDING_REQUEST_ROLES = ["SUPER ADMIN", "DIRECTOR", "PROJECT MANAGER"];
+const ASSIGN_SHIFT_ROLES = ["SUPER ADMIN", "PROJECT MANAGER"];
+const REQUEST_CHANGE_ROLES = ["PROJECT MANAGER", "TEAM LEADER", "EMPLOYEE"];
 
 interface ShiftLegendProps {
   onShiftChangeSubmit: () => void;
@@ -41,6 +47,12 @@ const SHIFT_TYPES: ShiftType[] = [
 export function ShiftLegend({ onShiftChangeSubmit }: ShiftLegendProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
+  const { role } = useUserInfo();
+
+  const canViewPending = role ? PENDING_REQUEST_ROLES.includes(role) : false;
+  const canAssignShift = role ? ASSIGN_SHIFT_ROLES.includes(role) : false;
+  const canRequestChange = role ? REQUEST_CHANGE_ROLES.includes(role) : false;
 
   return (
     <div className="mb-2 flex flex-col gap-3 rounded-sm bg-[#eef0f3] p-3 sm:flex-row sm:items-center sm:justify-between">
@@ -63,32 +75,56 @@ export function ShiftLegend({ onShiftChangeSubmit }: ShiftLegendProps) {
 
       {/* Action Buttons */}
       <div className="flex flex-row flex-wrap gap-2 sm:items-center">
-        <Button
-          onClick={() => setIsAssignModalOpen(true)}
-          className="rounded-sm bg-[#044192] px-5 py-2 text-sm font-medium text-white hover:bg-[#044192]/90"
-        >
-          Assign Shift
-        </Button>
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="rounded-sm bg-[#14804A] px-5 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90"
-        >
-          Request Shift Change
-        </Button>
+        {canViewPending && (
+          <Button
+            onClick={() => setIsPendingModalOpen(true)}
+            className="rounded-sm bg-[#E8A317] px-5 py-2 text-sm font-medium text-white hover:bg-[#E8A317]/90"
+          >
+            Pending Request
+          </Button>
+        )}
+        {canAssignShift && (
+          <Button
+            onClick={() => setIsAssignModalOpen(true)}
+            className="rounded-sm bg-[#044192] px-5 py-2 text-sm font-medium text-white hover:bg-[#044192]/90"
+          >
+            Assign Shift
+          </Button>
+        )}
+        {canRequestChange && (
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="rounded-sm bg-[#14804A] px-5 py-2 text-sm font-medium text-white hover:bg-[#14804A]/90"
+          >
+            Request Shift Change
+          </Button>
+        )}
       </div>
 
       {/* Request Shift Change Modal */}
-      <RequestShiftChangeModal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={onShiftChangeSubmit}
-      />
+      {canRequestChange && (
+        <RequestShiftChangeModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={onShiftChangeSubmit}
+        />
+      )}
 
       {/* Assign Shift Modal */}
-      <AssignShiftModal
-        open={isAssignModalOpen}
-        onClose={() => setIsAssignModalOpen(false)}
-      />
+      {canAssignShift && (
+        <AssignShiftModal
+          open={isAssignModalOpen}
+          onClose={() => setIsAssignModalOpen(false)}
+        />
+      )}
+
+      {/* Pending Shift Exchanges Modal */}
+      {canViewPending && (
+        <PendingShiftExchangesModal
+          open={isPendingModalOpen}
+          onClose={() => setIsPendingModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

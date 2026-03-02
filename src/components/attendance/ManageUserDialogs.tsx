@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CalendarDays, Check, Loader2 } from "lucide-react";
-import Swal from "sweetalert2";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -120,18 +120,12 @@ export function ManageUserDialogs({
       const msg = (res as any)?.message ?? "Weekend updated successfully.";
       setWeekendOpen(false);
       resetWeekendForm();
-      await nextTick();
-      Swal.fire({
-        icon: "success",
-        title: "Weekend Updated!",
-        text: msg,
-        timer: 2500,
-        showConfirmButton: false,
+      toast.success(msg, {
+        description: "Weekend Updated!",
       });
     } catch (err: any) {
       setWeekendOpen(false);
       resetWeekendForm();
-      await nextTick();
 
       const status = err?.status ?? err?.response?.status;
       let title = "Failed";
@@ -153,11 +147,8 @@ export function ManageUserDialogs({
         title = "Not Found";
         msg = err?.body?.message ?? "User not found.";
       }
-      Swal.fire({
-        icon: "error",
-        title,
-        text: msg,
-        confirmButtonColor: "#DC3545",
+      toast.error(msg, {
+        description: title,
       });
     } finally {
       setWeekendSubmitting(false);
@@ -181,18 +172,12 @@ export function ManageUserDialogs({
       setExchangeOpen(false);
       resetExchangeForm();
       await onAttendanceMarked();
-      await nextTick();
-      Swal.fire({
-        icon: "success",
-        title: "Weekend Exchanged!",
-        text: msg,
-        timer: 2500,
-        showConfirmButton: false,
+      toast.success(msg, {
+        description: "Weekend Exchanged!",
       });
     } catch (err: any) {
       setExchangeOpen(false);
       resetExchangeForm();
-      await nextTick();
 
       const status = err?.status ?? err?.response?.status;
       let title = "Failed";
@@ -214,11 +199,8 @@ export function ManageUserDialogs({
         title = "Not Found";
         msg = err?.body?.message ?? "User not found.";
       }
-      Swal.fire({
-        icon: "error",
-        title,
-        text: msg,
-        confirmButtonColor: "#DC3545",
+      toast.error(msg, {
+        description: title,
       });
     } finally {
       setExchangeSubmitting(false);
@@ -248,18 +230,12 @@ export function ManageUserDialogs({
       setAttendanceOpen(false);
       resetForm();
       await onAttendanceMarked();
-      await nextTick();
-      Swal.fire({
-        icon: "success",
-        title: "Attendance Marked!",
-        text: `Attendance for ${selectedUser.name} has been marked successfully.`,
-        timer: 2500,
-        showConfirmButton: false,
+      toast.success(`Attendance for ${selectedUser.name} has been marked successfully.`, {
+        description: "Attendance Marked!",
       });
     } catch (err: any) {
       setAttendanceOpen(false);
       resetForm();
-      await nextTick();
 
       const status = err?.status ?? err?.response?.status;
       let title = "Failed";
@@ -281,11 +257,8 @@ export function ManageUserDialogs({
         title = "Not Found";
         msg = err?.body?.message ?? "User not found.";
       }
-      Swal.fire({
-        icon: "error",
-        title,
-        text: msg,
-        confirmButtonColor: "#DC3545",
+      toast.error(msg, {
+        description: title,
       });
     } finally {
       setSubmitting(false);

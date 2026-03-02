@@ -6,6 +6,7 @@ import type { ApproveShiftExchangeSuccessDto } from '../models/ApproveShiftExcha
 import type { CreateSellsShiftManagementDto } from '../models/CreateSellsShiftManagementDto';
 import type { CreateSellsShiftManagementSuccessDto } from '../models/CreateSellsShiftManagementSuccessDto';
 import type { GetMyShiftExchangesSuccessDto } from '../models/GetMyShiftExchangesSuccessDto';
+import type { GetMyShiftSuccessDto } from '../models/GetMyShiftSuccessDto';
 import type { GetPendingShiftExchangesSuccessDto } from '../models/GetPendingShiftExchangesSuccessDto';
 import type { GetUserSellsShiftSuccessDto } from '../models/GetUserSellsShiftSuccessDto';
 import type { RejectShiftExchangeSuccessDto } from '../models/RejectShiftExchangeSuccessDto';
@@ -15,6 +16,42 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class SellsShiftManagementService {
+    /**
+     * Get my sells shifts
+     * Retrieves the logged-in user's sells shift management records.
+     * @returns any
+     * @throws ApiError
+     */
+    public static sellsShiftManagementControllerGetMyShifts({
+        month,
+        year,
+        authorization,
+    }: {
+        /**
+         * The month for which to retrieve sells shift records (1-12)
+         */
+        month: number,
+        /**
+         * The year for which to retrieve sells shift records
+         */
+        year: number,
+        /**
+         * Bearer token
+         */
+        authorization: string,
+    }): CancelablePromise<GetMyShiftSuccessDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/sells-shift-management/my-shifts',
+            headers: {
+                'Authorization': authorization,
+            },
+            query: {
+                'month': month,
+                'year': year,
+            },
+        });
+    }
     /**
      * Create a new sells shift management entry for a user
      * Creates a new sells shift management entry for a user. This endpoint is protected and requires the user to have the SUPER ADMIN role.

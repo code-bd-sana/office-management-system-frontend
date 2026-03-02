@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader2, Search } from "lucide-react";
-import Swal from "sweetalert2";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -122,21 +122,14 @@ export function AttendanceContent() {
         authorization,
       });
       await fetchAttendance();
-      Swal.fire({
-        icon: "success",
-        title: "Checked In!",
-        text: "Your attendance has been marked successfully.",
-        timer: 2000,
-        showConfirmButton: false,
+      toast.success("Your attendance has been marked successfully.", {
+        description: "Checked In!",
       });
     } catch (err: any) {
       const msg =
         err?.body?.message ?? "Failed to check in. Please try again.";
-      Swal.fire({
-        icon: "warning",
-        title: "Check In Failed",
-        text: msg,
-        confirmButtonColor: "#14804A",
+      toast.warning(msg, {
+        description: "Check In Failed",
       });
     } finally {
       setActionLoading(null);
@@ -152,21 +145,14 @@ export function AttendanceContent() {
         authorization,
       });
       await fetchAttendance();
-      Swal.fire({
-        icon: "success",
-        title: "Checked Out!",
-        text: "You have been checked out successfully.",
-        timer: 2000,
-        showConfirmButton: false,
+      toast.success("You have been checked out successfully.", {
+        description: "Checked Out!",
       });
     } catch (err: any) {
       const msg =
         err?.body?.message ?? "Failed to check out. Please try again.";
-      Swal.fire({
-        icon: "warning",
-        title: "Check Out Failed",
-        text: msg,
-        confirmButtonColor: "#DC3545",
+      toast.warning(msg, {
+        description: "Check Out Failed",
       });
     } finally {
       setActionLoading(null);

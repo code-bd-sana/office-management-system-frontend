@@ -3,8 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export type GetUserSellsShiftNotFoundDto = {
+    success: boolean;
+    message: string;
     method: Record<string, any>;
     endpoint: string;
-    message: string;
+    statusCode: number;
+    timestamp: string;
+    error: string;
 };
 

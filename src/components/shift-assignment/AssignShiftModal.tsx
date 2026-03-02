@@ -47,7 +47,7 @@ import {
   addDays,
 } from "date-fns";
 import type { DateRange } from "react-day-picker";
-import Swal from "sweetalert2";
+import { toast } from "sonner";
 
 /* ── Types ───────────────────────────────────────────────── */
 interface DeptOption {
@@ -231,11 +231,8 @@ export function AssignShiftModal({
       !weekRange?.to ||
       !shiftType
     ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Missing Fields",
-        text: "Please fill in all required fields.",
-        confirmButtonColor: "#044192",
+      toast.warning("Please fill in all required fields.", {
+        description: "Missing Fields",
       });
       return;
     }
@@ -254,12 +251,8 @@ export function AssignShiftModal({
       });
 
       handleClose();
-      await new Promise((r) => setTimeout(r, 150));
-      Swal.fire({
-        icon: "success",
-        title: "Shift Assigned",
-        text: "Sells shift created successfully.",
-        confirmButtonColor: "#044192",
+      toast.success("Sells shift created successfully.", {
+        description: "Shift Assigned",
       });
       onAssigned?.();
     } catch (err: any) {
@@ -267,12 +260,8 @@ export function AssignShiftModal({
         err?.body?.message ?? err?.message ?? "Failed to assign shift.";
       setSubmitting(false);
       handleClose();
-      await new Promise((r) => setTimeout(r, 150));
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: msg,
-        confirmButtonColor: "#044192",
+      toast.error(msg, {
+        description: "Error",
       });
     }
   };

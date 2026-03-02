@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type GetUserSellsShiftInternalErrorDto = {
+export type CreateSellsShiftConflictDto = {
     success: boolean;
     message: string;
     method: Record<string, any>;

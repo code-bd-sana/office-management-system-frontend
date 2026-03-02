@@ -23,6 +23,7 @@ export type { ChangePasswordValidationDto } from './models/ChangePasswordValidat
 export type { CreateDepartmentDto } from './models/CreateDepartmentDto';
 export type { CreateDesignationDto } from './models/CreateDesignationDto';
 export type { CreateRoleDto } from './models/CreateRoleDto';
+export type { CreateSellsShiftConflictDto } from './models/CreateSellsShiftConflictDto';
 export type { CreateSellsShiftForbiddenDto } from './models/CreateSellsShiftForbiddenDto';
 export type { CreateSellsShiftInternalErrorDto } from './models/CreateSellsShiftInternalErrorDto';
 export { CreateSellsShiftManagementDto } from './models/CreateSellsShiftManagementDto';
@@ -89,6 +90,12 @@ export type { GetMyShiftExchangesInternalErrorDto } from './models/GetMyShiftExc
 export type { GetMyShiftExchangesNotFoundDto } from './models/GetMyShiftExchangesNotFoundDto';
 export type { GetMyShiftExchangesSuccessDto } from './models/GetMyShiftExchangesSuccessDto';
 export type { GetMyShiftExchangesUnauthorizedDto } from './models/GetMyShiftExchangesUnauthorizedDto';
+export type { GetMyShiftForbiddenDto } from './models/GetMyShiftForbiddenDto';
+export type { GetMyShiftInternalErrorDto } from './models/GetMyShiftInternalErrorDto';
+export type { GetMyShiftNotFoundDto } from './models/GetMyShiftNotFoundDto';
+export type { GetMyShiftSuccessDto } from './models/GetMyShiftSuccessDto';
+export type { GetMyShiftUnauthorizedDto } from './models/GetMyShiftUnauthorizedDto';
+export type { GetMyShiftValidationDto } from './models/GetMyShiftValidationDto';
 export type { GetPendingShiftExchangesForbiddenDto } from './models/GetPendingShiftExchangesForbiddenDto';
 export type { GetPendingShiftExchangesInternalErrorDto } from './models/GetPendingShiftExchangesInternalErrorDto';
 export type { GetPendingShiftExchangesNotFoundDto } from './models/GetPendingShiftExchangesNotFoundDto';
@@ -204,7 +211,6 @@ export type { UpdateByAuthorityWeekendSetValidationDto } from './models/UpdateBy
 export type { UpdateDepartmentDto } from './models/UpdateDepartmentDto';
 export type { UpdateDesignationDto } from './models/UpdateDesignationDto';
 export type { UpdateRoleDto } from './models/UpdateRoleDto';
-export type { UpdateUserProfileDto } from './models/UpdateUserProfileDto';
 export type { UpdateUserProfileInternalErrorDto } from './models/UpdateUserProfileInternalErrorDto';
 export type { UpdateUserProfileUnauthorizedDto } from './models/UpdateUserProfileUnauthorizedDto';
 export type { UserForbiddenDto } from './models/UserForbiddenDto';

@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Object } from '../models/Object';
-import type { UpdateUserProfileDto } from '../models/UpdateUserProfileDto';
 import type { UserProfileSuccessDto } from '../models/UserProfileSuccessDto';
 import type { UserProfileUpdateSuccessDto } from '../models/UserProfileUpdateSuccessDto';
 import type { UsersListSuccessDto } from '../models/UsersListSuccessDto';
@@ -132,13 +131,22 @@ export class UserService {
      */
     public static userControllerUpdateProfile({
         authorization,
-        requestBody,
+        formData,
     }: {
         /**
          * Bearer token
          */
         authorization: string,
-        requestBody: UpdateUserProfileDto,
+        formData: {
+            /**
+             * The full name of the user
+             */
+            name?: string;
+            /**
+             * Avatar image file
+             */
+            avatar?: Blob;
+        },
     }): CancelablePromise<UserProfileUpdateSuccessDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
@@ -146,8 +154,8 @@ export class UserService {
             headers: {
                 'Authorization': authorization,
             },
-            body: requestBody,
-            mediaType: 'application/json',
+            formData: formData,
+            mediaType: 'multipart/form-data',
         });
     }
 }
