@@ -7,6 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  ShiftUserSelector,
+  type ShiftUserOption,
+} from "./ShiftUserSelector";
 import { useUserInfo } from "@/hooks/useUserInfo";
 
 const MONTHS = [
@@ -26,11 +30,16 @@ const MONTHS = [
 
 const YEARS = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
 
+const PRIVILEGED_ROLES = ["SUPER ADMIN", "PROJECT MANAGER"];
+
 interface ShiftUserInfoProps {
   currentMonth: number;
   currentYear: number;
   onMonthChange: (month: number) => void;
   onYearChange: (year: number) => void;
+  authorization: string | null;
+  selectedUser: ShiftUserOption | null;
+  onSelectUser: (user: ShiftUserOption | null) => void;
 }
 
 export function ShiftUserInfo({
@@ -38,33 +47,35 @@ export function ShiftUserInfo({
   currentYear,
   onMonthChange,
   onYearChange,
+  authorization,
+  selectedUser,
+  onSelectUser,
 }: ShiftUserInfoProps) {
-  const { name, employeeId } = useUserInfo();
+  const { name, employeeId, userId: myUserId, role } = useUserInfo();
 
-  const initials = name
-    ? name
-        .split(" ")
-        .map((w: string) => w[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "??";
+  const isPrivileged = !!role && PRIVILEGED_ROLES.includes(role);
 
   return (
     <div className="mb-2 flex items-center justify-between gap-3 rounded-sm p-3 sm:p-4">
-      {/* User Info */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#044192] text-xs font-semibold text-white sm:h-12 sm:w-12 sm:text-sm">
-          {initials}
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-foreground sm:text-base">
+      {/* Left: User selector (privileged) or own name (others) */}
+      <div className="flex items-center gap-2">
+        {isPrivileged ? (
+          <ShiftUserSelector
+            authorization={authorization}
+            myUserId={myUserId}
+            selectedUser={selectedUser}
+            onSelectUser={onSelectUser}
+          />
+        ) : (
+          <span className="text-sm font-semibold text-foreground sm:text-base">
             {name ?? "—"}
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            Employee-ID: {employeeId ?? "—"}
-          </p>
-        </div>
+            {employeeId && (
+              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                ({employeeId})
+              </span>
+            )}
+          </span>
+        )}
       </div>
 
       {/* Month & Year Selectors */}
