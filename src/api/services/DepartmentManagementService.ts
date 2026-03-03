@@ -12,7 +12,7 @@ import type { UpdateDepartmentDto } from '../models/UpdateDepartmentDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class DepartmentService {
+export class DepartmentManagementService {
     /**
      * Create department
      * Creates a new department in the organization.

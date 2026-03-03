@@ -10,7 +10,7 @@ import type { UserSuccessDto } from '../models/UserSuccessDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class UserService {
+export class UserManagementService {
     /**
      * List users
      * Retrieves a list of users with optional filtering.

@@ -234,10 +234,10 @@ export type { UserValidationDto } from './models/UserValidationDto';
 export type { WeekendExchangeByAuthorityDto } from './models/WeekendExchangeByAuthorityDto';
 
 export { AppService } from './services/AppService';
-export { AttendanceService } from './services/AttendanceService';
+export { AttendanceManagementService } from './services/AttendanceManagementService';
 export { AuthenticationService } from './services/AuthenticationService';
-export { DepartmentService } from './services/DepartmentService';
-export { DesignationService } from './services/DesignationService';
-export { RoleService } from './services/RoleService';
+export { DepartmentManagementService } from './services/DepartmentManagementService';
+export { DesignationManagementService } from './services/DesignationManagementService';
+export { RoleManagementService } from './services/RoleManagementService';
 export { SellsShiftManagementService } from './services/SellsShiftManagementService';
-export { UserService } from './services/UserService';
+export { UserManagementService } from './services/UserManagementService';

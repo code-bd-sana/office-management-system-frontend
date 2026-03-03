@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AttendanceService } from "@/api";
+import { AttendanceManagementService } from "@/api";
 import { AttendanceByAuthorityDto } from "@/api/models/AttendanceByAuthorityDto";
 import type { UpdateByAuthorityWeekendSetDto } from "@/api/models/UpdateByAuthorityWeekendSetDto";
 import {

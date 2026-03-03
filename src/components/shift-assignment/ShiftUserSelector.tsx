@@ -16,7 +16,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { UserService } from "@/api";
+import { UserManagementService } from "@/api";
 
 export interface ShiftUserOption {
   _id: string;
@@ -49,7 +49,7 @@ export function ShiftUserSelector({
       if (!authorization) return;
       setLoading(true);
       try {
-        const res = await UserService.userControllerGetUsers({
+        const res = await UserManagementService.userControllerGetUsers({
           pageNo: 1,
           pageSize: 50,
           authorization,

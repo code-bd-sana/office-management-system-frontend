@@ -2,21 +2,24 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateDesignationDto } from '../models/CreateDesignationDto';
-import type { DesignationListSuccessDto } from '../models/DesignationListSuccessDto';
-import type { DesignationSuccessDto } from '../models/DesignationSuccessDto';
-import type { UpdateDesignationDto } from '../models/UpdateDesignationDto';
+import type { CreateRoleDto } from '../models/CreateRoleDto';
+import type { RoleByIdSuccessDto } from '../models/RoleByIdSuccessDto';
+import type { RoleCreateSuccessDto } from '../models/RoleCreateSuccessDto';
+import type { RoleDeleteSuccessDto } from '../models/RoleDeleteSuccessDto';
+import type { RolePatchSuccessDto } from '../models/RolePatchSuccessDto';
+import type { RolesListSuccessDto } from '../models/RolesListSuccessDto';
+import type { UpdateRoleDto } from '../models/UpdateRoleDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class DesignationService {
+export class RoleManagementService {
     /**
-     * Create designation
-     * Creates a new job designation in the organization.
+     * Create role
+     * Creates a new user role in the system.
      * @returns any
      * @throws ApiError
      */
-    public static designationControllerCreate({
+    public static roleControllerCreate({
         authorization,
         requestBody,
     }: {
@@ -24,11 +27,11 @@ export class DesignationService {
          * Bearer token
          */
         authorization: string,
-        requestBody: CreateDesignationDto,
-    }): CancelablePromise<DesignationSuccessDto> {
+        requestBody: CreateRoleDto,
+    }): CancelablePromise<RoleCreateSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/designation',
+            url: '/api/role',
             headers: {
                 'Authorization': authorization,
             },
@@ -37,32 +40,32 @@ export class DesignationService {
         });
     }
     /**
-     * List designations
-     * Retrieves a list of job designations with optional filtering.
+     * List roles
+     * Retrieves a list of user roles with optional filtering.
      * @returns any
      * @throws ApiError
      */
-    public static designationControllerFindAll({
+    public static roleControllerFindAll({
         pageNo,
         pageSize,
         searchKey = '',
     }: {
         /**
-         * The page number for pagination (1-based index)
+         * The page number for pagination
          */
         pageNo: number,
         /**
-         * The number of items per page (1-100)
+         * The number of items per page for pagination
          */
         pageSize: number,
         /**
-         * Optional search term to filter designations
+         * Search term to filter roles by name or description
          */
         searchKey?: string,
-    }): CancelablePromise<DesignationListSuccessDto> {
+    }): CancelablePromise<RolesListSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/designation',
+            url: '/api/role',
             query: {
                 'pageNo': pageNo,
                 'pageSize': pageSize,
@@ -71,51 +74,51 @@ export class DesignationService {
         });
     }
     /**
-     * Get designation by ID
-     * Retrieves details of a specific job designation.
+     * Get role by ID
+     * Retrieves details of a specific user role.
      * @returns any
      * @throws ApiError
      */
-    public static designationControllerFindOne({
+    public static roleControllerFindOne({
         id,
     }: {
         /**
-         * The ID of the designation to retrieve
+         * The ID of the role to retrieve
          */
         id: string,
-    }): CancelablePromise<DesignationSuccessDto> {
+    }): CancelablePromise<RoleByIdSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/designation/{id}',
+            url: '/api/role/{id}',
             path: {
                 'id': id,
             },
         });
     }
     /**
-     * Update designation
-     * Updates an existing job designation's details.
+     * Update role
+     * Updates an existing user role's details.
      * @returns any
      * @throws ApiError
      */
-    public static designationControllerUpdate({
+    public static roleControllerUpdate({
         id,
         authorization,
         requestBody,
     }: {
         /**
-         * The ID of the designation to update
+         * The ID of the role to update
          */
         id: string,
         /**
          * Bearer token
          */
         authorization: string,
-        requestBody: UpdateDesignationDto,
-    }): CancelablePromise<DesignationSuccessDto> {
+        requestBody: UpdateRoleDto,
+    }): CancelablePromise<RolePatchSuccessDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/designation/{id}',
+            url: '/api/role/{id}',
             path: {
                 'id': id,
             },
@@ -127,27 +130,27 @@ export class DesignationService {
         });
     }
     /**
-     * Delete designation
-     * Deletes a job designation by its ID.
+     * Delete role
+     * Deletes a user role by its ID.
      * @returns any
      * @throws ApiError
      */
-    public static designationControllerRemove({
+    public static roleControllerRemove({
         id,
         authorization,
     }: {
         /**
-         * The ID of the designation to delete
+         * The ID of the role to delete
          */
         id: string,
         /**
          * Bearer token
          */
         authorization: string,
-    }): CancelablePromise<DesignationSuccessDto> {
+    }): CancelablePromise<RoleDeleteSuccessDto> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/designation/{id}',
+            url: '/api/role/{id}',
             path: {
                 'id': id,
             },

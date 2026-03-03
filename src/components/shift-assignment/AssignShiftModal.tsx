@@ -33,8 +33,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Check, ChevronsUpDown, Loader2, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  UserService,
-  DepartmentService,
+  UserManagementService,
+  DepartmentManagementService,
   SellsShiftManagementService,
 } from "@/api";
 import { CreateSellsShiftManagementDto } from "@/api/models/CreateSellsShiftManagementDto";
@@ -124,7 +124,7 @@ export function AssignShiftModal({
   useEffect(() => {
     if (!open || departments.length > 0) return;
     setDeptsLoading(true);
-    DepartmentService.departmentControllerFindAll({
+    DepartmentManagementService.departmentControllerFindAll({
       pageNo: 1,
       pageSize: 100,
     })
@@ -145,7 +145,7 @@ export function AssignShiftModal({
       if (!authorization || !selectedDeptId) return;
       setUserLoading(true);
       try {
-        const res = await UserService.userControllerGetUsers({
+        const res = await UserManagementService.userControllerGetUsers({
           pageNo: 1,
           pageSize: 50,
           authorization,

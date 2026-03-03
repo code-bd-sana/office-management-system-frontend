@@ -16,7 +16,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { UserService } from "@/api";
+import { UserManagementService } from "@/api";
 import type { UserOption } from "./attendance-helpers";
 
 interface UserSelectorProps {
@@ -44,7 +44,7 @@ export function UserSelector({
       if (!authorization) return;
       setLoading(true);
       try {
-        const res = await UserService.userControllerGetUsers({
+        const res = await UserManagementService.userControllerGetUsers({
           pageNo: 1,
           pageSize: 50,
           authorization,

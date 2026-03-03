@@ -27,7 +27,7 @@ import {
 import { ATTENDANCE_DESCRIPTION, MONTH_NAMES } from "@/constants/attendance";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useUserInfo } from "@/hooks/useUserInfo";
-import { AttendanceService } from "@/api";
+import { AttendanceManagementService } from "@/api";
 import type {
   ApiAttendanceRecord,
   AttendanceRecord,

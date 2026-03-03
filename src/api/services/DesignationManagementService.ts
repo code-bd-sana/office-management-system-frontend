@@ -2,24 +2,21 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateRoleDto } from '../models/CreateRoleDto';
-import type { RoleByIdSuccessDto } from '../models/RoleByIdSuccessDto';
-import type { RoleCreateSuccessDto } from '../models/RoleCreateSuccessDto';
-import type { RoleDeleteSuccessDto } from '../models/RoleDeleteSuccessDto';
-import type { RolePatchSuccessDto } from '../models/RolePatchSuccessDto';
-import type { RolesListSuccessDto } from '../models/RolesListSuccessDto';
-import type { UpdateRoleDto } from '../models/UpdateRoleDto';
+import type { CreateDesignationDto } from '../models/CreateDesignationDto';
+import type { DesignationListSuccessDto } from '../models/DesignationListSuccessDto';
+import type { DesignationSuccessDto } from '../models/DesignationSuccessDto';
+import type { UpdateDesignationDto } from '../models/UpdateDesignationDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class RoleService {
+export class DesignationManagementService {
     /**
-     * Create role
-     * Creates a new user role in the system.
+     * Create designation
+     * Creates a new job designation in the organization.
      * @returns any
      * @throws ApiError
      */
-    public static roleControllerCreate({
+    public static designationControllerCreate({
         authorization,
         requestBody,
     }: {
@@ -27,11 +24,11 @@ export class RoleService {
          * Bearer token
          */
         authorization: string,
-        requestBody: CreateRoleDto,
-    }): CancelablePromise<RoleCreateSuccessDto> {
+        requestBody: CreateDesignationDto,
+    }): CancelablePromise<DesignationSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/role',
+            url: '/api/designation',
             headers: {
                 'Authorization': authorization,
             },
@@ -40,32 +37,32 @@ export class RoleService {
         });
     }
     /**
-     * List roles
-     * Retrieves a list of user roles with optional filtering.
+     * List designations
+     * Retrieves a list of job designations with optional filtering.
      * @returns any
      * @throws ApiError
      */
-    public static roleControllerFindAll({
+    public static designationControllerFindAll({
         pageNo,
         pageSize,
         searchKey = '',
     }: {
         /**
-         * The page number for pagination
+         * The page number for pagination (1-based index)
          */
         pageNo: number,
         /**
-         * The number of items per page for pagination
+         * The number of items per page (1-100)
          */
         pageSize: number,
         /**
-         * Search term to filter roles by name or description
+         * Optional search term to filter designations
          */
         searchKey?: string,
-    }): CancelablePromise<RolesListSuccessDto> {
+    }): CancelablePromise<DesignationListSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/role',
+            url: '/api/designation',
             query: {
                 'pageNo': pageNo,
                 'pageSize': pageSize,
@@ -74,51 +71,51 @@ export class RoleService {
         });
     }
     /**
-     * Get role by ID
-     * Retrieves details of a specific user role.
+     * Get designation by ID
+     * Retrieves details of a specific job designation.
      * @returns any
      * @throws ApiError
      */
-    public static roleControllerFindOne({
+    public static designationControllerFindOne({
         id,
     }: {
         /**
-         * The ID of the role to retrieve
+         * The ID of the designation to retrieve
          */
         id: string,
-    }): CancelablePromise<RoleByIdSuccessDto> {
+    }): CancelablePromise<DesignationSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/role/{id}',
+            url: '/api/designation/{id}',
             path: {
                 'id': id,
             },
         });
     }
     /**
-     * Update role
-     * Updates an existing user role's details.
+     * Update designation
+     * Updates an existing job designation's details.
      * @returns any
      * @throws ApiError
      */
-    public static roleControllerUpdate({
+    public static designationControllerUpdate({
         id,
         authorization,
         requestBody,
     }: {
         /**
-         * The ID of the role to update
+         * The ID of the designation to update
          */
         id: string,
         /**
          * Bearer token
          */
         authorization: string,
-        requestBody: UpdateRoleDto,
-    }): CancelablePromise<RolePatchSuccessDto> {
+        requestBody: UpdateDesignationDto,
+    }): CancelablePromise<DesignationSuccessDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/role/{id}',
+            url: '/api/designation/{id}',
             path: {
                 'id': id,
             },
@@ -130,27 +127,27 @@ export class RoleService {
         });
     }
     /**
-     * Delete role
-     * Deletes a user role by its ID.
+     * Delete designation
+     * Deletes a job designation by its ID.
      * @returns any
      * @throws ApiError
      */
-    public static roleControllerRemove({
+    public static designationControllerRemove({
         id,
         authorization,
     }: {
         /**
-         * The ID of the role to delete
+         * The ID of the designation to delete
          */
         id: string,
         /**
          * Bearer token
          */
         authorization: string,
-    }): CancelablePromise<RoleDeleteSuccessDto> {
+    }): CancelablePromise<DesignationSuccessDto> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/role/{id}',
+            url: '/api/designation/{id}',
             path: {
                 'id': id,
             },
