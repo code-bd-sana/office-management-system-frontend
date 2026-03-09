@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateSellsShiftManagementDto = {
+export type CreateSellsShiftDto = {
     /**
      * The start date of the week for the sells shift management
      */
@@ -14,13 +14,13 @@ export type CreateSellsShiftManagementDto = {
     /**
      * The type of shift for the sells shift management - MORNING, EVENING, NIGHT
      */
-    shiftType: CreateSellsShiftManagementDto.shiftType;
+    shiftType: CreateSellsShiftDto.shiftType;
     /**
      * An optional note for the sells shift management
      */
     note?: string;
 };
-export namespace CreateSellsShiftManagementDto {
+export namespace CreateSellsShiftDto {
     /**
      * The type of shift for the sells shift management - MORNING, EVENING, NIGHT
      */

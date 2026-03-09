@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApproveShiftExchangeSuccessDto } from '../models/ApproveShiftExchangeSuccessDto';
-import type { CreateSellsShiftManagementDto } from '../models/CreateSellsShiftManagementDto';
+import type { CreateSellsShiftDto } from '../models/CreateSellsShiftDto';
 import type { CreateSellsShiftManagementSuccessDto } from '../models/CreateSellsShiftManagementSuccessDto';
 import type { GetMyShiftExchangesSuccessDto } from '../models/GetMyShiftExchangesSuccessDto';
 import type { GetMyShiftSuccessDto } from '../models/GetMyShiftSuccessDto';
@@ -71,7 +71,7 @@ export class SellsShiftManagementService {
          * Bearer token
          */
         authorization: string,
-        requestBody: CreateSellsShiftManagementDto,
+        requestBody: CreateSellsShiftDto,
     }): CancelablePromise<CreateSellsShiftManagementSuccessDto> {
         return __request(OpenAPI, {
             method: 'POST',
