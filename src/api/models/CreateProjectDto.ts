@@ -24,6 +24,10 @@ export type CreateProjectDto = {
      */
     assignedDepartment?: string;
     /**
+     * The team assigned to the project - Wordpress, Shopify, Custom
+     */
+    projectTeam?: CreateProjectDto.projectTeam;
+    /**
      * List of project file URLs or storage paths
      */
     projectFiles: Array<string>;
@@ -41,6 +45,14 @@ export type CreateProjectDto = {
     status: CreateProjectDto.status;
 };
 export namespace CreateProjectDto {
+    /**
+     * The team assigned to the project - Wordpress, Shopify, Custom
+     */
+    export enum projectTeam {
+        WORDPRESS = 'Wordpress',
+        SHOPIFY = 'Shopify',
+        CUSTOM = 'Custom',
+    }
     /**
      * The current status of the project - NULL, NRA, WIP, DELIVERED, CANCELLED, REVISION
      */

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutList, Users } from "lucide-react";
+import { LayoutList, Users, FolderPlus } from "lucide-react";
 import { ModalTable, type ColumnDef } from "@/components/shared";
 import { ProjectsModalRow } from "./ProjectsModalRow";
 import { ProfileManagementModal } from "./ProfileManagementModal";
 import { ClientManagementModal } from "./ClientManagementModal";
+import { CreateProjectModal } from "./CreateProjectModal";
 import { DEMO_PROJECTS, PROJECT_FILTER_TABS } from "@/constants/project";
 import { useUserInfo } from "@/hooks/useUserInfo";
 import type { Project, ProjectStatus } from "@/types/project";
@@ -23,6 +24,8 @@ const COLUMNS: ColumnDef[] = [
 ];
 
 export function ProjectsModalTable() {
+  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
+    useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const { department } = useUserInfo();
@@ -33,7 +36,7 @@ export function ProjectsModalTable() {
   const handleFilterData = (
     data: Project[],
     filter: ProjectStatus | "all",
-    search: string
+    search: string,
   ): Project[] => {
     return data.filter((project) => {
       const matchesFilter = filter === "all" || project.status === filter;
@@ -46,30 +49,41 @@ export function ProjectsModalTable() {
 
   return (
     <div className="space-y-4">
-      {/* Top-right action buttons — SALES only */}
-      {isSalesDept && (
-        <div className="flex justify-end gap-2">
-          {/* Client button */}
-          <button
-            type="button"
-            onClick={() => setIsClientModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-sm bg-[#1a6b3c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#155c32] hover:shadow-md active:scale-[0.98]"
-          >
-            <Users className="h-4 w-4" />
-            Client
-          </button>
+      {/* Top-right action buttons */}
+      <div className="flex justify-end gap-2">
+        {/* SALES department only: Client + Profile */}
+        {isSalesDept && (
+          <>
+            <button
+              type="button"
+              onClick={() => setIsCreateProjectModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-sm bg-[#6941C6] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#5a35b0] hover:shadow-md active:scale-[0.98]"
+            >
+              <FolderPlus className="h-4 w-4" />
+              New Project
+            </button>
+            {/* Client button */}
+            <button
+              type="button"
+              onClick={() => setIsClientModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-sm bg-[#1a6b3c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#155c32] hover:shadow-md active:scale-[0.98]"
+            >
+              <Users className="h-4 w-4" />
+              Client
+            </button>
 
-          {/* Profile button */}
-          <button
-            type="button"
-            onClick={() => setIsProfileModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-sm bg-brand-navy px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-navy-dark hover:shadow-md active:scale-[0.98]"
-          >
-            <LayoutList className="h-4 w-4" />
-            Profile
-          </button>
-        </div>
-      )}
+            {/* Profile button */}
+            <button
+              type="button"
+              onClick={() => setIsProfileModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-sm bg-brand-navy px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-navy-dark hover:shadow-md active:scale-[0.98]"
+            >
+              <LayoutList className="h-4 w-4" />
+              Profile
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Projects table */}
       <ModalTable<Project, ProjectStatus | "all">
@@ -91,6 +105,12 @@ export function ProjectsModalTable() {
         enableCheckboxes={true}
         rowsPerPageOptions={[10, 20, 50, 100]}
         defaultRowsPerPage={10}
+      />
+
+      {/* Create Project Modal */}
+      <CreateProjectModal
+        open={isCreateProjectModalOpen}
+        onOpenChange={setIsCreateProjectModalOpen}
       />
 
       {/* Profile Management Modal */}

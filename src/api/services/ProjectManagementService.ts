@@ -62,13 +62,14 @@ export class ProjectManagementService {
         pageSize,
         authorization,
         searchKey,
+        status,
     }: {
         /**
          * The page number for pagination (1-based index)
          */
         pageNo: number,
         /**
-         * The number of items per page (1-100)
+         * The number of items per page for pagination
          */
         pageSize: number,
         /**
@@ -76,9 +77,13 @@ export class ProjectManagementService {
          */
         authorization: string,
         /**
-         * Optional free-text search term; can be null or empty
+         * Search term to filter projects by name or order ID
          */
         searchKey?: string,
+        /**
+         * Filter projects by status
+         */
+        status?: 'NULL' | 'NRA' | 'WIP' | 'DELIVERED' | 'CANCELLED' | 'REVISION',
     }): CancelablePromise<ProjectListSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -90,6 +95,7 @@ export class ProjectManagementService {
                 'pageNo': pageNo,
                 'pageSize': pageSize,
                 'searchKey': searchKey,
+                'status': status,
             },
         });
     }
