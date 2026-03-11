@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UpdateTaskStatusDto = {
+export type UpdateDcrSubmissionStatusDto = {
     /**
-     * The new status - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, DELIVERED
+     * The new DCR submission status - NOT_SUBMITTED, SUBMITTED, APPROVED, REJECTED
      */
     status: Record<string, any>;
 };

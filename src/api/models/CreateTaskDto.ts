@@ -8,10 +8,6 @@ export type CreateTaskDto = {
      */
     name: string;
     /**
-     * The client associated with the task
-     */
-    client: string;
-    /**
      * The project associated with the task
      */
     project: string;
