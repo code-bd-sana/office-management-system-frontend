@@ -6,6 +6,19 @@ import { toast } from "sonner";
 
 import { ModalTable, type ColumnDef } from "@/components/shared";
 import { TaskTableRow } from "./TaskTableRow";
+import { ViewTaskModal } from "./ViewTaskModal";
+import { EditTaskModal } from "./EditTaskModal";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { TaskManagementService } from "@/api";
 import { useAccessToken } from "@/hooks/useAccessToken";
@@ -19,6 +32,7 @@ const COLUMNS: ColumnDef[] = [
   { key: "dueDate", label: "Due Date" },
   { key: "priority", label: "Priority" },
   { key: "status", label: "Status" },
+  { key: "actions", label: "Actions", className: "w-[120px]" },
 ];
 
 /* ─── Status filter tabs ──────────────────────────────────── */
@@ -52,6 +66,13 @@ export function TaskList({ refreshKey }: TaskListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  /* ── Action modal state ─────────────────────────────────── */
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   // debounce search
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -77,6 +98,7 @@ export function TaskList({ refreshKey }: TaskListProps) {
         pageNo: currentPage,
         pageSize: rowsPerPage,
         ...(debouncedSearch && { searchKey: debouncedSearch }),
+        ...(activeFilter !== "all" && { status: activeFilter as Exclude<FilterValue, "all"> }),
       });
 
       const data = (res as any)?.data;
@@ -89,14 +111,8 @@ export function TaskList({ refreshKey }: TaskListProps) {
             : [];
       const total: number = data?.total ?? list.length;
 
-      // client-side status filter (API doesn't have status query param)
-      const filtered =
-        activeFilter === "all"
-          ? list
-          : list.filter((t) => t.status === activeFilter);
-
-      setTasks(filtered);
-      setTotalRecords(activeFilter === "all" ? total : filtered.length);
+      setTasks(list);
+      setTotalRecords(total);
     } catch (err: any) {
       const msg =
         err?.body?.message ?? "Failed to load tasks. Please try again.";
@@ -123,12 +139,46 @@ export function TaskList({ refreshKey }: TaskListProps) {
     setCurrentPage(1);
   };
 
+  /* ── Action handlers ─────────────────────────────────────── */
+  const openView = (id: string) => {
+    setSelectedTaskId(id);
+    setIsViewOpen(true);
+  };
+
+  const openEdit = (id: string) => {
+    setSelectedTaskId(id);
+    setIsEditOpen(true);
+  };
+
+  const openDelete = (id: string) => {
+    setSelectedTaskId(id);
+    setIsDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedTaskId || !token) return;
+    setIsDeleting(true);
+    try {
+      await TaskManagementService.taskControllerDelete({
+        id: selectedTaskId,
+        authorization: token,
+      });
+      toast.success("Task deleted successfully.");
+      fetchTasks();
+      setIsDeleteOpen(false);
+    } catch (err: any) {
+      toast.error(err?.body?.message ?? "Failed to delete task.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const noopFilter = (data: Task[]) => data;
 
   /* ─── Render ─────────────────────────────────────────────── */
   return (
     <div className="space-y-4">
-      {/* ── Heading + filter tabs + refresh ─────────────────── */}
+      {/* ── Heading + refresh ───────────────────────────────── */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground sm:text-xl">
           My Assigned Tasks
@@ -198,6 +248,9 @@ export function TaskList({ refreshKey }: TaskListProps) {
               key={task._id}
               task={task}
               rowNumber={(currentPage - 1) * rowsPerPage + index + 1}
+              onView={() => openView(task._id)}
+              onEdit={() => openEdit(task._id)}
+              onDelete={() => openDelete(task._id)}
             />
           )}
           enableCheckboxes={true}
@@ -205,6 +258,58 @@ export function TaskList({ refreshKey }: TaskListProps) {
           defaultRowsPerPage={rowsPerPage}
         />
       )}
+
+      {/* ── View Task Modal ─────────────────────────────────── */}
+      <ViewTaskModal
+        taskId={selectedTaskId}
+        open={isViewOpen}
+        onOpenChange={setIsViewOpen}
+      />
+
+      {/* ── Edit Task Modal ─────────────────────────────────── */}
+      <EditTaskModal
+        taskId={selectedTaskId}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onUpdated={fetchTasks}
+      />
+
+      {/* ── Delete Confirmation ─────────────────────────────── */}
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent className="rounded-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">
+              Are you absolutely sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the task
+              and remove its data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting} className="rounded-sm h-9">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700 text-white rounded-sm h-9"
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDelete();
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting
+                </>
+              ) : (
+                "Delete Task"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -6,3 +6,5 @@ export { TaskTableRow } from "./TaskTableRow";
 export { DCRPanel } from "./DCRPanel";
 export { AddTaskModal } from "./AddTaskModal";
 export { AddTaskForm } from "./AddTaskForm";
+export { ViewTaskModal } from "./ViewTaskModal";
+export { EditTaskModal } from "./EditTaskModal";

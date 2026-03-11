@@ -1,9 +1,13 @@
+import { Eye, Edit2, Trash2 } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { Task, TaskStatus } from "@/types/task";
 
 interface TaskTableRowProps {
   task: Task;
   rowNumber: number;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
 /* ── Status badge config ────────────────────────────────────── */
@@ -67,7 +71,7 @@ function formatDate(iso: string | undefined): string {
   });
 }
 
-export function TaskTableRow({ task, rowNumber }: TaskTableRowProps) {
+export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete }: TaskTableRowProps) {
   const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.PENDING;
   const priorityCfg = PRIORITY_CONFIG[task.priority] ?? PRIORITY_CONFIG.LOW;
 
@@ -89,7 +93,7 @@ export function TaskTableRow({ task, rowNumber }: TaskTableRowProps) {
 
       {/* Task Name */}
       <TableCell className="py-3.5 text-sm text-foreground">
-        <div className="max-w-[280px] truncate">{task.name}</div>
+        <div className="max-w-70 truncate">{task.name}</div>
       </TableCell>
 
       {/* Project */}
@@ -118,6 +122,33 @@ export function TaskTableRow({ task, rowNumber }: TaskTableRowProps) {
         >
           {statusCfg.label}
         </span>
+      </TableCell>
+
+      {/* Actions */}
+      <TableCell className="whitespace-nowrap py-3.5 pl-6 text-sm text-muted-foreground">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onView}
+            className="text-brand-navy hover:text-brand-navy-dark transition-colors"
+            title="View Details"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
+          <button
+            onClick={onEdit}
+            className="text-orange-500 hover:text-orange-600 transition-colors"
+            title="Edit Task"
+          >
+            <Edit2 className="h-4 w-4" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="text-red-500 hover:text-red-600 transition-colors"
+            title="Delete Task"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </TableCell>
     </TableRow>
   );
