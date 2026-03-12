@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   Loader2,
-  Download,
+  Eye,
   CheckCircle2,
   XCircle,
   Clock,
@@ -316,8 +316,8 @@ export function ViewDCRModal({
                         rel="noopener noreferrer"
                         className="inline-flex shrink-0 items-center gap-1.5 rounded-sm bg-brand-navy/10 px-3 py-1.5 text-xs font-medium text-brand-navy transition-colors hover:bg-brand-navy/20"
                       >
-                        <Download className="h-3.5 w-3.5" />
-                        Download
+                        <Eye className="h-3.5 w-3.5" />
+                        View
                       </a>
                     </div>
                   ))}
