@@ -210,7 +210,7 @@ export function ViewDCRModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] w-full max-w-2xl overflow-y-auto sm:rounded-lg">
+      <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl overflow-y-auto sm:rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-xl text-brand-navy">
             DCR Details
@@ -233,7 +233,7 @@ export function ViewDCRModal({
         ) : (
           <div className="mt-4 space-y-6">
             {/* ── Status badge ──────────────────────────────── */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-foreground/70">
                   Status:
@@ -261,7 +261,7 @@ export function ViewDCRModal({
 
             {/* ── Approve / Reject buttons ──────────────────── */}
             {canReview && dcrStatus === "SUBMITTED" && (
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <Button
                   size="sm"
                   className="rounded-sm bg-green-600 text-white hover:bg-green-700"

@@ -8,7 +8,9 @@ import { SidebarNavItem } from "./SidebarNavItem";
 import { SIDEBAR_NAV_ITEMS } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import { AuthenticationService } from "@/api";
+import { useMemo } from "react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,6 +20,16 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { logout, token } = useAuth();
   const router = useRouter();
+  const { role, department } = useUserInfo();
+
+  // Hide Projects for employees outside the sales department
+  const navItems = useMemo(() => {
+    const isNonSalesEmployee =
+      role?.toUpperCase() === "EMPLOYEE" &&
+      department?.toUpperCase() !== "SALES";
+    if (!isNonSalesEmployee) return SIDEBAR_NAV_ITEMS;
+    return SIDEBAR_NAV_ITEMS.filter((item) => item.href !== "/projects");
+  }, [role, department]);
 
   const handleLogout = async () => {
     try {
@@ -58,7 +70,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {SIDEBAR_NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <SidebarNavItem key={item.href} item={item} onNavigate={onClose} />
           ))}
         </nav>

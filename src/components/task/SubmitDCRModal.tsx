@@ -163,7 +163,7 @@ export function SubmitDCRModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[85vh] w-full max-w-lg overflow-y-auto sm:rounded-lg">
+      <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-lg overflow-y-auto sm:rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-xl text-brand-navy">
             Submit DCR

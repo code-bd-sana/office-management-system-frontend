@@ -17,7 +17,7 @@ interface AddTaskModalProps {
 export function AddTaskModal({ open, onOpenChange, onTaskCreated }: AddTaskModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg rounded-sm border-0 p-6 shadow-xl sm:max-w-180">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-lg rounded-sm border-0 p-4 shadow-xl sm:max-w-180 sm:p-6">
         <DialogHeader className="pb-2">
           <DialogTitle className="text-xl font-bold text-foreground">
             Add Task

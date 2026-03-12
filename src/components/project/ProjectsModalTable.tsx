@@ -195,7 +195,7 @@ export function ProjectsModalTable() {
   return (
     <div className="space-y-4">
       {/* ── Action buttons ──────────────────────────────────── */}
-      <div className="flex justify-end gap-2">
+      <div className="flex flex-wrap justify-end gap-2">
         {isSalesDept && (
           <>
             {/* New Project */}

@@ -94,7 +94,7 @@ export function ViewTaskModal({ taskId, open, onOpenChange }: ViewTaskModalProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] w-full max-w-xl overflow-y-auto sm:rounded-lg">
+      <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] max-w-xl overflow-y-auto sm:rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-xl text-brand-navy">
             Task Details
@@ -115,9 +115,9 @@ export function ViewTaskModal({ taskId, open, onOpenChange }: ViewTaskModalProps
         ) : (
           <div className="mt-4 space-y-6">
             {/* Header */}
-            <div className="flex items-start justify-between border-b pb-4">
-              <div>
-                <h3 className="text-lg font-bold text-foreground">
+            <div className="flex flex-col gap-2 border-b pb-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <h3 className="truncate text-lg font-bold text-foreground">
                   {task.name}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -129,7 +129,7 @@ export function ViewTaskModal({ taskId, open, onOpenChange }: ViewTaskModalProps
               </div>
               {statusCfg && (
                 <span
-                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusCfg.className}`}
+                  className={`self-start rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusCfg.className}`}
                 >
                   {statusCfg.label}
                 </span>
@@ -137,7 +137,7 @@ export function ViewTaskModal({ taskId, open, onOpenChange }: ViewTaskModalProps
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-2 gap-y-4 text-sm">
+            <div className="grid grid-cols-1 gap-y-3 text-sm sm:grid-cols-2 sm:gap-y-4">
               <div>
                 <span className="block text-muted-foreground">Priority</span>
                 {priorityCfg && (

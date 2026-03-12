@@ -310,7 +310,7 @@ export function EditTaskModal({
    * ═══════════════════════════════════════════════════════════ */
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg rounded-sm border-0 p-6 shadow-xl sm:max-w-180">
+      <DialogContent className="max-h-[90vh] w-[calc(100vw-2rem)] max-w-lg overflow-y-auto rounded-sm border-0 p-4 shadow-xl sm:max-w-180 sm:p-6">
         <DialogHeader className="pb-2">
           <DialogTitle className="text-xl font-bold text-foreground">
             Edit Task
@@ -402,7 +402,7 @@ export function EditTaskModal({
             </div>
 
             {/* Due Date + Priority row */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="editDueDate" className="text-sm font-medium text-foreground">
                   Due Date <span className="text-red-500">*</span>

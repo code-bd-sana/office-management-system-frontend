@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DashboardCard } from "./DashboardCard";
 import { TasksModal } from "@/components/task/TasksModal";
 import { ProjectsModal } from "@/components/project/ProjectsModal";
@@ -10,8 +10,10 @@ import { DCRSubmissionModal } from "@/components/dcr/DCRSubmissionModal";
 import { ShiftAssignmentModal } from "@/components/shift-assignment/ShiftAssignmentModal";
 import { TeamMembersModal } from "@/components/team/TeamMembersModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 export function DashboardGrid() {
+  const { role, department } = useUserInfo();
   const [isTasksModalOpen, setIsTasksModalOpen] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const [isLearningModalOpen, setIsLearningModalOpen] = useState(false);
@@ -19,6 +21,15 @@ export function DashboardGrid() {
   const [isDCRModalOpen, setIsDCRModalOpen] = useState(false);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
   const [isTeamMembersModalOpen, setIsTeamMembersModalOpen] = useState(false);
+
+  // Hide Projects card for employees outside the sales department
+  const cards = useMemo(() => {
+    const isNonSalesEmployee =
+      role?.toUpperCase() === "EMPLOYEE" &&
+      department?.toUpperCase() !== "SALES";
+    if (!isNonSalesEmployee) return DASHBOARD_CARDS;
+    return DASHBOARD_CARDS.filter((c) => c.id !== "projects");
+  }, [role, department]);
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {
@@ -41,7 +52,7 @@ export function DashboardGrid() {
   return (
     <section>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {DASHBOARD_CARDS.map((card) => (
+        {cards.map((card) => (
           <DashboardCard key={card.id} data={card} onClick={handleCardClick} />
         ))}
       </div>
