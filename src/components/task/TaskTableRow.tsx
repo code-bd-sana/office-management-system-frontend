@@ -1,5 +1,12 @@
 import { Eye, Edit2, Trash2 } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Task, TaskStatus } from "@/types/task";
 
 interface TaskTableRowProps {
@@ -8,6 +15,8 @@ interface TaskTableRowProps {
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  canChangeStatus?: boolean;
+  onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
 }
 
 /* ── Status badge config ────────────────────────────────────── */
@@ -71,7 +80,16 @@ function formatDate(iso: string | undefined): string {
   });
 }
 
-export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete }: TaskTableRowProps) {
+/* ── All status options for dropdown ─────────────────────────── */
+const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
+  { value: "PENDING", label: "Pending" },
+  { value: "WORK_IN_PROGRESS", label: "In Progress" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "BLOCKED", label: "Blocked" },
+  { value: "DELIVERED", label: "Delivered" },
+];
+
+export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete, canChangeStatus, onStatusChange }: TaskTableRowProps) {
   const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.PENDING;
   const priorityCfg = PRIORITY_CONFIG[task.priority] ?? PRIORITY_CONFIG.LOW;
 
@@ -117,11 +135,36 @@ export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete }: Task
 
       {/* Status */}
       <TableCell className="whitespace-nowrap py-3.5">
-        <span
-          className={`inline-block w-24 rounded-sm px-2.5 py-1 text-center text-xs font-semibold ${statusCfg.bg} ${statusCfg.text}`}
-        >
-          {statusCfg.label}
-        </span>
+        {canChangeStatus && onStatusChange ? (
+          <Select
+            value={task.status}
+            onValueChange={(v) => onStatusChange(task._id, v as TaskStatus)}
+          >
+            <SelectTrigger
+              className={`h-auto w-28 rounded-sm border-0 px-2.5 py-1 text-xs font-semibold ${statusCfg.bg} ${statusCfg.text} focus:ring-1`}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUS_OPTIONS.map((o) => {
+                const cfg = STATUS_CONFIG[o.value];
+                return (
+                  <SelectItem key={o.value} value={o.value}>
+                    <span className={`text-xs font-semibold ${cfg.text}`}>
+                      {o.label}
+                    </span>
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        ) : (
+          <span
+            className={`inline-block w-24 rounded-sm px-2.5 py-1 text-center text-xs font-semibold ${statusCfg.bg} ${statusCfg.text}`}
+          >
+            {statusCfg.label}
+          </span>
+        )}
       </TableCell>
 
       {/* Actions */}

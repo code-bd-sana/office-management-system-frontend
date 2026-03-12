@@ -44,6 +44,9 @@ import {
 } from "@/api";
 import { CreateTaskDto } from "@/api/models/CreateTaskDto";
 import { useAccessToken } from "@/hooks/useAccessToken";
+import { useUserInfo } from "@/hooks/useUserInfo";
+
+const CAN_ASSIGN_ROLES = ["SUPER ADMIN", "PROJECT MANAGER", "TEAM LEADER"];
 
 /* ── Types ──────────────────────────────────────────────────── */
 interface SelectOption {
@@ -93,6 +96,8 @@ export function EditTaskModal({
   onUpdated,
 }: EditTaskModalProps) {
   const token = useAccessToken();
+  const { role } = useUserInfo();
+  const canAssign = !!role && CAN_ASSIGN_ROLES.includes(role);
 
   /* ── Loading states ─────────────────────────────────────── */
   const [fetching, setFetching] = useState(false);
@@ -283,9 +288,9 @@ export function EditTaskModal({
           project: projectId,
           dueDate: new Date(dueDate).toISOString(),
           priority,
-          status,
+          ...(canAssign && { status }),
           description: description.trim(),
-          assignTo: assignTo.map((u) => u.id),
+          ...(canAssign && { assignTo: assignTo.map((u) => u.id) }),
         } as any,
       });
       toast.success("Task updated successfully.");
@@ -434,7 +439,8 @@ export function EditTaskModal({
               </div>
             </div>
 
-            {/* Status */}
+            {/* Status — hidden for EMPLOYEE */}
+            {canAssign && (
             <div className="space-y-1.5">
               <Label className="text-sm font-medium text-foreground">
                 Status <span className="text-red-500">*</span>
@@ -454,10 +460,10 @@ export function EditTaskModal({
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </div>)}
 
-            {/* Assign To (multi-select) */}
-            <div className="space-y-1.5">
+            {/* Assign To (multi-select) — hidden for EMPLOYEE */}
+            {canAssign && (<div className="space-y-1.5">
               <Label className="text-sm font-medium text-foreground">
                 Assign To
               </Label>
@@ -536,7 +542,7 @@ export function EditTaskModal({
                   </Command>
                 </PopoverContent>
               </Popover>
-            </div>
+            </div>)}
 
             {/* Description */}
             <div className="space-y-1.5">
@@ -556,7 +562,7 @@ export function EditTaskModal({
             {/* Submit */}
             <Button
               type="submit"
-              disabled={submitting || !name.trim() || !projectId || !dueDate || !priority || !status}
+              disabled={submitting || !name.trim() || !projectId || !dueDate || !priority || (canAssign && !status)}
               className="w-full rounded-sm bg-brand-navy text-white shadow-sm hover:bg-brand-navy-dark"
             >
               {submitting ? (

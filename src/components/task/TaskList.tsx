@@ -22,7 +22,10 @@ import {
 
 import { TaskManagementService } from "@/api";
 import { useAccessToken } from "@/hooks/useAccessToken";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import type { Task, TaskStatus } from "@/types/task";
+
+const CAN_CHANGE_STATUS_ROLES = ["SUPER ADMIN", "PROJECT MANAGER", "TEAM LEADER"];
 
 /* ─── Table columns ───────────────────────────────────────── */
 const COLUMNS: ColumnDef[] = [
@@ -54,6 +57,8 @@ interface TaskListProps {
 
 export function TaskList({ refreshKey }: TaskListProps) {
   const token = useAccessToken();
+  const { role } = useUserInfo();
+  const canChangeStatus = !!role && CAN_CHANGE_STATUS_ROLES.includes(role);
 
   /* ── Data state ─────────────────────────────────────────── */
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -173,6 +178,21 @@ export function TaskList({ refreshKey }: TaskListProps) {
     }
   };
 
+  const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
+    if (!token) return;
+    try {
+      await TaskManagementService.taskControllerUpdateTaskStatus({
+        id: taskId,
+        authorization: token,
+        requestBody: { status: newStatus } as any,
+      });
+      toast.success("Status updated successfully.");
+      fetchTasks();
+    } catch (err: any) {
+      toast.error(err?.body?.message ?? "Failed to update status.");
+    }
+  };
+
   const noopFilter = (data: Task[]) => data;
 
   /* ─── Render ─────────────────────────────────────────────── */
@@ -251,6 +271,8 @@ export function TaskList({ refreshKey }: TaskListProps) {
               onView={() => openView(task._id)}
               onEdit={() => openEdit(task._id)}
               onDelete={() => openDelete(task._id)}
+              canChangeStatus={canChangeStatus}
+              onStatusChange={handleStatusChange}
             />
           )}
           enableCheckboxes={true}

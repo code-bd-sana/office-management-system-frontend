@@ -195,9 +195,14 @@ export class TaskManagementService {
      * @throws ApiError
      */
     public static taskControllerUpdateTaskStatus({
+        id,
         authorization,
         requestBody,
     }: {
+        /**
+         * The ID of the task to update the status for
+         */
+        id: string,
         /**
          * Bearer token
          */
@@ -207,6 +212,9 @@ export class TaskManagementService {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/task/{id}/status',
+            path: {
+                'id': id,
+            },
             headers: {
                 'Authorization': authorization,
             },

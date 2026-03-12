@@ -155,20 +155,6 @@ export function ViewTaskModal({ taskId, open, onOpenChange }: ViewTaskModalProps
                   {formatDate(task.dueDate)}
                 </span>
               </div>
-              <div>
-                <span className="block text-muted-foreground">Created At</span>
-                <span className="font-medium flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {formatDate(task.createdAt)}
-                </span>
-              </div>
-              <div>
-                <span className="block text-muted-foreground">Updated At</span>
-                <span className="font-medium flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {formatDate(task.updatedAt)}
-                </span>
-              </div>
               {task.assignTo && task.assignTo.length > 0 && (
                 <div className="col-span-2">
                   <span className="block text-muted-foreground">Assigned To</span>
