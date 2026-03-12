@@ -8,6 +8,13 @@ export type TaskStatus =
   | "BLOCKED"
   | "DELIVERED";
 
+/** DCR submission status enum */
+export type DcrSubmissionStatus =
+  | "NOT_SUBMITTED"
+  | "SUBMITTED"
+  | "APPROVED"
+  | "REJECTED";
+
 /** A single task from the API */
 export interface Task {
   _id: string;
@@ -18,9 +25,18 @@ export interface Task {
   description?: string;
   status: TaskStatus;
   assignTo?: string[];
-  createdBy?: string;
+  createdBy?: string | { _id: string; name: string };
   createdAt?: string;
   updatedAt?: string;
+  dcrLinks?: string[];
+  dcrSubmissionStatus?: DcrSubmissionStatus;
+  dcrApprovedBy?: { _id: string; name: string } | null;
+  dcrRejectedBy?: { _id: string; name: string } | null;
+  reviewReply?: Array<{
+    reviewer: { _id: string; name: string } | null;
+    comment: string;
+    createdAt: string;
+  }>;
 }
 
 /** Pipeline step displayed in the task flow */

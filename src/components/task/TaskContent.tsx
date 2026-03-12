@@ -4,7 +4,6 @@ import { useState } from "react";
 import { TaskPageHeader } from "./TaskPageHeader";
 import { TaskPipeline } from "./TaskPipeline";
 import { TaskList } from "./TaskList";
-import { DCRPanel } from "./DCRPanel";
 import { AddTaskModal } from "./AddTaskModal";
 
 export function TaskContent() {
@@ -30,9 +29,6 @@ export function TaskContent() {
 
       {/* Task table — full width */}
       <TaskList refreshKey={refreshKey} />
-
-      {/* DCR panel — full width below */}
-      <DCRPanel />
     </div>
   );
 }

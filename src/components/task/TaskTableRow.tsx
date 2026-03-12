@@ -1,4 +1,4 @@
-import { Eye, Edit2, Trash2 } from "lucide-react";
+import { Eye, Edit2, Trash2, FileUp, FileCheck } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import {
   Select,
@@ -17,6 +17,8 @@ interface TaskTableRowProps {
   onDelete: () => void;
   canChangeStatus?: boolean;
   onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
+  onSubmitDcr?: () => void;
+  onViewDcr?: () => void;
 }
 
 /* ── Status badge config ────────────────────────────────────── */
@@ -89,7 +91,9 @@ const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
   { value: "DELIVERED", label: "Delivered" },
 ];
 
-export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete, canChangeStatus, onStatusChange }: TaskTableRowProps) {
+export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete, canChangeStatus, onStatusChange, onSubmitDcr, onViewDcr }: TaskTableRowProps) {
+  const dcrStatus = task.dcrSubmissionStatus ?? "NOT_SUBMITTED";
+  const hasSubmittedDcr = dcrStatus !== "NOT_SUBMITTED";
   const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.PENDING;
   const priorityCfg = PRIORITY_CONFIG[task.priority] ?? PRIORITY_CONFIG.LOW;
 
@@ -164,6 +168,31 @@ export function TaskTableRow({ task, rowNumber, onView, onEdit, onDelete, canCha
           >
             {statusCfg.label}
           </span>
+        )}
+      </TableCell>
+
+      {/* DCR */}
+      <TableCell className="whitespace-nowrap py-3.5">
+        {hasSubmittedDcr ? (
+          <button
+            type="button"
+            onClick={onViewDcr}
+            className="inline-flex items-center gap-1.5 rounded-sm bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700 transition-colors hover:bg-green-200"
+            title="View DCR"
+          >
+            <FileCheck className="h-3.5 w-3.5" />
+            View DCR
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onSubmitDcr}
+            className="inline-flex items-center gap-1.5 rounded-sm bg-brand-navy/10 px-3 py-1.5 text-xs font-semibold text-brand-navy transition-colors hover:bg-brand-navy/20"
+            title="Submit DCR"
+          >
+            <FileUp className="h-3.5 w-3.5" />
+            Submit DCR
+          </button>
         )}
       </TableCell>
 

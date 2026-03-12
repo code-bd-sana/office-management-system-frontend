@@ -8,3 +8,5 @@ export { AddTaskModal } from "./AddTaskModal";
 export { AddTaskForm } from "./AddTaskForm";
 export { ViewTaskModal } from "./ViewTaskModal";
 export { EditTaskModal } from "./EditTaskModal";
+export { SubmitDCRModal } from "./SubmitDCRModal";
+export { ViewDCRModal } from "./ViewDCRModal";

@@ -8,6 +8,8 @@ import { ModalTable, type ColumnDef } from "@/components/shared";
 import { TaskTableRow } from "./TaskTableRow";
 import { ViewTaskModal } from "./ViewTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
+import { SubmitDCRModal } from "./SubmitDCRModal";
+import { ViewDCRModal } from "./ViewDCRModal";
 
 import {
   AlertDialog,
@@ -35,6 +37,7 @@ const COLUMNS: ColumnDef[] = [
   { key: "dueDate", label: "Due Date" },
   { key: "priority", label: "Priority" },
   { key: "status", label: "Status" },
+  { key: "dcr", label: "DCR" },
   { key: "actions", label: "Actions", className: "w-[120px]" },
 ];
 
@@ -77,6 +80,13 @@ export function TaskList({ refreshKey }: TaskListProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  /* ── DCR modal state ─────────────────────────────────────── */
+  const [dcrTaskId, setDcrTaskId] = useState<string | null>(null);
+  const [dcrTaskName, setDcrTaskName] = useState<string>("");
+  const [isDcrOpen, setIsDcrOpen] = useState(false);
+  const [viewDcrTaskId, setViewDcrTaskId] = useState<string | null>(null);
+  const [isViewDcrOpen, setIsViewDcrOpen] = useState(false);
 
   // debounce search
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -158,6 +168,17 @@ export function TaskList({ refreshKey }: TaskListProps) {
   const openDelete = (id: string) => {
     setSelectedTaskId(id);
     setIsDeleteOpen(true);
+  };
+
+  const openSubmitDcr = (id: string, name: string) => {
+    setDcrTaskId(id);
+    setDcrTaskName(name);
+    setIsDcrOpen(true);
+  };
+
+  const openViewDcr = (id: string) => {
+    setViewDcrTaskId(id);
+    setIsViewDcrOpen(true);
   };
 
   const confirmDelete = async () => {
@@ -273,6 +294,8 @@ export function TaskList({ refreshKey }: TaskListProps) {
               onDelete={() => openDelete(task._id)}
               canChangeStatus={canChangeStatus}
               onStatusChange={handleStatusChange}
+              onSubmitDcr={() => openSubmitDcr(task._id, task.name)}
+              onViewDcr={() => openViewDcr(task._id)}
             />
           )}
           enableCheckboxes={true}
@@ -294,6 +317,23 @@ export function TaskList({ refreshKey }: TaskListProps) {
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         onUpdated={fetchTasks}
+      />
+
+      {/* ── Submit DCR Modal ────────────────────────────────── */}
+      <SubmitDCRModal
+        taskId={dcrTaskId}
+        taskName={dcrTaskName}
+        open={isDcrOpen}
+        onOpenChange={setIsDcrOpen}
+        onSubmitted={fetchTasks}
+      />
+
+      {/* ── View DCR Modal ──────────────────────────────────── */}
+      <ViewDCRModal
+        taskId={viewDcrTaskId}
+        open={isViewDcrOpen}
+        onOpenChange={setIsViewDcrOpen}
+        onStatusChanged={fetchTasks}
       />
 
       {/* ── Delete Confirmation ─────────────────────────────── */}
