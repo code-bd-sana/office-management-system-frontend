@@ -112,7 +112,7 @@ export function ManageUserDialogs({
     if (!authorization || !selectedUser || !weekendDay) return;
     setWeekendSubmitting(true);
     try {
-      const res = await AttendanceService.attendanceControllerUpdateWeekendOff({
+      const res = await AttendanceManagementService.attendanceControllerUpdateWeekendOff({
         userId: selectedUser._id,
         authorization,
         requestBody: { weekEndOff: [weekendDay] },
@@ -160,7 +160,7 @@ export function ManageUserDialogs({
     if (!authorization || !selectedUser || !exchangeOriginalDate || !exchangeNewDate) return;
     setExchangeSubmitting(true);
     try {
-      const res = await AttendanceService.attendanceControllerWeekendExchangeByAuthority({
+      const res = await AttendanceManagementService.attendanceControllerWeekendExchangeByAuthority({
         userId: selectedUser._id,
         authorization,
         requestBody: {
@@ -222,7 +222,7 @@ export function ManageUserDialogs({
             }
           : {}),
       };
-      await AttendanceService.attendanceControllerMarkAttendanceByAuthority({
+      await AttendanceManagementService.attendanceControllerMarkAttendanceByAuthority({
         userId: selectedUser._id,
         authorization,
         requestBody: body,

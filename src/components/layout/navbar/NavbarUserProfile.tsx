@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-react";
-import type { UserProfile } from "@/types";
 import { useUserInfo } from "@/hooks/useUserInfo";
 
 export function NavbarUserProfile() {

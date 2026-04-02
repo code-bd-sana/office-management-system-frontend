@@ -2,7 +2,6 @@ import { Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavbarSearch } from "./NavbarSearch";
 import { NavbarUserProfile } from "./NavbarUserProfile";
-import { DEMO_USER } from "@/constants/dashboard";
 
 interface NavbarProps {
   title: string;
@@ -49,7 +48,7 @@ export function Navbar({ title, onMenuToggle }: NavbarProps) {
         </div>
 
         {/* User profile */}
-        <NavbarUserProfile user={DEMO_USER} />
+        <NavbarUserProfile />
       </div>
     </header>
   );

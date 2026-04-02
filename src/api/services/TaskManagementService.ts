@@ -224,7 +224,7 @@ export class TaskManagementService {
     }
     /**
      * Submit a DCR for a task
-     * Submits a DCR (Design Change Request) for a specific task. Requires authentication and appropriate permissions. Accepts multipart/form-data for DCR file uploads.
+     * Submits a DCR (Design Completion Report) for a specific task. Requires authentication and appropriate permissions. Accepts multipart/form-data for DCR file uploads.
      * @returns any
      * @throws ApiError
      */

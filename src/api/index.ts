@@ -259,6 +259,7 @@ export type { RejectShiftExchangeNotFoundDto } from './models/RejectShiftExchang
 export type { RejectShiftExchangeSuccessDto } from './models/RejectShiftExchangeSuccessDto';
 export type { RejectShiftExchangeUnauthorizedDto } from './models/RejectShiftExchangeUnauthorizedDto';
 export type { RejectShiftExchangeValidationDto } from './models/RejectShiftExchangeValidationDto';
+export type { ReplyOnDcrReviewDto } from './models/ReplyOnDcrReviewDto';
 export { RequestShiftExchangeDto } from './models/RequestShiftExchangeDto';
 export type { RequestShiftExchangeForbiddenDto } from './models/RequestShiftExchangeForbiddenDto';
 export type { RequestShiftExchangeInternalErrorDto } from './models/RequestShiftExchangeInternalErrorDto';
@@ -321,6 +322,22 @@ export type { TaskCreateInternalErrorDto } from './models/TaskCreateInternalErro
 export type { TaskCreateSuccessDto } from './models/TaskCreateSuccessDto';
 export type { TaskCreateUnauthorizedDto } from './models/TaskCreateUnauthorizedDto';
 export type { TaskCreateValidationDto } from './models/TaskCreateValidationDto';
+export type { TaskDCRReviewOnReplyNotFoundDto } from './models/TaskDCRReviewOnReplyNotFoundDto';
+export type { TaskDCRReviewOnReplyValidationDto } from './models/TaskDCRReviewOnReplyValidationDto';
+export type { TaskDCRReviewReplyForbiddenDto } from './models/TaskDCRReviewReplyForbiddenDto';
+export type { TaskDcrReviewReplySuccessDto } from './models/TaskDcrReviewReplySuccessDto';
+export type { TaskDCRSubmissionForbiddenDto } from './models/TaskDCRSubmissionForbiddenDto';
+export type { TaskDCRSubmissionInternalErrorDto } from './models/TaskDCRSubmissionInternalErrorDto';
+export type { TaskDCRSubmissionNotFoundDto } from './models/TaskDCRSubmissionNotFoundDto';
+export type { TaskDCRSubmissionStatusInternalErrorDto } from './models/TaskDCRSubmissionStatusInternalErrorDto';
+export type { TaskDcrSubmissionStatusSuccessDto } from './models/TaskDcrSubmissionStatusSuccessDto';
+export type { TaskDCRSubmissionStatusUpdateForbiddenDto } from './models/TaskDCRSubmissionStatusUpdateForbiddenDto';
+export type { TaskDCRSubmissionStatusUpdateNotFoundDto } from './models/TaskDCRSubmissionStatusUpdateNotFoundDto';
+export type { TaskDCRSubmissionStatusUpdateUnauthorizedDto } from './models/TaskDCRSubmissionStatusUpdateUnauthorizedDto';
+export type { TaskDCRSubmissionStatusUpdateValidationDto } from './models/TaskDCRSubmissionStatusUpdateValidationDto';
+export type { TaskDCRSubmissionUnauthorizedDto } from './models/TaskDCRSubmissionUnauthorizedDto';
+export type { TaskDCRSubmissionValidationDto } from './models/TaskDCRSubmissionValidationDto';
+export type { TaskDcrSubmitSuccessDto } from './models/TaskDcrSubmitSuccessDto';
 export type { TaskDeleteForbiddenDto } from './models/TaskDeleteForbiddenDto';
 export type { TaskDeleteInternalErrorDto } from './models/TaskDeleteInternalErrorDto';
 export type { TaskDeleteNotFoundDto } from './models/TaskDeleteNotFoundDto';
@@ -332,6 +349,8 @@ export type { TaskListInternalErrorDto } from './models/TaskListInternalErrorDto
 export type { TaskListSuccessDto } from './models/TaskListSuccessDto';
 export type { TaskListUnauthorizedDto } from './models/TaskListUnauthorizedDto';
 export type { TaskListValidationDto } from './models/TaskListValidationDto';
+export type { TaskReplyOnDcrReviewInternalErrorDto } from './models/TaskReplyOnDcrReviewInternalErrorDto';
+export type { TaskReplyOnDcrReviewUnauthorizedDto } from './models/TaskReplyOnDcrReviewUnauthorizedDto';
 export type { TaskStatusUpdateForbiddenDto } from './models/TaskStatusUpdateForbiddenDto';
 export type { TaskStatusUpdateFoundDto } from './models/TaskStatusUpdateFoundDto';
 export type { TaskStatusUpdateInternalErrorDto } from './models/TaskStatusUpdateInternalErrorDto';
@@ -352,6 +371,7 @@ export type { UpdateByAuthorityWeekendSetSuccessDto } from './models/UpdateByAut
 export type { UpdateByAuthorityWeekendSetUnauthorizedDto } from './models/UpdateByAuthorityWeekendSetUnauthorizedDto';
 export type { UpdateByAuthorityWeekendSetValidationDto } from './models/UpdateByAuthorityWeekendSetValidationDto';
 export type { UpdateClientDto } from './models/UpdateClientDto';
+export type { UpdateDcrSubmissionStatusDto } from './models/UpdateDcrSubmissionStatusDto';
 export type { UpdateDepartmentDto } from './models/UpdateDepartmentDto';
 export type { UpdateDesignationDto } from './models/UpdateDesignationDto';
 export type { UpdateProfileDto } from './models/UpdateProfileDto';
