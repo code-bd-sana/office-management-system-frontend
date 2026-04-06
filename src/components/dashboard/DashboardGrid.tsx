@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DashboardCard } from "./DashboardCard";
 import { TasksModal } from "@/components/task/TasksModal";
 import { ProjectsModal } from "@/components/project/ProjectsModal";
@@ -10,8 +10,46 @@ import { DCRSubmissionModal } from "@/components/dcr/DCRSubmissionModal";
 import { ShiftAssignmentModal } from "@/components/shift-assignment/ShiftAssignmentModal";
 import { TeamMembersModal } from "@/components/team/TeamMembersModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
+import { TaskManagementService } from "@/api";
+import { useAccessToken } from "@/hooks/useAccessToken";
+
+function getTaskCountFromResponse(payload: unknown): number {
+  if (!payload || typeof payload !== "object") return 0;
+
+  const envelope = payload as { data?: unknown };
+  if (!envelope.data || typeof envelope.data !== "object") return 0;
+
+  const data = envelope.data as Record<string, unknown>;
+
+  const totalKeys = ["total", "totalRecords", "count", "totalCount"];
+  for (const key of totalKeys) {
+    const value = data[key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+  }
+
+  const tasksValue = data.tasks;
+  if (Array.isArray(tasksValue)) {
+    return tasksValue.length;
+  }
+
+  const nestedDataValue = data.data;
+  if (Array.isArray(nestedDataValue)) {
+    return nestedDataValue.length;
+  }
+
+  return 0;
+}
 
 export function DashboardGrid() {
+  const token = useAccessToken();
+
+  const [taskCount, setTaskCount] = useState<number>(() => {
+    const taskCard = DASHBOARD_CARDS.find((card) => card.id === "tasks");
+    return taskCard?.count ?? 0;
+  });
+
   const [isTasksModalOpen, setIsTasksModalOpen] = useState(false);
   const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
   const [isLearningModalOpen, setIsLearningModalOpen] = useState(false);
@@ -19,6 +57,40 @@ export function DashboardGrid() {
   const [isDCRModalOpen, setIsDCRModalOpen] = useState(false);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
   const [isTeamMembersModalOpen, setIsTeamMembersModalOpen] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadTaskCount = async () => {
+      if (!token) return;
+      try {
+        const res = await TaskManagementService.taskControllerFindAll({
+          authorization: token,
+          pageNo: 1,
+          pageSize: 1,
+        });
+
+        const count = getTaskCountFromResponse(res);
+        if (mounted) setTaskCount(count);
+      } catch {
+        // Keep the previous value if count request fails.
+      }
+    };
+
+    loadTaskCount();
+
+    return () => {
+      mounted = false;
+    };
+  }, [token]);
+
+  const dashboardCards = useMemo(
+    () =>
+      DASHBOARD_CARDS.map((card) =>
+        card.id === "tasks" ? { ...card, count: taskCount } : card,
+      ),
+    [taskCount],
+  );
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {
@@ -41,7 +113,7 @@ export function DashboardGrid() {
   return (
     <section>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {DASHBOARD_CARDS.map((card) => (
+        {dashboardCards.map((card) => (
           <DashboardCard key={card.id} data={card} onClick={handleCardClick} />
         ))}
       </div>
