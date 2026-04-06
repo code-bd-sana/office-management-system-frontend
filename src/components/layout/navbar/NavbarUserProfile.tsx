@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronDown } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { ChevronDown } from "lucide-react";
 import { useUserInfo } from "@/hooks/useUserInfo";
 
 export function NavbarUserProfile() {
@@ -30,7 +30,7 @@ export function NavbarUserProfile() {
         <p className="text-xs leading-tight text-muted-foreground">{email}</p>
       </div>
 
-      <ChevronDown className="hidden h-4 w-4 text-muted-foreground md:block" />
+      {/* <ChevronDown className="hidden h-4 w-4 text-muted-foreground md:block" /> */}
     </button>
   );
 }
