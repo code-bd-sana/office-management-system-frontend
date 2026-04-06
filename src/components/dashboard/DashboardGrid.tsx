@@ -10,51 +10,102 @@ import { DCRSubmissionModal } from "@/components/dcr/DCRSubmissionModal";
 import { ShiftAssignmentModal } from "@/components/shift-assignment/ShiftAssignmentModal";
 import { TeamMembersModal } from "@/components/team/TeamMembersModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
-import { TaskManagementService } from "@/api";
+import {
+  DepartmentManagementService,
+  ProjectManagementService,
+  TaskManagementService,
+  UserManagementService,
+} from "@/api";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useUserInfo } from "@/hooks/useUserInfo";
 
-function getTaskCountFromResponse(payload: unknown): number {
-  if (!payload || typeof payload !== "object") return 0;
+type UnknownRecord = Record<string, unknown>;
 
-  const envelope = payload as { data?: unknown };
-  if (!envelope.data || typeof envelope.data !== "object") return 0;
+function asRecord(value: unknown): UnknownRecord | null {
+  if (!value || typeof value !== "object") return null;
+  return value as UnknownRecord;
+}
 
-  const data = envelope.data as Record<string, unknown>;
+function normalizeText(value: string | null | undefined): string {
+  return (value ?? "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toUpperCase();
+}
 
-  const totalKeys = ["total", "totalRecords", "count", "totalCount"];
-  for (const key of totalKeys) {
+function getResponseData(payload: unknown): UnknownRecord {
+  const envelope = asRecord(payload);
+  const data = asRecord(envelope?.data);
+  return data ?? {};
+}
+
+function getArrayByKeys(data: UnknownRecord, keys: string[]): unknown[] {
+  for (const key of keys) {
     const value = data[key];
-    if (typeof value === "number" && Number.isFinite(value)) {
+    if (Array.isArray(value)) {
       return value;
     }
   }
+  return [];
+}
 
-  const tasksValue = data.tasks;
-  if (Array.isArray(tasksValue)) {
-    return tasksValue.length;
+function getNumericValue(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
   }
 
-  const nestedDataValue = data.data;
-  if (Array.isArray(nestedDataValue)) {
-    return nestedDataValue.length;
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
   }
 
-  return 0;
+  return null;
+}
+
+function getTotalCount(data: UnknownRecord): number | null {
+  const totalKeys = [
+    "total",
+    "totalRecords",
+    "count",
+    "totalCount",
+    "usersCount",
+    "projectsCount",
+  ];
+
+  for (const key of totalKeys) {
+    const numeric = getNumericValue(data[key]);
+    if (numeric !== null) {
+      return numeric;
+    }
+  }
+
+  return null;
+}
+
+function getSubmittedDcrCount(tasks: unknown[]): number {
+  return tasks.reduce<number>((count, task) => {
+    const taskRecord = asRecord(task);
+    const statusValue = taskRecord?.dcrSubmissionStatus;
+    const status =
+      typeof statusValue === "string" ? normalizeText(statusValue) : "";
+
+    if (status && status !== "NOT SUBMITTED") {
+      return count + 1;
+    }
+
+    return count;
+  }, 0);
 }
 
 export function DashboardGrid() {
   const token = useAccessToken();
   const { role, department } = useUserInfo();
 
-  const normalizedDepartment =
-    department?.replace(/\s+/g, " ").trim().toUpperCase() ?? "";
-  const normalizedRole =
-    role
-      ?.replace(/[_-]+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .toUpperCase() ?? "";
+  const normalizedDepartment = normalizeText(department);
+  const normalizedRole = normalizeText(role);
 
   const isSalesDepartment = normalizedDepartment === "SALES";
   const isEmployeeRole = normalizedRole === "EMPLOYEE";
@@ -62,6 +113,26 @@ export function DashboardGrid() {
   const [taskCount, setTaskCount] = useState<number>(() => {
     const taskCard = DASHBOARD_CARDS.find((card) => card.id === "tasks");
     return taskCard?.count ?? 0;
+  });
+  const [projectCount, setProjectCount] = useState<number>(() => {
+    const projectCard = DASHBOARD_CARDS.find((card) => card.id === "projects");
+    return projectCard?.count ?? 0;
+  });
+  const [dcrSubmissionCount, setDcrSubmissionCount] = useState<number>(() => {
+    const dcrCard = DASHBOARD_CARDS.find((card) => card.id === "dcr-submission");
+    return dcrCard?.count ?? 0;
+  });
+  const [salesMembersCount, setSalesMembersCount] = useState<number>(() => {
+    const shiftCard = DASHBOARD_CARDS.find(
+      (card) => card.id === "shift-assignment",
+    );
+    return shiftCard?.count ?? 0;
+  });
+  const [registeredUsersCount, setRegisteredUsersCount] = useState<number>(() => {
+    const attendanceCard = DASHBOARD_CARDS.find(
+      (card) => card.id === "my-attendance",
+    );
+    return attendanceCard?.count ?? 0;
   });
 
   const [isTasksModalOpen, setIsTasksModalOpen] = useState(false);
@@ -75,23 +146,89 @@ export function DashboardGrid() {
   useEffect(() => {
     let mounted = true;
 
-    const loadTaskCount = async () => {
+    const loadDashboardCounts = async () => {
       if (!token) return;
+
       try {
-        const res = await TaskManagementService.taskControllerFindAll({
-          authorization: token,
-          pageNo: 1,
-          pageSize: 1,
+        const [tasksRes, projectsRes, usersRes, departmentsRes] =
+          await Promise.all([
+            TaskManagementService.taskControllerFindAll({
+              authorization: token,
+              pageNo: 1,
+              pageSize: 1000,
+            }),
+            ProjectManagementService.projectControllerFindAll({
+              authorization: token,
+              pageNo: 1,
+              pageSize: 1,
+            }),
+            UserManagementService.userControllerGetUsers({
+              authorization: token,
+              pageNo: 1,
+              pageSize: 1,
+            }),
+            DepartmentManagementService.departmentControllerFindAll({
+              pageNo: 1,
+              pageSize: 100,
+            }),
+          ]);
+
+        const tasksData = getResponseData(tasksRes);
+        const tasks = getArrayByKeys(tasksData, ["tasks", "data"]);
+        const nextTaskCount = getTotalCount(tasksData) ?? tasks.length;
+        const nextDcrSubmissionCount = getSubmittedDcrCount(tasks);
+
+        const projectsData = getResponseData(projectsRes);
+        const projects = getArrayByKeys(projectsData, ["projects", "data"]);
+        const nextProjectCount = getTotalCount(projectsData) ?? projects.length;
+
+        const usersData = getResponseData(usersRes);
+        const users = getArrayByKeys(usersData, ["users", "data"]);
+        const nextRegisteredUsersCount = getTotalCount(usersData) ?? users.length;
+
+        const departmentsData = getResponseData(departmentsRes);
+        const departments = getArrayByKeys(departmentsData, ["departments", "data"]);
+        const salesDepartment = departments.find((entry) => {
+          const item = asRecord(entry);
+          const name =
+            item && typeof item.name === "string"
+              ? normalizeText(item.name)
+              : "";
+          return name === "SALES";
         });
 
-        const count = getTaskCountFromResponse(res);
-        if (mounted) setTaskCount(count);
+        let nextSalesMembersCount = 0;
+        const salesDepartmentId = (() => {
+          const item = asRecord(salesDepartment);
+          return item && typeof item._id === "string" ? item._id : "";
+        })();
+
+        if (salesDepartmentId) {
+          const salesUsersRes = await UserManagementService.userControllerGetUsers({
+            authorization: token,
+            pageNo: 1,
+            pageSize: 1,
+            department: salesDepartmentId,
+          });
+          const salesUsersData = getResponseData(salesUsersRes);
+          const salesUsers = getArrayByKeys(salesUsersData, ["users", "data"]);
+          nextSalesMembersCount =
+            getTotalCount(salesUsersData) ?? salesUsers.length;
+        }
+
+        if (!mounted) return;
+
+        setTaskCount(nextTaskCount);
+        setProjectCount(nextProjectCount);
+        setDcrSubmissionCount(nextDcrSubmissionCount);
+        setSalesMembersCount(nextSalesMembersCount);
+        setRegisteredUsersCount(nextRegisteredUsersCount);
       } catch {
-        // Keep the previous value if count request fails.
+        // Keep existing fallback counts if dashboard count requests fail.
       }
     };
 
-    loadTaskCount();
+    loadDashboardCounts();
 
     return () => {
       mounted = false;
@@ -100,7 +237,17 @@ export function DashboardGrid() {
 
   const dashboardCards = useMemo(() => {
     const cardsWithDynamicTaskCount = DASHBOARD_CARDS.map((card) =>
-      card.id === "tasks" ? { ...card, count: taskCount } : card,
+      card.id === "tasks"
+        ? { ...card, count: taskCount }
+        : card.id === "projects"
+          ? { ...card, count: projectCount }
+          : card.id === "dcr-submission"
+            ? { ...card, count: dcrSubmissionCount }
+            : card.id === "shift-assignment"
+              ? { ...card, count: salesMembersCount }
+              : card.id === "my-attendance"
+                ? { ...card, count: registeredUsersCount }
+                : card,
     );
 
     return cardsWithDynamicTaskCount.filter((card) => {
@@ -114,7 +261,15 @@ export function DashboardGrid() {
 
       return true;
     });
-  }, [taskCount, isSalesDepartment, isEmployeeRole]);
+  }, [
+    taskCount,
+    projectCount,
+    dcrSubmissionCount,
+    salesMembersCount,
+    registeredUsersCount,
+    isSalesDepartment,
+    isEmployeeRole,
+  ]);
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {
