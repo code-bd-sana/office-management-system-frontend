@@ -12,6 +12,7 @@ import { TeamMembersModal } from "@/components/team/TeamMembersModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
 import { TaskManagementService } from "@/api";
 import { useAccessToken } from "@/hooks/useAccessToken";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 function getTaskCountFromResponse(payload: unknown): number {
   if (!payload || typeof payload !== "object") return 0;
@@ -44,6 +45,19 @@ function getTaskCountFromResponse(payload: unknown): number {
 
 export function DashboardGrid() {
   const token = useAccessToken();
+  const { role, department } = useUserInfo();
+
+  const normalizedDepartment =
+    department?.replace(/\s+/g, " ").trim().toUpperCase() ?? "";
+  const normalizedRole =
+    role
+      ?.replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toUpperCase() ?? "";
+
+  const isSalesDepartment = normalizedDepartment === "SALES";
+  const isEmployeeRole = normalizedRole === "EMPLOYEE";
 
   const [taskCount, setTaskCount] = useState<number>(() => {
     const taskCard = DASHBOARD_CARDS.find((card) => card.id === "tasks");
@@ -84,13 +98,23 @@ export function DashboardGrid() {
     };
   }, [token]);
 
-  const dashboardCards = useMemo(
-    () =>
-      DASHBOARD_CARDS.map((card) =>
-        card.id === "tasks" ? { ...card, count: taskCount } : card,
-      ),
-    [taskCount],
-  );
+  const dashboardCards = useMemo(() => {
+    const cardsWithDynamicTaskCount = DASHBOARD_CARDS.map((card) =>
+      card.id === "tasks" ? { ...card, count: taskCount } : card,
+    );
+
+    return cardsWithDynamicTaskCount.filter((card) => {
+      if (card.id === "shift-assignment" && !isSalesDepartment) {
+        return false;
+      }
+
+      if (card.id === "projects" && !isSalesDepartment && isEmployeeRole) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [taskCount, isSalesDepartment, isEmployeeRole]);
 
   const handleCardClick = (cardId: string) => {
     if (cardId === "tasks") {

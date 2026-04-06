@@ -19,10 +19,29 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { logout, token, user } = useAuth();
   const router = useRouter();
 
-  const isSalesDepartment = user?.department?.trim().toUpperCase() === "SALES";
-  const navItems = isSalesDepartment
-    ? SIDEBAR_NAV_ITEMS
-    : SIDEBAR_NAV_ITEMS.filter((item) => item.href !== "/shift-assignment");
+  const normalizedDepartment =
+    user?.department?.replace(/\s+/g, " ").trim().toUpperCase() ?? "";
+  const normalizedRole =
+    user?.role
+      ?.replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toUpperCase() ?? "";
+
+  const isSalesDepartment = normalizedDepartment === "SALES";
+  const isEmployeeRole = normalizedRole === "EMPLOYEE";
+
+  const navItems = SIDEBAR_NAV_ITEMS.filter((item) => {
+    if (!isSalesDepartment && item.href === "/shift-assignment") {
+      return false;
+    }
+
+    if (!isSalesDepartment && isEmployeeRole && item.href === "/projects") {
+      return false;
+    }
+
+    return true;
+  });
 
   const handleLogout = async () => {
     try {
