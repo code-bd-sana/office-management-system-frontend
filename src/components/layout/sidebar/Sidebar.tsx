@@ -16,8 +16,13 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { logout, token } = useAuth();
+  const { logout, token, user } = useAuth();
   const router = useRouter();
+
+  const isSalesDepartment = user?.department?.trim().toUpperCase() === "SALES";
+  const navItems = isSalesDepartment
+    ? SIDEBAR_NAV_ITEMS
+    : SIDEBAR_NAV_ITEMS.filter((item) => item.href !== "/shift-assignment");
 
   const handleLogout = async () => {
     try {
@@ -58,7 +63,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {SIDEBAR_NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <SidebarNavItem key={item.href} item={item} onNavigate={onClose} />
           ))}
         </nav>

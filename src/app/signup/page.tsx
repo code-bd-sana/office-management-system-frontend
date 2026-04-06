@@ -28,6 +28,24 @@ interface SelectOption {
   name: string;
 }
 
+const ALLOWED_SIGNUP_ROLES = new Set([
+  "EMPLOYEE",
+  "TEAM LEADER",
+  "PROJECT MANAGER",
+]);
+
+function normalizeRoleName(name: string): string {
+  return name
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toUpperCase();
+}
+
+function isAllowedSignupRole(name: string): boolean {
+  return ALLOWED_SIGNUP_ROLES.has(normalizeRoleName(name));
+}
+
 export default function SignUpPage() {
   const router = useRouter();
 
@@ -109,7 +127,19 @@ export default function SignUpPage() {
         pageSize: 100,
       });
       const data = (res as { data?: { roles?: SelectOption[] } }).data;
-      setRoles(Array.isArray(data?.roles) ? data.roles : []);
+      const roleList = Array.isArray(data?.roles) ? data.roles : [];
+      const allowedRoles = roleList.filter((role) =>
+        isAllowedSignupRole(role.name),
+      );
+
+      setRoles(allowedRoles);
+      setFormData((prev) => {
+        if (!prev.role) return prev;
+        const isCurrentRoleAllowed = allowedRoles.some(
+          (role) => role._id === prev.role,
+        );
+        return isCurrentRoleAllowed ? prev : { ...prev, role: "" };
+      });
       roleFetched.current = true;
     } catch (err) {
       console.error("Failed to load roles:", err);
@@ -442,7 +472,7 @@ export default function SignUpPage() {
                 )}
                 {roles.length === 0 && !roleLoading && roleFetched.current && (
                   <SelectItem value="__none" disabled>
-                    No roles available
+                    No allowed roles available
                   </SelectItem>
                 )}
                 {roles.map((role) => (

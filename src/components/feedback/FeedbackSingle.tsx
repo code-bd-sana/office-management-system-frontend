@@ -15,7 +15,7 @@ export function FeedbackSingle() {
           alt="User Avatar"
           width={60}
           height={60}
-          className="rounded-full h-10 w-10 sm:h-[60px] sm:w-[60px]"
+          className="rounded-full h-10 w-10 sm:h-15 sm:w-15"
         />
         <div>
           <p className="text-gray-600 font-semibold text-base sm:text-lg">
