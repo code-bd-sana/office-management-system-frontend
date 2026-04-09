@@ -28,10 +28,7 @@ import { ATTENDANCE_DESCRIPTION, MONTH_NAMES } from "@/constants/attendance";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useUserInfo } from "@/hooks/useUserInfo";
 import { AttendanceManagementService } from "@/api";
-import type {
-  ApiAttendanceRecord,
-  AttendanceRecord,
-} from "@/types/attendance";
+import type { ApiAttendanceRecord, AttendanceRecord } from "@/types/attendance";
 
 /* ── Component ───────────────────────────────────────────── */
 export function AttendanceContent() {
@@ -68,18 +65,23 @@ export function AttendanceContent() {
       let res: any;
       if (isViewingOtherUser && selectedUser) {
         res =
-          await AttendanceManagementService.attendanceControllerGetSpecificUserAttendance({
-            month,
-            year,
-            userId: selectedUser._id,
-            authorization,
-          });
+          await AttendanceManagementService.attendanceControllerGetSpecificUserAttendance(
+            {
+              month,
+              year,
+              userId: selectedUser._id,
+              authorization,
+            },
+          );
       } else {
-        res = await AttendanceManagementService.attendanceControllerGetMyAttendance({
-          month,
-          year,
-          authorization,
-        });
+        res =
+          await AttendanceManagementService.attendanceControllerGetMyAttendance(
+            {
+              month,
+              year,
+              authorization,
+            },
+          );
       }
       const data = (res as any)?.data ?? [];
       setRawRecords(Array.isArray(data) ? data : []);
@@ -89,8 +91,7 @@ export function AttendanceContent() {
       else if (status === 403)
         setError("You don't have permission to view this user's attendance.");
       else if (status === 404) setError("User not found.");
-      else
-        setError(err?.body?.message ?? "Failed to load attendance records.");
+      else setError(err?.body?.message ?? "Failed to load attendance records.");
     } finally {
       setLoading(false);
     }
@@ -126,8 +127,7 @@ export function AttendanceContent() {
         description: "Checked In!",
       });
     } catch (err: any) {
-      const msg =
-        err?.body?.message ?? "Failed to check in. Please try again.";
+      const msg = err?.body?.message ?? "Failed to check in. Please try again.";
       toast.warning(msg, {
         description: "Check In Failed",
       });
@@ -161,15 +161,12 @@ export function AttendanceContent() {
 
   /* ── Year options ──────────────────────────────────────── */
   const currentYear = now.getFullYear();
-  const yearOptions = Array.from(
-    { length: 26 },
-    (_, i) => currentYear - 1 + i,
-  );
+  const yearOptions = Array.from({ length: 26 }, (_, i) => currentYear - 1 + i);
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Description */}
-      <p className="text-base pr-0 leading-relaxed text-muted-foreground/80 sm:text-xl sm:pr-8 md:text-2xl">
+      <p className='text-base pr-0 leading-relaxed text-muted-foreground/80 sm:text-xl sm:pr-8 md:text-2xl'>
         {ATTENDANCE_DESCRIPTION}
       </p>
 
@@ -185,8 +182,8 @@ export function AttendanceContent() {
 
       {/* Viewing other user banner */}
       {isViewingOtherUser && selectedUser && (
-        <div className="flex items-center gap-2 rounded-sm border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-          <Search className="h-4 w-4" />
+        <div className='flex items-center gap-2 rounded-sm border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700'>
+          <Search className='h-4 w-4' />
           <span>
             Viewing attendance for:{" "}
             <strong>
@@ -197,7 +194,7 @@ export function AttendanceContent() {
       )}
 
       {/* User Selector + Month / Year Selector */}
-      <div className="flex flex-wrap items-center gap-3 px-3 sm:px-6">
+      <div className='flex flex-wrap items-center gap-3 px-3 sm:px-6'>
         {/* User selector — only for privileged roles */}
         {isPrivileged && (
           <UserSelector
@@ -208,15 +205,12 @@ export function AttendanceContent() {
           />
         )}
 
-        <label className="text-sm font-medium text-foreground/70">
-          Month:
-        </label>
+        <label className='text-sm font-medium text-foreground/70'>Month:</label>
         <Select
           value={String(month)}
-          onValueChange={(val) => setMonth(Number(val))}
-        >
-          <SelectTrigger className="w-35">
-            <SelectValue placeholder="Select month" />
+          onValueChange={(val) => setMonth(Number(val))}>
+          <SelectTrigger className='w-35'>
+            <SelectValue placeholder='Select month' />
           </SelectTrigger>
           <SelectContent>
             {MONTH_NAMES.map((name, idx) => (
@@ -227,15 +221,14 @@ export function AttendanceContent() {
           </SelectContent>
         </Select>
 
-        <label className="text-sm font-medium text-foreground/70 ml-2">
+        <label className='text-sm font-medium text-foreground/70 ml-2'>
           Year:
         </label>
         <Select
           value={String(year)}
-          onValueChange={(val) => setYear(Number(val))}
-        >
-          <SelectTrigger className="w-25">
-            <SelectValue placeholder="Select year" />
+          onValueChange={(val) => setYear(Number(val))}>
+          <SelectTrigger className='w-25'>
+            <SelectValue placeholder='Select year' />
           </SelectTrigger>
           <SelectContent>
             {yearOptions.map((y) => (
@@ -258,14 +251,14 @@ export function AttendanceContent() {
 
       {/* Loading / Error / Table */}
       {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          <span className="ml-3 text-muted-foreground">
+        <div className='flex items-center justify-center py-16'>
+          <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
+          <span className='ml-3 text-muted-foreground'>
             Loading attendance…
           </span>
         </div>
       ) : error ? (
-        <div className="rounded-sm border border-red-200 bg-red-50 px-4 py-6 text-center text-red-600">
+        <div className='rounded-sm border border-red-200 bg-red-50 px-4 py-6 text-center text-red-600'>
           {error}
         </div>
       ) : (
