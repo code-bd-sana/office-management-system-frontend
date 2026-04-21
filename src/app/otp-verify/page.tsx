@@ -197,7 +197,7 @@ export default function OtpVerifyPage() {
 
   return (
     <div className="min-h-screen w-full bg-linear-to-br from-[#044192] via-[#0a5eb8] to-[#1976d2] flex items-center justify-center p-4">
-      <div className="w-full max-w-xl bg-white rounded-lg shadow-2xl p-6 sm:p-8 md:p-10 my-8">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-6 sm:p-8 md:p-10 my-8">
         <div className="flex flex-col items-center mb-6">
           <div className="flex items-center gap-4 mb-4">
             <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full">
