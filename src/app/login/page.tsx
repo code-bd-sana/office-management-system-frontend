@@ -20,7 +20,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberPassword, setRememberPassword] = useState(false);
-  const [isNotRobot, setIsNotRobot] = useState(false);
 
   // ── Submission / error state ──────────────────────────────────────────
   const [isSubmitting, setIsSubmitting] = useState(false);
