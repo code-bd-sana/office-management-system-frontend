@@ -2,13 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TeamCreateUnauthorizedDto = {
+import type { FieldErrorDto } from './FieldErrorDto';
+export type OtpVerifyValidationDto = {
     success: boolean;
     message: string;
     method: Record<string, any>;
     endpoint: string;
     statusCode: number;
     timestamp: string;
-    error: string;
+    errors: Array<FieldErrorDto>;
 };
 

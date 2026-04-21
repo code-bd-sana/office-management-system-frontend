@@ -5,7 +5,13 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
 /** Routes that do NOT require authentication */
-const PUBLIC_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
+const PUBLIC_ROUTES = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/otp-verify",
+  "/reset-password",
+];
 
 /**
  * Wraps the app tree and redirects unauthenticated users to /login
