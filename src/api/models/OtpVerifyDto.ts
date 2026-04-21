@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ResetPasswordDto = {
+export type OtpVerifyDto = {
     /**
-     * The reset token obtained after OTP verification
+     * The user's email address
      */
-    resetToken: string;
+    email: string;
     /**
-     * The user's new password
+     * The OTP sent to the user's email for password reset
      */
-    newPassword: string;
+    otp: string;
 };
 

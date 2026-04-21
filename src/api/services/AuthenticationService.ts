@@ -1,7 +1,3 @@
-/* generated using openapi-typescript-codegen -- do not edit */
-/* istanbul ignore file */
-/* tslint:disable */
-/* eslint-disable */
 import type { ChangePasswordDto } from '../models/ChangePasswordDto';
 import type { ChangePasswordSuccessDto } from '../models/ChangePasswordSuccessDto';
 import type { CreateUserDto } from '../models/CreateUserDto';
@@ -10,6 +6,8 @@ import type { ForgotPasswordSuccessDto } from '../models/ForgotPasswordSuccessDt
 import type { LoginDto } from '../models/LoginDto';
 import type { LoginSuccessDto } from '../models/LoginSuccessDto';
 import type { LogoutSuccessDto } from '../models/LogoutSuccessDto';
+import type { OtpVerifyDto } from '../models/OtpVerifyDto';
+import type { OtpVerifySuccessDto } from '../models/OtpVerifySuccessDto';
 import type { RegistrationSuccessDto } from '../models/RegistrationSuccessDto';
 import type { ResetPasswordDto } from '../models/ResetPasswordDto';
 import type { ResetPasswordSuccessDto } from '../models/ResetPasswordSuccessDto';
@@ -80,8 +78,34 @@ export class AuthenticationService {
         });
     }
     /**
+     * Verify reset OTP
+     * Verifies the password reset OTP for the user's email.
+     * @returns any
+     * @throws ApiError
+     */
+    public static authControllerVerifyOtp({
+        xDeviceId,
+        requestBody,
+    }: {
+        /**
+         * Unique identifier for the user's device, used for throttling password reset requests.
+         */
+        xDeviceId: string,
+        requestBody: OtpVerifyDto,
+    }): CancelablePromise<OtpVerifySuccessDto> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/auth/otp-verify',
+            headers: {
+                'x-device-id': xDeviceId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
      * Reset password
-     * Resets the user's password using a valid OTP.
+     * Resets the user's password using a valid reset token obtained after OTP verification.
      * @returns any
      * @throws ApiError
      */

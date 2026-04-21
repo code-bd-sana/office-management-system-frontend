@@ -2,13 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TeamCreateSuccessDto = {
+export type OtpVerifyInternalErrorDto = {
     success: boolean;
     message: string;
     method: Record<string, any>;
     endpoint: string;
     statusCode: number;
     timestamp: string;
-    data?: Record<string, any>;
+    error: string;
 };
 
