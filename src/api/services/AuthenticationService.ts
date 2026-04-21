@@ -1,3 +1,7 @@
+/* generated using openapi-typescript-codegen -- do not edit */
+/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
 import type { ChangePasswordDto } from '../models/ChangePasswordDto';
 import type { ChangePasswordSuccessDto } from '../models/ChangePasswordSuccessDto';
 import type { CreateUserDto } from '../models/CreateUserDto';
