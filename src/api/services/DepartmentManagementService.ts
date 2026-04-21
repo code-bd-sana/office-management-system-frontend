@@ -1,6 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
+/* eslint-disable */
 import type { CreateDepartmentDto } from '../models/CreateDepartmentDto';
 import type { DepartmentByIdSuccessDto } from '../models/DepartmentByIdSuccessDto';
 import type { DepartmentCreateSuccessDto } from '../models/DepartmentCreateSuccessDto';
