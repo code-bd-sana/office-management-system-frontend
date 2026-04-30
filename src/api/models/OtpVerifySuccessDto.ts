@@ -9,6 +9,6 @@ export type OtpVerifySuccessDto = {
     endpoint: string;
     statusCode: number;
     timestamp: string;
-    data?: Record<string, any>;
+    data?: string;
 };
 

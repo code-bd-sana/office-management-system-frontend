@@ -2,6 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UpdateTeamManagementDto = {
+export type UpdateTeamMemberDto = {
+    /**
+     * New team ID to move the member to
+     */
+    team_id: string;
 };
 

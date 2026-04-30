@@ -8,9 +8,13 @@ export type CreateTaskDto = {
      */
     name: string;
     /**
-     * The project associated with the task
+     * The project associated with the task (for backward compatibility - legacy tasks)
      */
-    project: string;
+    project?: string;
+    /**
+     * The sub-project associated with the task (preferred for new tasks)
+     */
+    subProjectId?: string;
     /**
      * The due date for the task (ISO date string)
      */

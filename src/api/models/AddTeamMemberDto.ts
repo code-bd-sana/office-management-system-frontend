@@ -2,6 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateTeamManagementDto = {
+export type AddTeamMemberDto = {
+    teamId: string;
+    userId: string;
 };
 

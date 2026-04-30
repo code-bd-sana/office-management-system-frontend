@@ -9,6 +9,6 @@ export type GetMyShiftExchangesSuccessDto = {
     endpoint: string;
     statusCode: number;
     timestamp: string;
-    data?: Record<string, any>;
+    data?: Array<string>;
 };
 
