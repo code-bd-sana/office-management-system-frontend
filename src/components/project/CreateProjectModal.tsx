@@ -57,6 +57,7 @@ const INITIAL_FORM = {
   assignedDepartment: "",
   projectTeam: "" as CreateProjectDto.projectTeam | "",
   dueDate: "",
+  value: "",
 };
 
 /* ─── Component ───────────────────────────────────────────── */
@@ -94,15 +95,17 @@ export function CreateProjectModal({
           pageSize: 100,
         }),
       ]);
-      setClients(Array.isArray((clientsRes as any)?.data) ? (clientsRes as any).data : []);
-      setProfiles(Array.isArray((profilesRes as any)?.data) ? (profilesRes as any).data : []);
+      const clientsData = (clientsRes as Record<string, unknown>)?.data;
+      setClients(Array.isArray(clientsData) ? clientsData as DropdownItem[] : []);
+      const profilesData = (profilesRes as Record<string, unknown>)?.data;
+      setProfiles(Array.isArray(profilesData) ? profilesData as DropdownItem[] : []);
       // API returns { data: { departments: [], total, totalPages } }
-      const depsData = (depsRes as any)?.data;
+      const depsData = (depsRes as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
       setDepartments(
         Array.isArray(depsData?.departments)
-          ? depsData.departments
+          ? depsData?.departments as DropdownItem[]
           : Array.isArray(depsData)
-            ? depsData
+            ? depsData as DropdownItem[]
             : []
       );
     } catch {
@@ -114,8 +117,10 @@ export function CreateProjectModal({
 
   useEffect(() => {
     if (open) {
-      setForm(INITIAL_FORM);
-      fetchDropdowns();
+      setTimeout(() => {
+        setForm(INITIAL_FORM);
+        fetchDropdowns();
+      }, 0);
     }
   }, [open, fetchDropdowns]);
 
@@ -170,6 +175,7 @@ export function CreateProjectModal({
           projectTeam: form.projectTeam as CreateProjectDto.projectTeam,
         }),
         ...(form.dueDate && { dueDate: form.dueDate }),
+        ...(form.value && { value: Number(form.value) }),
       };
 
       await ProjectManagementService.projectControllerCreate({
@@ -180,12 +186,15 @@ export function CreateProjectModal({
       toast.success(`Project "${payload.name}" created successfully!`);
       onOpenChange(false);
       onCreated?.();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorObj = err as Record<string, unknown>;
+      const body = errorObj?.body as Record<string, unknown>;
+      const errors = body?.errors as Array<Record<string, unknown>>;
       const msg =
-        err?.body?.errors
-          ?.map((e: any) => e.message ?? e.field)
+        errors
+          ?.map((e) => (e.message as string) ?? (e.field as string))
           ?.join(", ") ??
-        err?.body?.message ??
+        (body?.message as string) ??
         "Failed to create project. Please try again.";
       toast.error(msg);
     } finally {
@@ -372,7 +381,23 @@ export function CreateProjectModal({
                 </div>
               </div>
 
-              {/* Row 5: Project Remarks */}
+              {/* Row 5: Value */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-foreground">
+                    Project Value
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="e.g. 1500"
+                    value={form.value}
+                    onChange={(e) => set("value", e.target.value)}
+                    className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                  />
+                </div>
+              </div>
+
+              {/* Row 6: Project Remarks */}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-foreground">
                   Project Remarks <span className="text-red-500">*</span>
@@ -386,7 +411,7 @@ export function CreateProjectModal({
                 />
               </div>
 
-              {/* Row 6: Project File URLs */}
+              {/* Row 7: Project File URLs */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-foreground">

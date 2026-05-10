@@ -93,15 +93,17 @@ export function UpdateProjectModal({
           pageSize: 100,
         }),
       ]);
-      setClients(Array.isArray((clientsRes as any)?.data) ? (clientsRes as any).data : []);
-      setProfiles(Array.isArray((profilesRes as any)?.data) ? (profilesRes as any).data : []);
+      const clientsData = (clientsRes as Record<string, unknown>)?.data;
+      setClients(Array.isArray(clientsData) ? clientsData as DropdownItem[] : []);
+      const profilesData = (profilesRes as Record<string, unknown>)?.data;
+      setProfiles(Array.isArray(profilesData) ? profilesData as DropdownItem[] : []);
       // API returns { data: { departments: [], total, totalPages } }
-      const depsData = (depsRes as any)?.data;
+      const depsData = (depsRes as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
       setDepartments(
         Array.isArray(depsData?.departments)
-          ? depsData.departments
+          ? depsData?.departments as DropdownItem[]
           : Array.isArray(depsData)
-            ? depsData
+            ? depsData as DropdownItem[]
             : []
       );
     } catch {
@@ -113,38 +115,41 @@ export function UpdateProjectModal({
 
   useEffect(() => {
     if (open && projectId && token) {
-      // 1. Fetch dropdowns
-      fetchDropdowns();
+      setTimeout(() => {
+        // 1. Fetch dropdowns
+        fetchDropdowns();
 
-      // 2. Fetch project details
-      ProjectManagementService.projectControllerFindOne({
-        id: projectId,
-        authorization: token,
-      })
-        .then((res: any) => {
-          const pd = res?.data;
-          if (pd) {
-            setForm({
-              name: pd.name || "",
-              orderId: pd.orderId || "",
-              status: pd.status || "",
-              projectRemarks: pd.projectRemarks || "",
-              projectFiles: pd.projectFiles?.length ? pd.projectFiles : [""],
-              client: typeof pd.client === "string" ? pd.client : pd.client?._id || "",
-              profile: typeof pd.profile === "string" ? pd.profile : pd.profile?._id || "",
-              assignedDepartment: typeof pd.assignedDepartment === "string"
-                ? pd.assignedDepartment
-                : pd.assignedDepartment?._id || "",
-              projectTeam: pd.projectTeam || "",
-              dueDate: pd.dueDate ? pd.dueDate.split("T")[0] : "", // get visual YYYY-MM-DD
-            });
-          }
+        // 2. Fetch project details
+        ProjectManagementService.projectControllerFindOne({
+          id: projectId,
+          authorization: token,
         })
-        .catch(() => {
-          toast.error("Failed to load project details for editing.");
-        });
+          .then((res: unknown) => {
+            const pd = (res as Record<string, unknown>)?.data as Record<string, unknown>;
+            if (pd) {
+              setForm({
+                name: (pd.name as string) || "",
+                orderId: (pd.orderId as string) || "",
+                status: (pd.status as string) || "",
+                projectRemarks: (pd.projectRemarks as string) || "",
+                projectFiles: Array.isArray(pd.projectFiles) && pd.projectFiles.length ? pd.projectFiles as string[] : [""],
+                client: typeof pd.client === "string" ? pd.client : (pd.client as Record<string, unknown>)?._id as string || "",
+                profile: typeof pd.profile === "string" ? pd.profile : (pd.profile as Record<string, unknown>)?._id as string || "",
+                assignedDepartment: typeof pd.assignedDepartment === "string"
+                  ? pd.assignedDepartment
+                  : (pd.assignedDepartment as Record<string, unknown>)?._id as string || "",
+                projectTeam: (pd.projectTeam as string) || "",
+                dueDate: pd.dueDate ? (pd.dueDate as string).split("T")[0] : "", // get visual YYYY-MM-DD
+                value: pd.value ? String(pd.value) : "",
+              });
+            }
+          })
+          .catch(() => {
+            toast.error("Failed to load project details for editing.");
+          });
+      }, 0);
     } else if (!open) {
-      setForm(INITIAL_FORM); // Reset when closing
+      setTimeout(() => setForm(INITIAL_FORM), 0); // Reset when closing
     }
   }, [open, token, projectId, fetchDropdowns]);
 
@@ -186,7 +191,7 @@ export function UpdateProjectModal({
     try {
       // The update schema might technically only advertise `deliveryDate`,
       // but "update all" in the backend typical implementation means overriding fields.
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         name: form.name.trim(),
         orderId: form.orderId.trim(),
         status: form.status,
@@ -197,24 +202,28 @@ export function UpdateProjectModal({
         assignedDepartment: form.assignedDepartment || null,
         projectTeam: form.projectTeam || null,
         dueDate: form.dueDate || null,
+        value: form.value ? Number(form.value) : null,
       };
 
       await ProjectManagementService.projectControllerUpdate({
         id: projectId,
         authorization: token,
-        requestBody: payload, // Pass all updated data
+        requestBody: payload as Record<string, unknown> & import("../../api/models/UpdateProjectDto").UpdateProjectDto, // Pass all updated data
       });
 
       toast.success(`Project updated successfully!`);
       onOpenChange(false);
       onUpdated?.();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorObj = err as Record<string, unknown>;
+      const body = errorObj?.body as Record<string, unknown>;
+      const errors = body?.errors as Array<Record<string, unknown>>;
       const msg =
-        err?.body?.errors
-          ?.map((e: any) => e.message ?? e.field)
+        errors
+          ?.map((e) => (e.message as string) ?? (e.field as string))
           ?.join(", ") ??
-        err?.body?.message ??
-        "Failed to create project. Please try again.";
+        (body?.message as string) ??
+        "Failed to update project. Please try again.";
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -400,7 +409,23 @@ export function UpdateProjectModal({
                 </div>
               </div>
 
-              {/* Row 5: Project Remarks */}
+              {/* Row 5: Value */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-foreground">
+                    Project Value
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="e.g. 1500"
+                    value={form.value}
+                    onChange={(e) => set("value", e.target.value)}
+                    className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                  />
+                </div>
+              </div>
+
+              {/* Row 6: Project Remarks */}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-foreground">
                   Project Remarks <span className="text-red-500">*</span>
@@ -414,7 +439,7 @@ export function UpdateProjectModal({
                 />
               </div>
 
-              {/* Row 6: Project File URLs */}
+              {/* Row 7: Project File URLs */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-foreground">
