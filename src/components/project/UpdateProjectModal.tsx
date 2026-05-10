@@ -57,6 +57,7 @@ const INITIAL_FORM = {
   assignedDepartment: "",
   projectTeam: "" as CreateProjectDto.projectTeam | "",
   dueDate: "",
+  value: "",
 };
 
 export function UpdateProjectModal({
@@ -130,7 +131,7 @@ export function UpdateProjectModal({
               setForm({
                 name: (pd.name as string) || "",
                 orderId: (pd.orderId as string) || "",
-                status: (pd.status as string) || "",
+                status: (pd.status as CreateProjectDto.status) || "",
                 projectRemarks: (pd.projectRemarks as string) || "",
                 projectFiles: Array.isArray(pd.projectFiles) && pd.projectFiles.length ? pd.projectFiles as string[] : [""],
                 client: typeof pd.client === "string" ? pd.client : (pd.client as Record<string, unknown>)?._id as string || "",
@@ -138,7 +139,7 @@ export function UpdateProjectModal({
                 assignedDepartment: typeof pd.assignedDepartment === "string"
                   ? pd.assignedDepartment
                   : (pd.assignedDepartment as Record<string, unknown>)?._id as string || "",
-                projectTeam: (pd.projectTeam as string) || "",
+                projectTeam: (pd.projectTeam as CreateProjectDto.projectTeam) || "",
                 dueDate: pd.dueDate ? (pd.dueDate as string).split("T")[0] : "", // get visual YYYY-MM-DD
                 value: pd.value ? String(pd.value) : "",
               });
