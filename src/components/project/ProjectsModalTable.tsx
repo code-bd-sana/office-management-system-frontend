@@ -10,7 +10,6 @@ import { ProfileManagementModal } from "./ProfileManagementModal";
 import { ClientManagementModal } from "./ClientManagementModal";
 import { CreateProjectModal } from "./CreateProjectModal";
 import { UpdateProjectModal } from "./UpdateProjectModal";
-import { ViewProjectModal } from "./ViewProjectModal";
 
 import {
   AlertDialog,
@@ -68,7 +67,6 @@ export function ProjectsModalTable() {
 
   /* ── Action Modals state ────────────────────────────────── */
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [isViewOpen, setIsViewOpen] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -156,7 +154,6 @@ export function ProjectsModalTable() {
 
   const openView = (id: string) => {
     setSelectedProjectId(id);
-    setIsViewOpen(true);
   };
 
   const openEdit = (id: string) => {
@@ -330,12 +327,6 @@ export function ProjectsModalTable() {
       />
 
       {/* ── Action Modals ────────────────────────────────────── */}
-      <ViewProjectModal
-        projectId={selectedProjectId}
-        open={isViewOpen}
-        onOpenChange={setIsViewOpen}
-      />
-
       <UpdateProjectModal
         projectId={selectedProjectId}
         open={isUpdateOpen}
