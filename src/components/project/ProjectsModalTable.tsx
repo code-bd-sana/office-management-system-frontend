@@ -35,7 +35,7 @@ const COLUMNS: ColumnDef[] = [
   { key: "client",      label: "Client"       },
   { key: "orderId",     label: "Order ID"     },
   { key: "profile",     label: "Profile"      },
-  { key: "projectFile", label: "Project File" },
+  { key: "value",       label: "Value"        },
   { key: "status",      label: "Status"       },
   { key: "actions",     label: "Actions",     className: "w-[120px]" },
 ];

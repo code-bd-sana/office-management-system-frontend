@@ -388,10 +388,11 @@ export function CreateProjectModal({
                     Project Value
                   </label>
                   <Input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     placeholder="e.g. 1500"
                     value={form.value}
-                    onChange={(e) => set("value", e.target.value)}
+                    onChange={(e) => set("value", e.target.value.replace(/[^0-9.]/g, ""))}
                     className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
                   />
                 </div>

@@ -41,9 +41,6 @@ export function ProjectsModalRow({
 }: ProjectsModalRowProps) {
   const statusCfg = STATUS_CONFIG[project.status] ?? STATUS_CONFIG["NULL"];
 
-  // First file URL (if any)
-  const firstFile = project.projectFiles?.[0];
-
   return (
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
       {/* # */}
@@ -76,21 +73,9 @@ export function ProjectsModalRow({
         {resolveName(project.profile)}
       </TableCell>
 
-      {/* Project File */}
-      <TableCell className="py-3.5 text-sm">
-        {firstFile ? (
-          <a
-            href={firstFile}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="max-w-40 truncate font-medium text-brand-navy underline underline-offset-2 hover:text-brand-navy-dark"
-            title={firstFile}
-          >
-            View File
-          </a>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
+      {/* Value */}
+      <TableCell className="py-3.5 text-sm font-medium text-foreground/80">
+        {project.value != null ? `$${project.value}` : "—"}
       </TableCell>
 
       {/* Status */}
