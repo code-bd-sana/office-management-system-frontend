@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { LayoutList, Users, FolderPlus, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
@@ -54,6 +55,7 @@ type FilterValue = ProjectStatus | "all";
 
 /* ─── Component ───────────────────────────────────────────── */
 export function ProjectsModalTable() {
+  const router = useRouter();
   const token = useAccessToken();
   const { department } = useUserInfo();
 
@@ -153,7 +155,7 @@ export function ProjectsModalTable() {
   };
 
   const openView = (id: string) => {
-    setSelectedProjectId(id);
+    router.push(`/projects/${id}`);
   };
 
   const openEdit = (id: string) => {
