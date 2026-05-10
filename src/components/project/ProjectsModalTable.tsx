@@ -202,7 +202,7 @@ export function ProjectsModalTable() {
             <button
               type="button"
               onClick={() => setIsCreateProjectModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#6941C6] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#5a35b0] hover:shadow-md active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
             >
               <FolderPlus className="h-4 w-4" />
               New Project
@@ -212,7 +212,7 @@ export function ProjectsModalTable() {
             <button
               type="button"
               onClick={() => setIsClientModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#1a6b3c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#155c32] hover:shadow-md active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
             >
               <Users className="h-4 w-4" />
               Client
@@ -222,7 +222,7 @@ export function ProjectsModalTable() {
             <button
               type="button"
               onClick={() => setIsProfileModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-brand-navy px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-navy-dark hover:shadow-md active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
             >
               <LayoutList className="h-4 w-4" />
               Profile
