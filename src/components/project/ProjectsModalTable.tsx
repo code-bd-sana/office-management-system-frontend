@@ -114,20 +114,21 @@ export function ProjectsModalTable() {
         }),
       });
 
-      const data = (res as any)?.data;
+      const data = (res as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
       // API returns { data: { projects: [], total, totalPages } }
       const list: Project[] = Array.isArray(data?.projects)
-        ? data.projects
+        ? data?.projects as Project[]
         : Array.isArray(data)
-        ? data
+        ? data as Project[]
         : [];
-      const total: number = data?.total ?? list.length;
+      const total: number = typeof data?.total === "number" ? data.total : list.length;
 
       setProjects(list);
       setTotalRecords(total);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errBody = (err as Record<string, unknown>)?.body as Record<string, unknown>;
       const msg =
-        err?.body?.message ?? "Failed to load projects. Please try again.";
+        (errBody?.message as string) ?? "Failed to load projects. Please try again.";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -135,7 +136,7 @@ export function ProjectsModalTable() {
   }, [token, currentPage, rowsPerPage, debouncedSearch, activeFilter]);
 
   useEffect(() => {
-    fetchProjects();
+    setTimeout(() => fetchProjects(), 0);
   }, [fetchProjects]);
 
   /* ── Filter / pagination handlers ────────────────────────── */
@@ -179,8 +180,9 @@ export function ProjectsModalTable() {
       toast.success("Project deleted successfully");
       fetchProjects();
       setIsDeleteOpen(false);
-    } catch (err: any) {
-      toast.error(err?.body?.message || "Failed to delete project");
+    } catch (err: unknown) {
+      const errBody = (err as Record<string, unknown>)?.body as Record<string, unknown>;
+      toast.error((errBody?.message as string) || "Failed to delete project");
     } finally {
       setIsDeleting(false);
     }
@@ -288,7 +290,7 @@ export function ProjectsModalTable() {
           totalRecords={totalRecords}
           enableSearch={true}
           searchPlaceholder="Search by name or order ID…"
-          onFilterData={noopFilter as any}
+          onFilterData={noopFilter}
           onSearchChange={(val) => {
             setSearch(val);
           }}
@@ -304,7 +306,7 @@ export function ProjectsModalTable() {
               onDelete={() => openDelete(project._id)}
             />
           )}
-          enableCheckboxes={true}
+          enableCheckboxes={false}
           rowsPerPageOptions={[10, 20, 50, 100]}
           defaultRowsPerPage={rowsPerPage}
         />

@@ -46,15 +46,6 @@ export function ProjectsModalRow({
 
   return (
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
-      {/* Checkbox */}
-      <TableCell className="py-3.5 pl-5">
-        <input
-          type="checkbox"
-          className="h-4 w-4 rounded border-gray-300"
-          aria-label={`Select project ${rowNumber}`}
-        />
-      </TableCell>
-
       {/* # */}
       <TableCell className="whitespace-nowrap py-3.5 text-sm font-medium text-foreground/70">
         {rowNumber}
