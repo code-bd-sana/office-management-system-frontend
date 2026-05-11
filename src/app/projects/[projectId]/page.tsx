@@ -1,11 +1,86 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { MainLayout } from "@/components/layout";
+import { ProjectManagementService } from "@/api";
+import { useAccessToken } from "@/hooks/useAccessToken";
+import { Loader2 } from "lucide-react";
+import { format } from "date-fns";
+import type { Project } from "@/types/project";
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
+  const params = useParams();
+  const projectId = params?.projectId as string;
+  const token = useAccessToken();
+
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token || !projectId) return;
+
+    ProjectManagementService.projectControllerFindOne({
+      id: projectId,
+      authorization: token,
+    })
+      .then((res: unknown) => {
+        const payload = (res as Record<string, unknown>)?.data as Project;
+        setProject(payload || null);
+      })
+      .catch((err) => {
+        console.error("Error fetching project:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [projectId, token]);
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "—";
+    try {
+      return format(new Date(dateString), "dd MMM, yyyy");
+    } catch {
+      return dateString;
+    }
+  };
+
+  const resolveName = (field: { _id: string; name: string } | string | null | undefined): string => {
+    if (!field) return "—";
+    if (typeof field === "string") return field;
+    return field.name || "—";
+  };
+
+  const formatDateTime = (dateString?: string) => {
+    if (!dateString) return "—";
+    try {
+      return format(new Date(dateString), "dd MMM, yyyy hh:mm a");
+    } catch {
+      return dateString;
+    }
+  };
+
+  if (loading) {
+    return (
+      <MainLayout pageTitle="Project Details">
+        <div className="flex items-center justify-center h-64 w-full">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (!project) {
+    return (
+      <MainLayout pageTitle="Project Details">
+        <div className="flex flex-col items-center justify-center h-64 w-full">
+          <p className="text-lg font-medium text-foreground">Project not found</p>
+          <button onClick={() => router.back()} className="mt-4 text-brand-navy hover:underline">Go Back</button>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout pageTitle="Project Details">
@@ -32,19 +107,23 @@ export default function ProjectDetailsPage() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Project Name</p>
-                <p className="text-sm text-gray-400">FB Management System</p>
+                <p className="text-sm text-gray-400">{project.name || "—"}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Order ID</p>
-                <p className="text-sm text-gray-400">FO11BB26RE987</p>
+                <p className="text-sm text-gray-400">{project.orderId || "—"}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Start Date</p>
-                <p className="text-sm text-gray-400">08 May, 2026</p>
+                <p className="text-sm text-gray-400">{formatDate(project.createdAt)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Status</p>
-                <span className="inline-block px-3 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-600 mt-1">In Progress</span>
+                <span className="inline-block px-3 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-600 mt-1">{project.status || "—"}</span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600">Value</p>
+                <p className="text-sm text-gray-400">{project.value != null ? `$${project.value}` : "—"}</p>
               </div>
             </div>
 
@@ -52,19 +131,23 @@ export default function ProjectDetailsPage() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium text-gray-600">Client Name</p>
-                <p className="text-sm text-gray-400">FB International BD</p>
+                <p className="text-sm text-gray-400">{resolveName(project.client)}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Profile Name</p>
-                <p className="text-sm text-gray-400">Code_BD</p>
+                <p className="text-sm text-gray-400">{resolveName(project.profile)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">End Date</p>
-                <p className="text-sm text-gray-400">20 May, 2026</p>
+                <p className="text-sm font-medium text-gray-600">Due Date</p>
+                <p className="text-sm text-gray-400">{formatDate(project.dueDate)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Priority</p>
-                <span className="inline-block px-3 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-600 mt-1">High</span>
+                <p className="text-sm font-medium text-gray-600">Project Team</p>
+                <span className="inline-block px-3 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-600 mt-1">{project.projectTeam || "—"}</span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600">Assigned Department</p>
+                <p className="text-sm text-gray-400">{resolveName(project.assignedDepartment)}</p>
               </div>
             </div>
           </section>
@@ -72,12 +155,31 @@ export default function ProjectDetailsPage() {
           {/* Description Section */}
           <section className="mb-8">
             <h2 className="text-lg font-bold text-slate-800 mb-2">Project Description</h2>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              This project involves a comprehensive overhaul of the enterprise resource planning system, focusing on modular integration and data security enhancements.
+            <p className="text-sm text-gray-400 leading-relaxed mb-4">
+              {project.projectRemarks || "No description provided."}
             </p>
+            {project.projectFiles && project.projectFiles.length > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-slate-800 mb-2">Project Files</h3>
+                <ul className="list-disc list-inside space-y-1 pl-4">
+                  {project.projectFiles.map((file, i) => (
+                    <li key={i}>
+                      <a
+                        href={file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-brand-navy hover:text-brand-navy-dark hover:underline break-all"
+                      >
+                        {file}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </section>
 
-          {/* Progress Section */}
+          {/* Progress Section (Static for now) */}
           <section className="mb-8">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-bold text-slate-800">Project Progress</h2>
@@ -88,7 +190,7 @@ export default function ProjectDetailsPage() {
             </div>
           </section>
 
-          {/* Breakdown Section */}
+          {/* Breakdown Section (Static for now) */}
           <section className="mb-8">
             <h2 className="text-lg font-bold text-slate-800 mb-4">Project Breakdown</h2>
             <div className="overflow-x-auto border border-border/40 rounded-lg">
@@ -141,12 +243,10 @@ export default function ProjectDetailsPage() {
             <h2 className="text-lg font-bold text-slate-800 mb-4">Additional Information</h2>
             <div className="bg-muted/30 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <p className="text-xs text-gray-400">Created By: <span className="text-gray-600 font-medium">John Doe</span></p>
-                <p className="text-xs text-gray-400">Created On: <span className="text-gray-600 font-medium">10 May, 2026 10:20 AM</span></p>
+                <p className="text-xs text-gray-400">Created On: <span className="text-gray-600 font-medium">{formatDateTime(project.createdAt)}</span></p>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-400">Last Updated By: <span className="text-gray-600 font-medium">Sarah Jenkins</span></p>
-                <p className="text-xs text-gray-400">Last Updated On: <span className="text-gray-600 font-medium">10 May, 2026 12:20 AM</span></p>
+                <p className="text-xs text-gray-400">Last Updated On: <span className="text-gray-600 font-medium">{formatDateTime(project.updatedAt)}</span></p>
               </div>
             </div>
           </section>
