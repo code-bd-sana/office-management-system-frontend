@@ -52,15 +52,6 @@ export default function ProjectDetailsPage() {
     return field.name || "—";
   };
 
-  const formatDateTime = (dateString?: string) => {
-    if (!dateString) return "—";
-    try {
-      return format(new Date(dateString), "dd MMM, yyyy hh:mm a");
-    } catch {
-      return dateString;
-    }
-  };
-
   if (loading) {
     return (
       <MainLayout pageTitle="Project Details">
@@ -85,20 +76,11 @@ export default function ProjectDetailsPage() {
   return (
     <MainLayout pageTitle="Project Details">
       {/* We use w-full and px/py for responsiveness instead of max-w constraints, as requested */}
-      <div className="w-full pb-8">
-        <main className="bg-white w-full rounded-lg shadow-sm overflow-hidden relative p-6 sm:p-8 border border-border/40">
+      <div className="w-full ">
+        <main className="w-full overflow-hidden relative p-4 sm:p-6">
           {/* Header */}
-          <header className="flex justify-between items-center mb-8">
+          <header className="mb-8">
             <h1 className="text-2xl font-bold text-slate-800">View Project Details</h1>
-            <button
-              onClick={() => router.back()}
-              aria-label="Close"
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
           </header>
 
           {/* Metadata Section */}
@@ -235,19 +217,6 @@ export default function ProjectDetailsPage() {
                   </tr>
                 </tbody>
               </table>
-            </div>
-          </section>
-
-          {/* Additional Information Section */}
-          <section className="mb-8">
-            <h2 className="text-lg font-bold text-slate-800 mb-4">Additional Information</h2>
-            <div className="bg-muted/30 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-xs text-gray-400">Created On: <span className="text-gray-600 font-medium">{formatDateTime(project.createdAt)}</span></p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-gray-400">Last Updated On: <span className="text-gray-600 font-medium">{formatDateTime(project.updatedAt)}</span></p>
-              </div>
             </div>
           </section>
 
