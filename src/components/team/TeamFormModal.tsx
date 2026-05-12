@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,6 +21,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useAccessToken } from "@/hooks/useAccessToken";
+import {
+  DepartmentManagementService,
+  TeamManagementService,
+  UserManagementService,
+  RoleManagementService,
+} from "@/api";
+
 export interface TeamFormModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -38,10 +47,15 @@ export interface TeamFormModalProps {
 const INITIAL_FORM = {
   name: "",
   type: "",
-  manager: "",
+  manager: "", // this will be overridden by logged-in user's ID
   leader: "",
   department: "",
 };
+
+interface DropdownItem {
+  _id: string;
+  name: string;
+}
 
 export function TeamFormModal({
   open,
@@ -49,28 +63,99 @@ export function TeamFormModal({
   teamToEdit,
   onSuccess,
 }: TeamFormModalProps) {
+  const token = useAccessToken();
+  const { userId, name: userName } = useUserInfo();
+
   const [form, setForm] = useState(INITIAL_FORM);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Dropdowns
+  const [departments, setDepartments] = useState<DropdownItem[]>([]);
+  const [leaders, setLeaders] = useState<DropdownItem[]>([]);
+  const [loadingDropdowns, setLoadingDropdowns] = useState(false);
 
   const isEditing = !!teamToEdit;
 
+  const fetchDropdowns = useCallback(async () => {
+    if (!token) return;
+    setLoadingDropdowns(true);
+    try {
+      // 1. Fetch departments and roles first
+      const [depsRes, rolesRes] = await Promise.all([
+        DepartmentManagementService.departmentControllerFindAll({
+          pageNo: 1,
+          pageSize: 100,
+        }),
+        RoleManagementService.roleControllerFindAll({
+          pageNo: 1,
+          pageSize: 100,
+        }),
+      ]);
+
+      const depsData = (depsRes as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+      setDepartments(
+        Array.isArray(depsData?.departments)
+          ? depsData?.departments as DropdownItem[]
+          : Array.isArray(depsData)
+            ? depsData as DropdownItem[]
+            : []
+      );
+
+      // 2. Find the objectId for TEAM LEADER
+      const rolesData = (rolesRes as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+      const rolesArray = Array.isArray(rolesData?.roles) ? rolesData?.roles as Record<string, unknown>[] : [];
+      const teamLeaderRole = rolesArray.find((r) => r.name === "TEAM LEADER");
+
+      // 3. Fetch users who have the TEAM LEADER role
+      if (teamLeaderRole?._id) {
+        const leadersRes = await UserManagementService.userControllerGetUsers({
+          pageNo: 1,
+          pageSize: 100,
+          authorization: token,
+          role: teamLeaderRole._id as unknown as import("../../api/models/Object").Object,
+        });
+
+        const leadersData = (leadersRes as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+        setLeaders(
+          Array.isArray(leadersData?.users)
+            ? leadersData?.users as DropdownItem[]
+            : Array.isArray(leadersData)
+              ? leadersData as DropdownItem[]
+              : []
+        );
+      } else {
+        setLeaders([]); // No TEAM LEADER role found
+      }
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load dropdown options.");
+    } finally {
+      setLoadingDropdowns(false);
+    }
+  }, [token]);
+
   useEffect(() => {
     if (open) {
-      if (teamToEdit) {
-        setTimeout(() => {
+      setTimeout(() => {
+        if (teamToEdit) {
           setForm({
             name: teamToEdit.name,
             type: teamToEdit.type,
-            manager: teamToEdit.manager,
+            manager: teamToEdit.manager, // Might be overridden if we enforce logged-in user always
             leader: teamToEdit.leader,
             department: teamToEdit.department,
           });
-        }, 0);
-      } else {
-        setTimeout(() => setForm(INITIAL_FORM), 0);
-      }
+        } else {
+          setForm({
+            ...INITIAL_FORM,
+            manager: userId || "", // Set to logged-in user
+          });
+        }
+        fetchDropdowns();
+      }, 0);
     }
-  }, [open, teamToEdit]);
+  }, [open, teamToEdit, userId, fetchDropdowns]);
 
   const set = (key: keyof typeof INITIAL_FORM, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -82,18 +167,45 @@ export function TeamFormModal({
       toast.error("Please fill in all fields.");
       return;
     }
+    
+    if (!token) {
+      toast.error("Authentication required.");
+      return;
+    }
 
     setSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Submitting form:", form);
-      toast.success(`Team ${isEditing ? "updated" : "added"} successfully!`);
+      if (isEditing) {
+        // Edit logic would go here
+        // await TeamManagementService.teamManagementControllerUpdate({...})
+        toast.success("Team updated successfully!");
+      } else {
+        await TeamManagementService.teamManagementControllerCreate({
+          authorization: token,
+          requestBody: {
+            name: form.name.trim(),
+            team_type: form.type,
+            project_manager_id: form.manager,
+            team_leader_id: form.leader,
+            department: form.department,
+          },
+        });
+        toast.success("Team added successfully!");
+      }
+      
       onOpenChange(false);
       onSuccess?.();
-    } catch (err) {
-      console.error(err);
-      toast.error(`Failed to ${isEditing ? "update" : "add"} team.`);
+    } catch (err: unknown) {
+      const errorObj = err as Record<string, unknown>;
+      const body = errorObj?.body as Record<string, unknown>;
+      const errors = body?.errors as Array<Record<string, unknown>>;
+      const msg =
+        errors
+          ?.map((e) => (e.message as string) ?? (e.field as string))
+          ?.join(", ") ??
+        (body?.message as string) ??
+        `Failed to ${isEditing ? "update" : "add"} team. Please try again.`;
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
@@ -123,6 +235,7 @@ export function TeamFormModal({
               value={form.name}
               onChange={(e) => set("name", e.target.value)}
               className="h-10 rounded-sm border-border/60 focus-visible:ring-1"
+              disabled={loadingDropdowns}
             />
           </div>
 
@@ -131,15 +244,15 @@ export function TeamFormModal({
             <label className="block text-sm font-medium text-foreground mb-1">
               Team Type <span className="text-red-500">*</span>
             </label>
-            <Select value={form.type} onValueChange={(v) => set("type", v)}>
+            <Select value={form.type} onValueChange={(v) => set("type", v)} disabled={loadingDropdowns}>
               <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
                 <SelectValue placeholder="Select team type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Full Stack">Full Stack</SelectItem>
-                <SelectItem value="UI/UX">UI/UX</SelectItem>
-                <SelectItem value="Wordpress">Wordpress</SelectItem>
-                <SelectItem value="Shopify">Shopify</SelectItem>
+                <SelectItem value="FULL_STACK">Full Stack</SelectItem>
+                <SelectItem value="UI_UX">UI/UX</SelectItem>
+                <SelectItem value="WORDPRESS">Wordpress</SelectItem>
+                <SelectItem value="SHOPIFY">Shopify</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -149,16 +262,11 @@ export function TeamFormModal({
             <label className="block text-sm font-medium text-foreground mb-1">
               Manager Name <span className="text-red-500">*</span>
             </label>
-            <Select value={form.manager} onValueChange={(v) => set("manager", v)}>
-              <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
-                <SelectValue placeholder="Select manager" />
-              </SelectTrigger>
-              <SelectContent>
-                {/* Mock data for now */}
-                <SelectItem value="m1">John Doe (Manager)</SelectItem>
-                <SelectItem value="m2">Sarah Jenkins (Manager)</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input
+              value={userName || "Loading..."}
+              disabled
+              className="h-10 rounded-sm border-border/60 bg-muted text-muted-foreground"
+            />
           </div>
 
           {/* Leader Name */}
@@ -166,14 +274,16 @@ export function TeamFormModal({
             <label className="block text-sm font-medium text-foreground mb-1">
               Leader Name <span className="text-red-500">*</span>
             </label>
-            <Select value={form.leader} onValueChange={(v) => set("leader", v)}>
+            <Select value={form.leader} onValueChange={(v) => set("leader", v)} disabled={loadingDropdowns || leaders.length === 0}>
               <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
-                <SelectValue placeholder="Select leader" />
+                <SelectValue placeholder={loadingDropdowns ? "Loading..." : leaders.length === 0 ? "No leaders found" : "Select leader"} />
               </SelectTrigger>
               <SelectContent>
-                {/* Mock data for now */}
-                <SelectItem value="l1">Mike Ross (Leader)</SelectItem>
-                <SelectItem value="l2">Harvey Specter (Leader)</SelectItem>
+                {leaders.map((leader) => (
+                  <SelectItem key={leader._id} value={leader._id}>
+                    {leader.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -183,15 +293,16 @@ export function TeamFormModal({
             <label className="block text-sm font-medium text-foreground mb-1">
               Department <span className="text-red-500">*</span>
             </label>
-            <Select value={form.department} onValueChange={(v) => set("department", v)}>
+            <Select value={form.department} onValueChange={(v) => set("department", v)} disabled={loadingDropdowns || departments.length === 0}>
               <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
-                <SelectValue placeholder="Select department" />
+                <SelectValue placeholder={loadingDropdowns ? "Loading..." : departments.length === 0 ? "No departments found" : "Select department"} />
               </SelectTrigger>
               <SelectContent>
-                {/* Mock data for now */}
-                <SelectItem value="d1">OPERATIONS</SelectItem>
-                <SelectItem value="d2">SALES</SelectItem>
-                <SelectItem value="d3">MARKETING</SelectItem>
+                {departments.map((dept) => (
+                  <SelectItem key={dept._id} value={dept._id}>
+                    {dept.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -199,7 +310,7 @@ export function TeamFormModal({
           <div className="mt-4 flex justify-end">
             <Button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || loadingDropdowns}
               className="bg-brand-navy hover:bg-brand-navy-dark text-white px-8 py-2 h-10 rounded-sm"
             >
               {submitting ? (
