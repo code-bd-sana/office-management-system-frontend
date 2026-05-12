@@ -175,9 +175,18 @@ export function TeamFormModal({
 
     setSubmitting(true);
     try {
-      if (isEditing) {
-        // Edit logic would go here
-        // await TeamManagementService.teamManagementControllerUpdate({...})
+      if (isEditing && teamToEdit) {
+        await TeamManagementService.teamManagementControllerUpdate({
+          id: teamToEdit.id,
+          authorization: token,
+          requestBody: {
+            name: form.name.trim(),
+            team_type: form.type,
+            project_manager_id: form.manager,
+            team_leader_id: form.leader,
+            department: form.department,
+          },
+        });
         toast.success("Team updated successfully!");
       } else {
         await TeamManagementService.teamManagementControllerCreate({

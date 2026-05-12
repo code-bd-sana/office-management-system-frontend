@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Edit2, Trash2, Users, LayoutDashboard, Calendar, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { format } from "date-fns";
 import { TeamFormModal } from "./TeamFormModal";
 import {
   AlertDialog,
@@ -15,9 +16,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { TeamManagementService } from "@/api";
+import { useAccessToken } from "@/hooks/useAccessToken";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 export function PMTeamsGrid() {
   const router = useRouter();
+  const token = useAccessToken();
+  const { userId } = useUserInfo();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -62,45 +68,62 @@ export function PMTeamsGrid() {
     setIsDeleteModalOpen(true);
   };
 
+  const [teams, setTeams] = useState<TeamItem[]>([]);
+
+  const fetchTeams = useCallback(async () => {
+    if (!token || !userId) return;
+    try {
+      const res = await TeamManagementService.teamManagementControllerFindAll({
+        authorization: token,
+        pageNo: 1,
+        pageSize: 20,
+        projectManagerId: userId,
+      });
+      const data = (res as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+      const fetchedTeams = Array.isArray(data?.teams) ? data?.teams as Record<string, unknown>[] : [];
+      
+      const mappedTeams: TeamItem[] = fetchedTeams.map((t: Record<string, unknown>) => ({
+        id: (t._id as string) || "",
+        name: (t.name as string) || "",
+        type: (t.team_type as string) || "",
+        manager: (t.project_manager_id as string) || "",
+        leader: (t.team_leader_id as Record<string, unknown>)?._id as string || "",
+        department: (t.department as Record<string, unknown>)?._id as string || "",
+        totalMembers: (t.membersCount as number) || 0,
+        departmentName: (t.department as Record<string, unknown>)?.name as string || "Unknown",
+        createdAt: t.createdAt ? format(new Date(t.createdAt as string), "dd MMM yyyy") : "—",
+      }));
+      
+      setTeams(mappedTeams);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load teams.");
+    }
+  }, [token, userId]);
+
+  useEffect(() => {
+    setTimeout(() => fetchTeams(), 0);
+  }, [fetchTeams]);
+
   const confirmDelete = async () => {
+    if (!selectedTeam || !token) return;
     setIsDeleting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await TeamManagementService.teamManagementControllerRemove({
+        id: selectedTeam.id,
+        authorization: token,
+      });
       toast.success("Team deleted successfully!");
       setIsDeleteModalOpen(false);
-    } catch {
-      toast.error("Failed to delete team.");
+      fetchTeams();
+    } catch (err: unknown) {
+      const errObj = err as Record<string, unknown>;
+      const body = errObj?.body as Record<string, unknown>;
+      toast.error((body?.message as string) || "Failed to delete team.");
     } finally {
       setIsDeleting(false);
     }
   };
-
-  // Mock data for display
-  const teams = [
-    {
-      id: "full-stack-team",
-      name: "Full-Stack Team",
-      type: "Full Stack",
-      manager: "m1",
-      leader: "l1",
-      department: "d1",
-      totalMembers: 8,
-      departmentName: "IT & Development",
-      createdAt: "12 Jan 2024",
-    },
-    {
-      id: "uiux-team",
-      name: "UIUX Team",
-      type: "UI/UX",
-      manager: "m2",
-      leader: "l2",
-      department: "d2",
-      totalMembers: 4,
-      departmentName: "IT & Development",
-      createdAt: "12 Jan 2024",
-    }
-  ];
 
   return (
     <div className="w-full">
@@ -187,6 +210,7 @@ export function PMTeamsGrid() {
       <TeamFormModal 
         open={isAddModalOpen} 
         onOpenChange={setIsAddModalOpen} 
+        onSuccess={fetchTeams}
       />
 
       {/* Edit Team Modal */}
@@ -194,6 +218,7 @@ export function PMTeamsGrid() {
         open={isEditModalOpen} 
         onOpenChange={setIsEditModalOpen} 
         teamToEdit={selectedTeam}
+        onSuccess={fetchTeams}
       />
 
       {/* Delete Confirmation Modal */}
