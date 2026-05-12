@@ -172,7 +172,7 @@ export function AddPhaseModal({
             </label>
             <Textarea
               id="description"
-              placeholder="Enter your reason for requested"
+              placeholder="Enter your description"
               value={form.description}
               onChange={(e) => set("description", e.target.value)}
               rows={4}
@@ -185,7 +185,7 @@ export function AddPhaseModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex justify-center items-center rounded-md bg-brand-blue py-2.5 px-6 text-sm font-medium text-white shadow-sm hover:bg-brand-navy transition-colors disabled:opacity-70"
+              className="inline-flex justify-center items-center rounded-md bg-brand-navy py-2.5 px-6 text-sm font-medium text-white shadow-sm transition-colors disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>

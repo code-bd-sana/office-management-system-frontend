@@ -6,7 +6,6 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
