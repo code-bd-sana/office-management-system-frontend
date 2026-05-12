@@ -9,6 +9,7 @@ import { useUserInfo } from "@/hooks/useUserInfo";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import type { Project } from "@/types/project";
+import { AddPhaseModal } from "@/components/project/AddPhaseModal";
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function ProjectDetailsPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAddPhaseOpen, setIsAddPhaseOpen] = useState(false);
 
   useEffect(() => {
     if (!token || !projectId) return;
@@ -326,13 +328,22 @@ export default function ProjectDetailsPage() {
           {/* Actions Footer */}
           {role === "PROJECT MANAGER" && (
             <footer className="flex justify-end mt-4">
-              <button className="bg-brand-navy text-white px-6 py-2.5 rounded-md text-sm font-semibold shadow-sm hover:bg-brand-navy-dark transition-colors">
+              <button
+                onClick={() => setIsAddPhaseOpen(true)}
+                className="bg-brand-navy text-white px-6 py-2.5 rounded-md text-sm font-semibold shadow-sm hover:bg-brand-navy-dark transition-colors"
+              >
                 Project Breakdown
               </button>
             </footer>
           )}
         </main>
       </div>
+
+      <AddPhaseModal
+        projectId={projectId}
+        open={isAddPhaseOpen}
+        onOpenChange={setIsAddPhaseOpen}
+      />
     </MainLayout>
   );
 }
