@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Edit2, Trash2, Users, LayoutDashboard, Calendar, Loader2 } from "lucide-react";
+import { Edit2, Trash2, Users, Calendar, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { TeamFormModal } from "./TeamFormModal";
@@ -50,6 +50,7 @@ export function PMTeamsGrid() {
     type: string;
     manager: string;
     leader: string;
+    leaderName: string;
     department: string;
     totalMembers: number;
     departmentName: string;
@@ -87,8 +88,9 @@ export function PMTeamsGrid() {
         name: (t.name as string) || "",
         type: (t.team_type as string) || "",
         manager: (t.project_manager_id as string) || "",
-        leader: (t.team_leader_id as Record<string, unknown>)?._id as string || "",
-        department: (t.department as Record<string, unknown>)?._id as string || "",
+        leader: typeof t.team_leader_id === "string" ? t.team_leader_id : (t.team_leader_id as Record<string, unknown>)?._id as string || "",
+        leaderName: (t.team_leader_id as Record<string, unknown>)?.name as string || "Unknown",
+        department: typeof t.department === "string" ? t.department : (t.department as Record<string, unknown>)?._id as string || "",
         totalMembers: (t.membersCount as number) || 0,
         departmentName: (t.department as Record<string, unknown>)?.name as string || "Unknown",
         createdAt: t.createdAt ? format(new Date(t.createdAt as string), "dd MMM yyyy") : "—",
@@ -188,10 +190,10 @@ export function PMTeamsGrid() {
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-border/40">
                   <div className="flex items-center gap-3 text-muted-foreground">
-                    <LayoutDashboard className="h-5 w-5" />
-                    <span className="text-sm">Department</span>
+                    <Users className="h-5 w-5" />
+                    <span className="text-sm">Team Leader</span>
                   </div>
-                  <span className="text-sm font-medium text-slate-600">{team.departmentName}</span>
+                  <span className="text-sm font-medium text-slate-600">{team.leaderName}</span>
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3 text-muted-foreground">
