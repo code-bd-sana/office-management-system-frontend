@@ -5,22 +5,28 @@ import { Button } from "@/components/ui/button";
 import type { TeamMember } from "@/types/team";
 import { useState } from "react";
 import { ProjectsListModal } from "./ProjectsListModal";
+import { Trash2 } from "lucide-react";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 interface TeamMembersRowProps {
   member: TeamMember;
   rowNumber: number;
+  onDelete?: (userId: string) => void;
 }
 
-export function TeamMembersRow({ member, rowNumber }: TeamMembersRowProps) {
+export function TeamMembersRow({ member, rowNumber, onDelete }: TeamMembersRowProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { role } = useUserInfo();
+  const isManager = role === "PROJECT MANAGER";
+
   // Generate initials from name
   const getInitials = (name: string) => {
     return name
-      .split(" ")
+      ?.split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2);
+      .slice(0, 2) || "U";
   };
 
   return (
@@ -51,14 +57,25 @@ export function TeamMembersRow({ member, rowNumber }: TeamMembersRowProps) {
           {member.completedProjects}
         </TableCell>
         <TableCell className="py-3 pr-3 sm:py-3.5 sm:pr-5">
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => setIsModalOpen(true)}
-            className="rounded-sm bg-[#044192] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#044192]/90 sm:px-4"
-          >
-            View Details
-          </Button>
+          <div className="flex items-center justify-end gap-2 sm:justify-start">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-sm bg-[#044192] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#044192]/90 sm:px-4"
+            >
+              View Details
+            </Button>
+            {isManager && onDelete && (
+              <button
+                onClick={() => onDelete(member.id)}
+                className="p-1.5 text-red-400 hover:text-red-600 transition-colors"
+                title="Remove Member"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </TableCell>
       </TableRow>
 
