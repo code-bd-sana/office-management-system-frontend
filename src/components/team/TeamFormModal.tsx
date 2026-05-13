@@ -283,18 +283,22 @@ export function TeamFormModal({
             <label className="block text-sm font-medium text-foreground mb-1">
               Leader Name <span className="text-red-500">*</span>
             </label>
-            <Select value={form.leader} onValueChange={(v) => set("leader", v)} disabled={loadingDropdowns || leaders.length === 0}>
-              <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
-                <SelectValue placeholder={loadingDropdowns ? "Loading..." : leaders.length === 0 ? "No leaders found" : "Select leader"} />
-              </SelectTrigger>
-              <SelectContent>
-                {leaders.map((leader) => (
-                  <SelectItem key={leader._id} value={leader._id}>
-                    {leader.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {loadingDropdowns ? (
+              <Input disabled placeholder="Loading..." className="h-10 rounded-sm border-border/60 bg-muted text-muted-foreground" />
+            ) : (
+              <Select value={form.leader || undefined} onValueChange={(v) => set("leader", v)} disabled={leaders.length === 0}>
+                <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
+                  <SelectValue placeholder={leaders.length === 0 ? "No leaders found" : "Select leader"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {leaders.map((leader) => (
+                    <SelectItem key={leader._id} value={leader._id}>
+                      {leader.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           {/* Department */}
@@ -302,18 +306,22 @@ export function TeamFormModal({
             <label className="block text-sm font-medium text-foreground mb-1">
               Department <span className="text-red-500">*</span>
             </label>
-            <Select value={form.department} onValueChange={(v) => set("department", v)} disabled={loadingDropdowns || departments.length === 0}>
-              <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
-                <SelectValue placeholder={loadingDropdowns ? "Loading..." : departments.length === 0 ? "No departments found" : "Select department"} />
-              </SelectTrigger>
-              <SelectContent>
-                {departments.map((dept) => (
-                  <SelectItem key={dept._id} value={dept._id}>
-                    {dept.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {loadingDropdowns ? (
+              <Input disabled placeholder="Loading..." className="h-10 rounded-sm border-border/60 bg-muted text-muted-foreground" />
+            ) : (
+              <Select value={form.department || undefined} onValueChange={(v) => set("department", v)} disabled={departments.length === 0}>
+                <SelectTrigger className="h-10 w-full rounded-sm border-border/60 focus-visible:ring-1">
+                  <SelectValue placeholder={departments.length === 0 ? "No departments found" : "Select department"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept._id} value={dept._id}>
+                      {dept.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <div className="mt-4 flex justify-end">

@@ -87,7 +87,7 @@ export function PMTeamsGrid() {
         id: (t._id as string) || "",
         name: (t.name as string) || "",
         type: (t.team_type as string) || "",
-        manager: (t.project_manager_id as string) || "",
+        manager: typeof t.project_manager_id === "string" ? t.project_manager_id : (t.project_manager_id as Record<string, unknown>)?._id as string || "",
         leader: typeof t.team_leader_id === "string" ? t.team_leader_id : (t.team_leader_id as Record<string, unknown>)?._id as string || "",
         leaderName: (t.team_leader_id as Record<string, unknown>)?.name as string || "Unknown",
         department: typeof t.department === "string" ? t.department : (t.department as Record<string, unknown>)?._id as string || "",
@@ -230,7 +230,7 @@ export function PMTeamsGrid() {
             <AlertDialogTitle className="text-foreground">Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the team
-              and remove its data from our servers.
+              and remove its data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

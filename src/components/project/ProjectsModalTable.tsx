@@ -342,7 +342,7 @@ export function ProjectsModalTable() {
             <AlertDialogTitle className="text-foreground">Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the project
-              and remove its data from our servers.
+              and remove its data from.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
