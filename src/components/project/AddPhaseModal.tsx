@@ -26,6 +26,7 @@ interface AddPhaseModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAdded?: () => void;
+  phaseToEdit?: Record<string, unknown> | null;
 }
 
 interface UserItem {
@@ -48,6 +49,7 @@ export function AddPhaseModal({
   open,
   onOpenChange,
   onAdded,
+  phaseToEdit,
 }: AddPhaseModalProps) {
   const token = useAccessToken();
 
@@ -55,6 +57,8 @@ export function AddPhaseModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableMembers, setAvailableMembers] = useState<UserItem[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
+  
+  const isEditing = !!phaseToEdit;
 
   const fetchMembers = useCallback(async () => {
     if (!token) return;
@@ -98,11 +102,30 @@ export function AddPhaseModal({
   useEffect(() => {
     if (open) {
       setTimeout(() => {
-        setForm(INITIAL_FORM);
+        if (phaseToEdit) {
+          const startDateString = phaseToEdit.startDate ? new Date(phaseToEdit.startDate as string).toISOString().split('T')[0] : "";
+          const endDateString = phaseToEdit.endDate ? new Date(phaseToEdit.endDate as string).toISOString().split('T')[0] : "";
+          
+          let memberIds: string[] = [];
+          if (Array.isArray(phaseToEdit.teamMemberIds)) {
+             memberIds = phaseToEdit.teamMemberIds.map((m: Record<string, unknown> | string) => m && typeof m === 'object' ? m._id || m.id : m).filter(Boolean) as string[];
+          }
+
+          setForm({
+            phaseName: (phaseToEdit.name as string) || "",
+            startDate: startDateString,
+            endDate: endDateString,
+            projectValue: phaseToEdit.value != null ? String(phaseToEdit.value) : "",
+            description: (phaseToEdit.description as string) || "",
+            teamMemberIds: memberIds,
+          });
+        } else {
+          setForm(INITIAL_FORM);
+        }
         fetchMembers();
       }, 0);
     }
-  }, [open, fetchMembers]);
+  }, [open, fetchMembers, phaseToEdit]);
 
   const set = (key: keyof typeof INITIAL_FORM, value: string | string[]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -132,20 +155,36 @@ export function AddPhaseModal({
 
     setIsSubmitting(true);
     try {
-      await SubProjectManagementService.subProjectControllerCreate({
-        authorization: token,
-        requestBody: {
-          projectId: projectId,
-          name: form.phaseName.trim(),
-          startDate: new Date(form.startDate).toISOString(),
-          endDate: new Date(form.endDate).toISOString(),
-          value: Number(form.projectValue),
-          description: form.description.trim(),
-          teamMemberIds: form.teamMemberIds as unknown as Array<Array<unknown>>, // Cast due to Swagger type Array<any[]> vs Array<string>
-        }
-      });
+      if (isEditing && phaseToEdit?._id) {
+        await SubProjectManagementService.subProjectControllerUpdate({
+          id: phaseToEdit._id as string,
+          authorization: token,
+          requestBody: {
+            name: form.phaseName.trim(),
+            startDate: new Date(form.startDate).toISOString(),
+            endDate: new Date(form.endDate).toISOString(),
+            value: Number(form.projectValue),
+            description: form.description.trim(),
+            teamMemberIds: form.teamMemberIds as unknown as Array<Array<unknown>>, // Cast due to Swagger type Array<any[]> vs Array<string>
+          }
+        });
+        toast.success("Phase updated successfully!");
+      } else {
+        await SubProjectManagementService.subProjectControllerCreate({
+          authorization: token,
+          requestBody: {
+            projectId: projectId,
+            name: form.phaseName.trim(),
+            startDate: new Date(form.startDate).toISOString(),
+            endDate: new Date(form.endDate).toISOString(),
+            value: Number(form.projectValue),
+            description: form.description.trim(),
+            teamMemberIds: form.teamMemberIds as unknown as Array<Array<unknown>>, // Cast due to Swagger type Array<any[]> vs Array<string>
+          }
+        });
+        toast.success("Phase added successfully!");
+      }
       
-      toast.success("Phase added successfully!");
       onOpenChange(false);
       onAdded?.();
     } catch (err: unknown) {
@@ -157,7 +196,7 @@ export function AddPhaseModal({
           ?.map((e: Record<string, unknown>) => (e.message as string) ?? (e.field as string))
           ?.join(", ") ??
         (body?.message as string) ??
-        "Failed to add new phase. Please try again.";
+        `Failed to ${isEditing ? 'update' : 'add new'} phase. Please try again.`;
       toast.error(msg);
     } finally {
       setIsSubmitting(false);
@@ -169,10 +208,10 @@ export function AddPhaseModal({
       <DialogContent className="sm:max-w-2xl p-0 overflow-hidden gap-0">
         <DialogHeader className="px-8 pt-8 pb-6 border-b border-border/40">
           <DialogTitle className="text-2xl font-semibold text-brand-navy">
-            Add New Phase
+            {isEditing ? "Edit Phase" : "Add New Phase"}
           </DialogTitle>
           <DialogDescription className="sr-only">
-            Add a new phase to the project breakdown.
+            {isEditing ? "Edit a phase in the project breakdown." : "Add a new phase to the project breakdown."}
           </DialogDescription>
         </DialogHeader>
 
@@ -336,10 +375,10 @@ export function AddPhaseModal({
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Adding...
+                  {isEditing ? "Updating..." : "Adding..."}
                 </>
               ) : (
-                "Add New Phase"
+                isEditing ? "Update Phase" : "Add New Phase"
               )}
             </button>
           </div>

@@ -6,7 +6,7 @@ import { MainLayout } from "@/components/layout";
 import { ProjectManagementService, SubProjectManagementService } from "@/api";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useUserInfo } from "@/hooks/useUserInfo";
-import { Loader2 } from "lucide-react";
+import { Loader2, Edit2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import type { Project } from "@/types/project";
 import { AddPhaseModal } from "@/components/project/AddPhaseModal";
@@ -38,6 +38,43 @@ export default function ProjectDetailsPage() {
   
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [phaseToComplete, setPhaseToComplete] = useState<string | null>(null);
+
+  // Edit and Delete states
+  const [selectedPhaseToEdit, setSelectedPhaseToEdit] = useState<Record<string, unknown> | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [phaseToDelete, setPhaseToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleEditClick = (phase: Record<string, unknown>) => {
+    setSelectedPhaseToEdit(phase);
+    setIsAddPhaseOpen(true);
+  };
+
+  const handleDeleteClick = (phaseId: string) => {
+    setPhaseToDelete(phaseId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeletePhase = async () => {
+    if (!token || !phaseToDelete) return;
+    setIsDeleting(true);
+    try {
+      await SubProjectManagementService.subProjectControllerRemove({
+        id: phaseToDelete,
+        authorization: token,
+      });
+      toast.success("Phase deleted successfully!");
+      setIsDeleteModalOpen(false);
+      setPhaseToDelete(null);
+      fetchSubProjects(); // Refresh the list
+    } catch (err: unknown) {
+      const errObj = err as Record<string, unknown>;
+      const body = errObj?.body as Record<string, unknown>;
+      toast.error((body?.message as string) || "Failed to delete phase.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleCompleteClick = (phaseId: string) => {
     setPhaseToComplete(phaseId);
@@ -349,13 +386,13 @@ export default function ProjectDetailsPage() {
                 <tbody className="bg-white divide-y divide-border/40">
                   {loadingSubProjects ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-8 text-center">
+                      <td colSpan={7} className="px-4 py-8 text-center">
                         <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
                       </td>
                     </tr>
                   ) : subProjects.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         No phases found for this project.
                       </td>
                     </tr>
@@ -397,6 +434,24 @@ export default function ProjectDetailsPage() {
                             </button>
                           )}
                         </td>
+                        <td className="px-4 py-3 text-sm text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleEditClick(phase)}
+                              className="p-1.5 text-muted-foreground hover:text-brand-blue transition-colors"
+                              title="Edit Phase"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(phase._id as string)}
+                              className="p-1.5 text-red-400 hover:text-red-600 transition-colors"
+                              title="Delete Phase"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))
                   )}
@@ -422,9 +477,50 @@ export default function ProjectDetailsPage() {
       <AddPhaseModal
         projectId={projectId}
         open={isAddPhaseOpen}
-        onOpenChange={setIsAddPhaseOpen}
+        onOpenChange={(open) => {
+          setIsAddPhaseOpen(open);
+          if (!open) {
+            // Wait for modal close animation before clearing the edit state
+            setTimeout(() => setSelectedPhaseToEdit(null), 300);
+          }
+        }}
         onAdded={fetchSubProjects}
+        phaseToEdit={selectedPhaseToEdit}
       />
+
+      {/* Delete Confirmation Modal */}
+      <AlertDialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <AlertDialogContent className="rounded-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">Delete Phase?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this phase? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting} className="rounded-sm h-9">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700 text-white rounded-sm h-9"
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeletePhase();
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Phase"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Complete Confirmation Modal */}
       <AlertDialog open={isCompleteModalOpen} onOpenChange={setIsCompleteModalOpen}>
