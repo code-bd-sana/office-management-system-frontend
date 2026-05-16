@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import type { Project } from "@/types/project";
 import { AddPhaseModal } from "@/components/project/AddPhaseModal";
+import { toast } from "sonner";
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
@@ -23,6 +24,29 @@ export default function ProjectDetailsPage() {
   const [isAddPhaseOpen, setIsAddPhaseOpen] = useState(false);
   const [subProjects, setSubProjects] = useState<Record<string, unknown>[]>([]);
   const [loadingSubProjects, setLoadingSubProjects] = useState(true);
+  const [updatingPhaseId, setUpdatingPhaseId] = useState<string | null>(null);
+
+  const handleCompletePhase = async (phaseId: string) => {
+    if (!token) return;
+    setUpdatingPhaseId(phaseId);
+    try {
+      await SubProjectManagementService.subProjectControllerUpdate({
+        id: phaseId,
+        authorization: token,
+        requestBody: {
+          isCompleted: true,
+        },
+      });
+      toast.success("Phase marked as completed!");
+      fetchSubProjects(); // Refresh the list
+    } catch (err: unknown) {
+      const errObj = err as Record<string, unknown>;
+      const body = errObj?.body as Record<string, unknown>;
+      toast.error((body?.message as string) || "Failed to update phase status.");
+    } finally {
+      setUpdatingPhaseId(null);
+    }
+  };
 
   const fetchProjectData = useCallback(() => {
     if (!token || !projectId) return;
@@ -332,9 +356,26 @@ export default function ProjectDetailsPage() {
                           {phase.value != null ? `$${phase.value}` : "—"}
                         </td>
                         <td className="px-4 py-3 text-sm">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${phase.isCompleted ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                            {phase.isCompleted ? 'Completed' : 'Active'}
-                          </span>
+                          {phase.isCompleted ? (
+                            <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-700 cursor-not-allowed opacity-80">
+                              Completed
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => handleCompletePhase(phase._id as string)}
+                              disabled={updatingPhaseId === phase._id}
+                              className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-brand-navy text-white hover:bg-brand-navy-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                              {updatingPhaseId === phase._id ? (
+                                <>
+                                  <Loader2 className="h-3 w-3 mr-1.5 animate-spin" />
+                                  Updating...
+                                </>
+                              ) : (
+                                "Complete Phase"
+                              )}
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))
