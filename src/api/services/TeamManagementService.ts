@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { AddTeamMemberDto } from '../models/AddTeamMemberDto';
+import type { AvailableMembersSuccessDto } from '../models/AvailableMembersSuccessDto';
 import type { CreateTeamDto } from '../models/CreateTeamDto';
 import type { CreateTeamMembersDto } from '../models/CreateTeamMembersDto';
 import type { TeamByIdSuccessDto } from '../models/TeamByIdSuccessDto';
@@ -23,6 +24,28 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class TeamManagementService {
+    /**
+     * Get available members
+     * Retrieve all users who are not yet assigned to any team.
+     * @returns any
+     * @throws ApiError
+     */
+    public static teamManagementControllerGetAvailableMembers({
+        authorization,
+    }: {
+        /**
+         * Bearer token for authentication
+         */
+        authorization: string,
+    }): CancelablePromise<AvailableMembersSuccessDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/team/available-members',
+            headers: {
+                'Authorization': authorization,
+            },
+        });
+    }
     /**
      * Create a new team
      * Create a new team with leader, manager and department info.
@@ -183,7 +206,7 @@ export class TeamManagementService {
      */
     public static teamManagementControllerGetMemberTeamInfo({
         authorization,
-        userId,
+        id,
     }: {
         /**
          * Bearer token for authentication
@@ -192,13 +215,13 @@ export class TeamManagementService {
         /**
          * MongoDB ObjectId of the user (team member)
          */
-        userId: string,
+        id: string,
     }): CancelablePromise<TeamMemberByUserIdSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/team/members/{id}/info',
             path: {
-                'userId': userId,
+                'id': id,
             },
             headers: {
                 'Authorization': authorization,

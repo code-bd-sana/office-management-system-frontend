@@ -16,6 +16,7 @@ export type { ApproveShiftExchangeSuccessDto } from './models/ApproveShiftExchan
 export type { ApproveShiftExchangeUnauthorizedDto } from './models/ApproveShiftExchangeUnauthorizedDto';
 export type { ApproveShiftExchangeValidationDto } from './models/ApproveShiftExchangeValidationDto';
 export { AttendanceByAuthorityDto } from './models/AttendanceByAuthorityDto';
+export type { AvailableMembersSuccessDto } from './models/AvailableMembersSuccessDto';
 export type { ChangePasswordDto } from './models/ChangePasswordDto';
 export type { ChangePasswordInternalErrorDto } from './models/ChangePasswordInternalErrorDto';
 export type { ChangePasswordSuccessDto } from './models/ChangePasswordSuccessDto';

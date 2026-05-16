@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { ClientCreateSuccessDto } from '../models/ClientCreateSuccessDto';
 import type { ClientDeleteSuccessDto } from '../models/ClientDeleteSuccessDto';
 import type { ClientListSuccessDto } from '../models/ClientListSuccessDto';
@@ -411,6 +411,36 @@ export class ProjectManagementService {
             url: '/api/project/profile/{id}',
             path: {
                 'id': id,
+            },
+            headers: {
+                'Authorization': authorization,
+            },
+        });
+    }
+    /**
+     * Get user assigned projects
+     * Retrieves all parent projects and their sub-projects assigned to a user.
+     * @returns any
+     * @throws ApiError
+     */
+    public static projectControllerFindByUserId({
+        userId,
+        authorization,
+    }: {
+        /**
+         * The ID of the user
+         */
+        userId: string,
+        /**
+         * Bearer token
+         */
+        authorization: string,
+    }): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/project/my-projects/{userId}',
+            path: {
+                'userId': userId,
             },
             headers: {
                 'Authorization': authorization,
