@@ -11,6 +11,16 @@ import { format } from "date-fns";
 import type { Project } from "@/types/project";
 import { AddPhaseModal } from "@/components/project/AddPhaseModal";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
@@ -25,19 +35,29 @@ export default function ProjectDetailsPage() {
   const [subProjects, setSubProjects] = useState<Record<string, unknown>[]>([]);
   const [loadingSubProjects, setLoadingSubProjects] = useState(true);
   const [updatingPhaseId, setUpdatingPhaseId] = useState<string | null>(null);
+  
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [phaseToComplete, setPhaseToComplete] = useState<string | null>(null);
 
-  const handleCompletePhase = async (phaseId: string) => {
-    if (!token) return;
-    setUpdatingPhaseId(phaseId);
+  const handleCompleteClick = (phaseId: string) => {
+    setPhaseToComplete(phaseId);
+    setIsCompleteModalOpen(true);
+  };
+
+  const handleCompletePhase = async () => {
+    if (!token || !phaseToComplete) return;
+    setUpdatingPhaseId(phaseToComplete);
     try {
       await SubProjectManagementService.subProjectControllerUpdate({
-        id: phaseId,
+        id: phaseToComplete,
         authorization: token,
         requestBody: {
           isCompleted: true,
         },
       });
       toast.success("Phase marked as completed!");
+      setIsCompleteModalOpen(false);
+      setPhaseToComplete(null);
       fetchSubProjects(); // Refresh the list
     } catch (err: unknown) {
       const errObj = err as Record<string, unknown>;
@@ -362,7 +382,7 @@ export default function ProjectDetailsPage() {
                             </span>
                           ) : (
                             <button
-                              onClick={() => handleCompletePhase(phase._id as string)}
+                              onClick={() => handleCompleteClick(phase._id as string)}
                               disabled={updatingPhaseId === phase._id}
                               className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-brand-navy text-white hover:bg-brand-navy-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                             >
@@ -403,7 +423,42 @@ export default function ProjectDetailsPage() {
         projectId={projectId}
         open={isAddPhaseOpen}
         onOpenChange={setIsAddPhaseOpen}
+        onAdded={fetchSubProjects}
       />
+
+      {/* Complete Confirmation Modal */}
+      <AlertDialog open={isCompleteModalOpen} onOpenChange={setIsCompleteModalOpen}>
+        <AlertDialogContent className="rounded-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">Complete Phase?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to mark this phase as completed? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={updatingPhaseId !== null} className="rounded-sm h-9">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-brand-navy hover:bg-brand-navy-dark text-white rounded-sm h-9"
+              onClick={(e) => {
+                e.preventDefault();
+                handleCompletePhase();
+              }}
+              disabled={updatingPhaseId !== null}
+            >
+              {updatingPhaseId !== null ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Complete Phase"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }
