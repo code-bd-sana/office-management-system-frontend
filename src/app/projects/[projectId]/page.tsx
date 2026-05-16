@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { MainLayout } from "@/components/layout";
-import { ProjectManagementService } from "@/api";
+import { ProjectManagementService, SubProjectManagementService } from "@/api";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useUserInfo } from "@/hooks/useUserInfo";
 import { Loader2 } from "lucide-react";
@@ -21,10 +21,13 @@ export default function ProjectDetailsPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAddPhaseOpen, setIsAddPhaseOpen] = useState(false);
+  const [subProjects, setSubProjects] = useState<Record<string, unknown>[]>([]);
+  const [loadingSubProjects, setLoadingSubProjects] = useState(true);
 
-  useEffect(() => {
+  const fetchProjectData = useCallback(() => {
     if (!token || !projectId) return;
 
+    setLoading(true);
     ProjectManagementService.projectControllerFindOne({
       id: projectId,
       authorization: token,
@@ -40,6 +43,36 @@ export default function ProjectDetailsPage() {
         setLoading(false);
       });
   }, [projectId, token]);
+
+  const fetchSubProjects = useCallback(() => {
+    if (!token || !projectId) return;
+
+    setLoadingSubProjects(true);
+    SubProjectManagementService.subProjectControllerFindAll({
+      authorization: token,
+      projectId: projectId,
+      pageNo: 1,
+      pageSize: 100, // Fetch all for now
+    })
+      .then((res: unknown) => {
+        const payload = (res as Record<string, unknown>)?.data as Record<string, unknown>;
+        const items = Array.isArray(payload?.subProjects) ? payload.subProjects : [];
+        setSubProjects(items as Record<string, unknown>[]);
+      })
+      .catch((err) => {
+        console.error("Error fetching sub-projects:", err);
+      })
+      .finally(() => {
+        setLoadingSubProjects(false);
+      });
+  }, [projectId, token]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchProjectData();
+      fetchSubProjects();
+    }, 0);
+  }, [fetchProjectData, fetchSubProjects]);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return "—";
@@ -222,7 +255,7 @@ export default function ProjectDetailsPage() {
             </div>
           </section>
 
-          {/* Breakdown Section (Static for now) */}
+          {/* Breakdown Section */}
           <section className="mb-8">
             <h2 className="text-lg font-bold text-slate-800 mb-4">
               Project Breakdown
@@ -247,12 +280,6 @@ export default function ProjectDetailsPage() {
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
                     >
-                      TEAM MEMBER
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
-                    >
                       START DATE
                     </th>
                     <th
@@ -261,65 +288,57 @@ export default function ProjectDetailsPage() {
                     >
                       END DATE
                     </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                    >
+                      VALUE
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                    >
+                      STATUS
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-border/40">
-                  <tr className="hover:bg-muted/20 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-500">1</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-slate-700">
-                      Frontend
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      Ishrat Rintu
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      08 May, 2026
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      20 May, 2026
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-muted/20 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-500">2</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-slate-700">
-                      UIUX
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      Marina Afroj
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      08 May, 2026
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      20 May, 2026
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-muted/20 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-500">3</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-slate-700">
-                      Backend
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">Rakib</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      08 May, 2026
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      20 May, 2026
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-muted/20 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-500">4</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-slate-700">
-                      Flutter
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">Rabbi</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      08 May, 2026
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
-                      20 May, 2026
-                    </td>
-                  </tr>
+                  {loadingSubProjects ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-8 text-center">
+                        <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
+                      </td>
+                    </tr>
+                  ) : subProjects.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                        No phases found for this project.
+                      </td>
+                    </tr>
+                  ) : (
+                    subProjects.map((phase, index) => (
+                      <tr key={phase._id as string} className="hover:bg-muted/20 transition-colors">
+                        <td className="px-4 py-3 text-sm text-gray-500">{index + 1}</td>
+                        <td className="px-4 py-3 text-sm font-semibold text-slate-700">
+                          {phase.name as string}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-500">
+                          {formatDate(phase.startDate as string)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-500">
+                          {formatDate(phase.endDate as string)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-500">
+                          {phase.value != null ? `$${phase.value}` : "—"}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${phase.isCompleted ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
+                            {phase.isCompleted ? 'Completed' : 'Active'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
