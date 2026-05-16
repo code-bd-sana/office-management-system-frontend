@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -13,11 +13,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+import { useAccessToken } from "@/hooks/useAccessToken";
+import { SubProjectManagementService, TeamManagementService } from "@/api";
+
 interface AddPhaseModalProps {
   projectId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAdded?: () => void;
+}
+
+interface UserItem {
+  _id: string;
+  name: string;
+  email: string;
 }
 
 const INITIAL_FORM = {
@@ -26,6 +35,7 @@ const INITIAL_FORM = {
   endDate: "",
   projectValue: "",
   description: "",
+  teamMemberIds: [] as string[],
 };
 
 export function AddPhaseModal({
@@ -34,18 +44,73 @@ export function AddPhaseModal({
   onOpenChange,
   onAdded,
 }: AddPhaseModalProps) {
+  const token = useAccessToken();
+
   const [form, setForm] = useState(INITIAL_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availableMembers, setAvailableMembers] = useState<UserItem[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState(false);
 
-  // Reset form when modal opens
+  const fetchMembers = useCallback(async () => {
+    if (!token) return;
+    setLoadingMembers(true);
+    try {
+      const res = await TeamManagementService.teamManagementControllerFindByManagerId({
+        authorization: token,
+      });
+
+      const data = (res as Record<string, unknown>)?.data;
+      const teams = Array.isArray(data) ? data : [];
+
+      // Flatten and deduplicate members from all teams
+      const membersMap = new Map<string, UserItem>();
+      
+      teams.forEach((team: Record<string, unknown>) => {
+        if (Array.isArray(team.teamMembers)) {
+          team.teamMembers.forEach((member: Record<string, unknown>) => {
+            // Note: teamMembers are populated user objects
+            if (member && member._id) {
+              membersMap.set(member._id as string, {
+                _id: member._id as string,
+                name: (member.name as string) || "Unknown User",
+                email: (member.email as string) || "",
+              });
+            }
+          });
+        }
+      });
+
+      setAvailableMembers(Array.from(membersMap.values()));
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load available team members.");
+    } finally {
+      setLoadingMembers(false);
+    }
+  }, [token]);
+
+  // Reset form and fetch members when modal opens
   useEffect(() => {
     if (open) {
-      setTimeout(() => setForm(INITIAL_FORM), 0);
+      setTimeout(() => {
+        setForm(INITIAL_FORM);
+        fetchMembers();
+      }, 0);
     }
-  }, [open]);
+  }, [open, fetchMembers]);
 
-  const set = (key: keyof typeof INITIAL_FORM, value: string) => {
+  const set = (key: keyof typeof INITIAL_FORM, value: string | string[]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const toggleMember = (memberId: string) => {
+    setForm((prev) => {
+      const isSelected = prev.teamMemberIds.includes(memberId);
+      const newSelection = isSelected
+        ? prev.teamMemberIds.filter((id) => id !== memberId)
+        : [...prev.teamMemberIds, memberId];
+      return { ...prev, teamMemberIds: newSelection };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,21 +119,41 @@ export function AddPhaseModal({
       toast.error("Please fill in all required fields.");
       return;
     }
+    
+    if (!token) {
+      toast.error("Authentication required.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement API integration here later
-      console.log("Submitting new phase for project", projectId, form);
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await SubProjectManagementService.subProjectControllerCreate({
+        authorization: token,
+        requestBody: {
+          projectId: projectId,
+          name: form.phaseName.trim(),
+          startDate: new Date(form.startDate).toISOString(),
+          endDate: new Date(form.endDate).toISOString(),
+          value: Number(form.projectValue),
+          description: form.description.trim(),
+          teamMemberIds: form.teamMemberIds as unknown as Array<Array<unknown>>, // Cast due to Swagger type Array<any[]> vs Array<string>
+        }
+      });
       
       toast.success("Phase added successfully!");
       onOpenChange(false);
       onAdded?.();
     } catch (err: unknown) {
-      console.error(err);
-      toast.error("Failed to add new phase.");
+      const errorObj = err as Record<string, unknown>;
+      const body = errorObj?.body as Record<string, unknown>;
+      const errors = body?.errors as Array<Record<string, unknown>>;
+      const msg =
+        errors
+          ?.map((e: Record<string, unknown>) => (e.message as string) ?? (e.field as string))
+          ?.join(", ") ??
+        (body?.message as string) ??
+        "Failed to add new phase. Please try again.";
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -86,7 +171,7 @@ export function AddPhaseModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="px-8 pt-6 pb-8 flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="px-8 pt-6 pb-8 flex flex-col gap-6 max-h-[75vh] overflow-y-auto scrollbar-hide">
           {/* Phase Name Field */}
           <div>
             <label
@@ -161,6 +246,47 @@ export function AddPhaseModal({
               className="h-10 rounded-md border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
             />
           </div>
+          
+          {/* Team Members Selection */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Assign Team Members
+            </label>
+            <div className="border border-border/60 rounded-md max-h-48 overflow-y-auto p-2 bg-muted/10">
+              {loadingMembers ? (
+                <div className="flex items-center justify-center p-4">
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : availableMembers.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center p-4">No team members available.</p>
+              ) : (
+                <div className="space-y-1">
+                  {availableMembers.map((member) => (
+                    <label 
+                      key={member._id}
+                      className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
+                        form.teamMemberIds.includes(member._id) ? "bg-brand-navy/5" : "hover:bg-muted/50"
+                      }`}
+                    >
+                      <input 
+                        type="checkbox"
+                        checked={form.teamMemberIds.includes(member._id)}
+                        onChange={() => toggleMember(member._id)}
+                        className="h-4 w-4 rounded border-gray-300 text-brand-navy focus:ring-brand-navy"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-slate-800">{member.name}</span>
+                        <span className="text-xs text-slate-500">{member.email}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              {form.teamMemberIds.length} member(s) selected
+            </p>
+          </div>
 
           {/* Description Field */}
           <div>
@@ -175,7 +301,7 @@ export function AddPhaseModal({
               placeholder="Enter your description"
               value={form.description}
               onChange={(e) => set("description", e.target.value)}
-              rows={4}
+              rows={3}
               className="rounded-md border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0 resize-y"
             />
           </div>
@@ -185,7 +311,7 @@ export function AddPhaseModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex justify-center items-center rounded-md bg-brand-navy py-2.5 px-6 text-sm font-medium text-white shadow-sm transition-colors disabled:opacity-70"
+              className="inline-flex justify-center items-center rounded-md bg-brand-navy py-2.5 px-6 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-navy-dark disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>
