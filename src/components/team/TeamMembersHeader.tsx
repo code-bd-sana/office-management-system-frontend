@@ -7,9 +7,10 @@ import { useUserInfo } from "@/hooks/useUserInfo";
 
 interface TeamMembersHeaderProps {
   teamId?: string;
+  onMemberAdded?: () => void;
 }
 
-export function TeamMembersHeader({ teamId }: TeamMembersHeaderProps) {
+export function TeamMembersHeader({ teamId, onMemberAdded }: TeamMembersHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { role } = useUserInfo();
 
@@ -36,6 +37,7 @@ export function TeamMembersHeader({ teamId }: TeamMembersHeaderProps) {
             teamId={teamId}
             open={isModalOpen}
             onOpenChange={setIsModalOpen}
+            onAdded={onMemberAdded}
           />
         </>
       )}

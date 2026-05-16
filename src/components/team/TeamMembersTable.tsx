@@ -38,7 +38,11 @@ import { useAccessToken } from "@/hooks/useAccessToken";
 import { TeamManagementService } from "@/api";
 import { toast } from "sonner";
 
-export function TeamMembersTable() {
+export interface TeamMembersTableProps {
+  refreshTrigger?: number;
+}
+
+export function TeamMembersTable({ refreshTrigger = 0 }: TeamMembersTableProps) {
   const params = useParams();
   const teamId = params?.teamId as string;
   const token = useAccessToken();
@@ -112,7 +116,7 @@ export function TeamMembersTable() {
 
   useEffect(() => {
     setTimeout(() => fetchMembers(), 0);
-  }, [fetchMembers]);
+  }, [fetchMembers, refreshTrigger]);
 
   // Client-side filtering (search and role)
   const filteredMembers = members.filter((member) => {
