@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -10,6 +10,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -249,43 +254,58 @@ export function AddPhaseModal({
           
           {/* Team Members Selection */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Assign Team Members
             </label>
-            <div className="border border-border/60 rounded-md max-h-48 overflow-y-auto p-2 bg-muted/10">
-              {loadingMembers ? (
-                <div className="flex items-center justify-center p-4">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="flex h-10 w-full items-center justify-between rounded-md border border-border/60 bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {form.teamMemberIds.length > 0 
+                    ? `${form.teamMemberIds.length} member(s) selected` 
+                    : "Select team members..."}
+                  <ChevronDown className="h-4 w-4 opacity-50" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
+                <div 
+                  className="max-h-48 overflow-y-auto p-2 bg-white scrollbar-hide"
+                  onWheel={(e) => e.stopPropagation()}
+                >
+                  {loadingMembers ? (
+                    <div className="flex items-center justify-center p-4">
+                      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : availableMembers.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center p-4">No team members available.</p>
+                  ) : (
+                    <div className="space-y-1">
+                      {availableMembers.map((member) => (
+                        <label 
+                          key={member._id}
+                          className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
+                            form.teamMemberIds.includes(member._id) ? "bg-brand-navy/5" : "hover:bg-muted/50"
+                          }`}
+                        >
+                          <input 
+                            type="checkbox"
+                            checked={form.teamMemberIds.includes(member._id)}
+                            onChange={() => toggleMember(member._id)}
+                            className="h-4 w-4 rounded border-gray-300 text-brand-navy focus:ring-brand-navy"
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-slate-800">{member.name}</span>
+                            <span className="text-xs text-slate-500">{member.email}</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : availableMembers.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center p-4">No team members available.</p>
-              ) : (
-                <div className="space-y-1">
-                  {availableMembers.map((member) => (
-                    <label 
-                      key={member._id}
-                      className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
-                        form.teamMemberIds.includes(member._id) ? "bg-brand-navy/5" : "hover:bg-muted/50"
-                      }`}
-                    >
-                      <input 
-                        type="checkbox"
-                        checked={form.teamMemberIds.includes(member._id)}
-                        onChange={() => toggleMember(member._id)}
-                        className="h-4 w-4 rounded border-gray-300 text-brand-navy focus:ring-brand-navy"
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-slate-800">{member.name}</span>
-                        <span className="text-xs text-slate-500">{member.email}</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {form.teamMemberIds.length} member(s) selected
-            </p>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Description Field */}
