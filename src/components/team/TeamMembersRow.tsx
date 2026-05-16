@@ -84,6 +84,7 @@ export function TeamMembersRow({ member, rowNumber, onDelete }: TeamMembersRowPr
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         memberName={member.name}
+        userId={member.id}
       />
     </>
   );

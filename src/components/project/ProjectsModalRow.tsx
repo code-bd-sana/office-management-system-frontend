@@ -38,9 +38,9 @@ export function ProjectsModalRow({
   onView,
   onEdit,
   onDelete,
-}: ProjectsModalRowProps) {
+  hideEditAndDelete = false,
+}: ProjectsModalRowProps & { hideEditAndDelete?: boolean }) {
   const statusCfg = STATUS_CONFIG[project.status] ?? STATUS_CONFIG["NULL"];
-
   return (
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
       {/* # */}
@@ -97,20 +97,24 @@ export function ProjectsModalRow({
           >
             <Eye className="h-4 w-4" />
           </button>
-          <button
-            onClick={onEdit}
-            className="text-orange-500 hover:text-orange-600 transition-colors"
-            title="Update Project"
-          >
-            <Edit2 className="h-4 w-4" />
-          </button>
-          <button
-            onClick={onDelete}
-            className="text-red-500 hover:text-red-600 transition-colors"
-            title="Delete Project"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          {!hideEditAndDelete && (
+            <>
+              <button
+                onClick={onEdit}
+                className="text-orange-500 hover:text-orange-600 transition-colors"
+                title="Update Project"
+              >
+                <Edit2 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={onDelete}
+                className="text-red-500 hover:text-red-600 transition-colors"
+                title="Delete Project"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </>
+          )}
         </div>
       </TableCell>
     </TableRow>
