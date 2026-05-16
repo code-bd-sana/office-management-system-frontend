@@ -21,6 +21,7 @@ import type { ProjectUpdateSuccessDto } from '../models/ProjectUpdateSuccessDto'
 import type { UpdateClientDto } from '../models/UpdateClientDto';
 import type { UpdateProfileDto } from '../models/UpdateProfileDto';
 import type { UpdateProjectDto } from '../models/UpdateProjectDto';
+import type { UserAssignedProjectSuccessDto } from '../models/UserAssignedProjectSuccessDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -435,7 +436,7 @@ export class ProjectManagementService {
          * Bearer token
          */
         authorization: string,
-    }): CancelablePromise<any> {
+    }): CancelablePromise<UserAssignedProjectSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/project/my-projects/{userId}',
