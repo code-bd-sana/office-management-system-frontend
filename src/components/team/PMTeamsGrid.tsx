@@ -132,8 +132,8 @@ export function PMTeamsGrid() {
       <main className="w-full mx-auto pb-8">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <div className="max-w-2xl">
-            <h1 className="text-lg md:text-xl font-light text-muted-foreground leading-relaxed">
+          <div className="">
+            <h1 className="mt-1 text-base font-light leading-relaxed text-muted-foreground sm:text-lg md:text-2xl max-w-4xl">
               Manage and organize your teams. You can view team details, edit information, or remove teams as needed.
             </h1>
           </div>

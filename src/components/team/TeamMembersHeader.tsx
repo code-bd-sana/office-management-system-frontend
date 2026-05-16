@@ -19,7 +19,7 @@ export function TeamMembersHeader({ teamId, onMemberAdded }: TeamMembersHeaderPr
 
   return (
     <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <p className="mt-1 text-base leading-relaxed text-muted-foreground sm:text-lg md:text-2xl max-w-4xl">
+      <p className="mt-1 text-base font-light leading-relaxed text-muted-foreground sm:text-lg md:text-2xl max-w-4xl">
         {TEAM_MEMBERS_DESCRIPTION}
       </p>
       

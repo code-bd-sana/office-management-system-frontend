@@ -13,7 +13,7 @@ export function LeavePageHeader({
 }: LeavePageHeaderProps) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <p className="text-base leading-relaxed text-muted-foreground/80 sm:text-xl md:text-2xl">
+      <p className="text-base font-light leading-relaxed text-muted-foreground/80 sm:text-xl md:text-2xl">
         View your leave balances and request new leaves. Review the details of
         your upcoming and past leaves
       </p>
