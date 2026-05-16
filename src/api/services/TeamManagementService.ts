@@ -169,30 +169,22 @@ export class TeamManagementService {
         });
     }
     /**
-     * Get teams by manager ID
-     * Retrieve all teams where the given user is the project manager.
+     * Get teams by manager
+     * Retrieve all teams where the authenticated user is the project manager.
      * @returns any
      * @throws ApiError
      */
     public static teamManagementControllerFindByManagerId({
         authorization,
-        id,
     }: {
         /**
          * Bearer token for authentication
          */
         authorization: string,
-        /**
-         * MongoDB ObjectId of the project manager
-         */
-        id: string,
     }): CancelablePromise<TeamsByManagerIdSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/team/manager/{id}',
-            path: {
-                'id': id,
-            },
+            url: '/api/team/manager',
             headers: {
                 'Authorization': authorization,
             },

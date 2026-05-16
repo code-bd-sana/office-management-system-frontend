@@ -415,7 +415,6 @@ export type { TeamByManagerIdForbidden } from './models/TeamByManagerIdForbidden
 export type { TeamByManagerIdInternalErrorDto } from './models/TeamByManagerIdInternalErrorDto';
 export type { TeamByManagerIdNotFoundDto } from './models/TeamByManagerIdNotFoundDto';
 export type { TeamByManagerIdUnauthorizedDto } from './models/TeamByManagerIdUnauthorizedDto';
-export type { TeamByManagerIdValidationDto } from './models/TeamByManagerIdValidationDto';
 export type { TeamCreateForbidden } from './models/TeamCreateForbidden';
 export type { TeamCreateInternalErrorDto } from './models/TeamCreateInternalErrorDto';
 export type { TeamCreateSuccessDto } from './models/TeamCreateSuccessDto';
