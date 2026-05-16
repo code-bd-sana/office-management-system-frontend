@@ -85,11 +85,11 @@ export function TeamMembersTable({ refreshTrigger = 0 }: TeamMembersTableProps) 
         else if (record.name) memberName = record.name as string;
         else if (record.team_member_name) memberName = record.team_member_name as string;
 
-        let memberDesignation = "N/A";
-        if (typeof memberObj?.designation === "string") memberDesignation = memberObj.designation;
-        else if (typeof memberObj?.designation === "object" && (memberObj.designation as Record<string, unknown>)?.name) memberDesignation = (memberObj.designation as Record<string, unknown>).name as string;
-        else if (typeof record.designation === "string") memberDesignation = record.designation;
-        else if (typeof record.designation === "object" && (record.designation as Record<string, unknown>)?.name) memberDesignation = (record.designation as Record<string, unknown>).name as string;
+        let memberRole = "N/A";
+        if (typeof memberObj?.role === "string") memberRole = memberObj.role;
+        else if (typeof memberObj?.role === "object" && (memberObj.role as Record<string, unknown>)?.name) memberRole = (memberObj.role as Record<string, unknown>).name as string;
+        else if (typeof record.role === "string") memberRole = record.role;
+        else if (typeof record.role === "object" && (record.role as Record<string, unknown>)?.name) memberRole = (record.role as Record<string, unknown>).name as string;
 
         // Use the actual user ID for deletion purposes
         const userId = memberObj?._id || memberObj?.id || record.team_member_id || record._id || `member-${idx}`;
@@ -98,9 +98,9 @@ export function TeamMembersTable({ refreshTrigger = 0 }: TeamMembersTableProps) 
           id: userId as string,
           rowNumber: 0, // Assigned later during slicing
           name: memberName as string,
-          designation: memberDesignation as string,
-          totalProjects: 0, // Mock for now if API doesn't return
-          completedProjects: 0, // Mock for now
+          designation: memberRole as string, // We map the role name to the designation property expected by the table row
+          totalProjects: (memberObj?.totalSubProjects as number) || (record?.totalSubProjects as number) || 0,
+          completedProjects: (memberObj?.totalCompletedSubProjects as number) || (record?.totalCompletedSubProjects as number) || 0,
           avatar: undefined,
         };
       });
