@@ -386,13 +386,13 @@ export default function ProjectDetailsPage() {
                 <tbody className="bg-white divide-y divide-border/40">
                   {loadingSubProjects ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center">
+                      <td colSpan={role === "PROJECT MANAGER" ? 7 : 6} className="px-4 py-8 text-center">
                         <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
                       </td>
                     </tr>
                   ) : subProjects.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td colSpan={role === "PROJECT MANAGER" ? 7 : 6} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         No phases found for this project.
                       </td>
                     </tr>
@@ -417,7 +417,7 @@ export default function ProjectDetailsPage() {
                             <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-700 cursor-not-allowed opacity-80">
                               Completed
                             </span>
-                          ) : (
+                          ) : role === "PROJECT MANAGER" ? (
                             <button
                               onClick={() => handleCompleteClick(phase._id as string)}
                               disabled={updatingPhaseId === phase._id}
@@ -432,26 +432,32 @@ export default function ProjectDetailsPage() {
                                 "Complete Phase"
                               )}
                             </button>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              Active
+                            </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleEditClick(phase)}
-                              className="p-1.5 text-muted-foreground hover:text-brand-blue transition-colors"
-                              title="Edit Phase"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteClick(phase._id as string)}
-                              className="p-1.5 text-red-400 hover:text-red-600 transition-colors"
-                              title="Delete Phase"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </td>
+                        {role === "PROJECT MANAGER" && (
+                          <td className="px-4 py-3 text-sm text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleEditClick(phase)}
+                                className="p-1.5 text-muted-foreground hover:text-brand-blue transition-colors"
+                                title="Edit Phase"
+                              >
+                                <Edit2 className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick(phase._id as string)}
+                                className="p-1.5 text-red-400 hover:text-red-600 transition-colors"
+                                title="Delete Phase"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        )}
                       </tr>
                     ))
                   )}
