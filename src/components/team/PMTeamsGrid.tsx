@@ -52,7 +52,7 @@ export function PMTeamsGrid() {
     leader: string;
     leaderName: string;
     department: string;
-    totalMembers: number;
+    totalMember: number;
     departmentName: string;
     createdAt: string;
   };
@@ -91,7 +91,7 @@ export function PMTeamsGrid() {
         leader: typeof t.team_leader_id === "string" ? t.team_leader_id : (t.team_leader_id as Record<string, unknown>)?._id as string || "",
         leaderName: (t.team_leader_id as Record<string, unknown>)?.name as string || "Unknown",
         department: typeof t.department === "string" ? t.department : (t.department as Record<string, unknown>)?._id as string || "",
-        totalMembers: (t.membersCount as number) || 0,
+        totalMember: (t.totalMember as number) || 0,
         departmentName: (t.department as Record<string, unknown>)?.name as string || "Unknown",
         createdAt: t.createdAt ? format(new Date(t.createdAt as string), "dd MMM yyyy") : "—",
       }));
@@ -186,7 +186,7 @@ export function PMTeamsGrid() {
                     <Users className="h-5 w-5" />
                     <span className="text-sm">Total Members</span>
                   </div>
-                  <span className="text-sm font-medium text-slate-600">{team.totalMembers}</span>
+                  <span className="text-sm font-medium text-slate-600">{team.totalMember}</span>
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-border/40">
                   <div className="flex items-center gap-3 text-muted-foreground">

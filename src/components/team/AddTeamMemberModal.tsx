@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { useAccessToken } from "@/hooks/useAccessToken";
-import { UserManagementService, TeamManagementService } from "@/api";
+import { TeamManagementService } from "@/api";
 
 export interface AddTeamMemberModalProps {
   teamId: string;
@@ -49,16 +49,13 @@ export function AddTeamMemberModal({
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch users whenever modal opens or searchKey changes (debounced)
-  const fetchUsers = useCallback(async (search: string) => {
+  // Fetch users whenever modal opens
+  const fetchUsers = useCallback(async () => {
     if (!token) return;
     setLoadingUsers(true);
     try {
-      const res = await UserManagementService.userControllerGetUsers({
-        pageNo: 1,
-        pageSize: 100, // Fetch top 100 or search results
+      const res = await TeamManagementService.teamManagementControllerGetAvailableMembers({
         authorization: token,
-        searchKey: search || undefined,
       });
 
       const data = (res as Record<string, unknown>)?.data as Record<string, unknown>;
@@ -72,29 +69,24 @@ export function AddTeamMemberModal({
     }
   }, [token]);
 
-  // Handle open state & debounced search
+  // Handle open state
   useEffect(() => {
     if (open) {
       setTimeout(() => {
         // Clear selection on open
         setSelectedUserIds([]);
-        fetchUsers(""); // initial fetch without search
+        setSearchKey("");
+        fetchUsers();
       }, 0);
     } else {
       setTimeout(() => setSearchKey(""), 0);
     }
   }, [open, fetchUsers]);
 
-  // Debounce search effect
-  useEffect(() => {
-    if (!open) return;
-    
-    const handler = setTimeout(() => {
-      fetchUsers(searchKey);
-    }, 400);
-
-    return () => clearTimeout(handler);
-  }, [searchKey, fetchUsers, open]);
+  const filteredUsers = users.filter(user => 
+    user.name?.toLowerCase().includes(searchKey.toLowerCase()) || 
+    user.email?.toLowerCase().includes(searchKey.toLowerCase())
+  );
 
   const toggleUser = (userId: string) => {
     setSelectedUserIds((prev) => 
@@ -184,13 +176,13 @@ export function AddTeamMemberModal({
               <div className="flex justify-center items-center h-full">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
-            ) : users.length === 0 ? (
+            ) : filteredUsers.length === 0 ? (
               <div className="flex justify-center items-center h-full">
                 <p className="text-sm text-muted-foreground">No users found.</p>
               </div>
             ) : (
               <div className="space-y-1 p-2">
-                {users.map((user) => (
+                {filteredUsers.map((user) => (
                   <label 
                     key={user._id} 
                     className={`flex items-center gap-3 p-3 rounded-md cursor-pointer transition-colors border ${
