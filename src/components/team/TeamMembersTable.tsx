@@ -40,11 +40,12 @@ import { toast } from "sonner";
 
 export interface TeamMembersTableProps {
   refreshTrigger?: number;
+  teamIdProp?: string;
 }
 
-export function TeamMembersTable({ refreshTrigger = 0 }: TeamMembersTableProps) {
+export function TeamMembersTable({ refreshTrigger = 0, teamIdProp }: TeamMembersTableProps) {
   const params = useParams();
-  const teamId = params?.teamId as string;
+  const teamId = teamIdProp || (params?.teamId as string);
   const token = useAccessToken();
 
   const [searchQuery, setSearchQuery] = useState("");
