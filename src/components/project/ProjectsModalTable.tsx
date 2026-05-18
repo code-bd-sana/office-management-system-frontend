@@ -57,10 +57,11 @@ type FilterValue = ProjectStatus | "all";
 export function ProjectsModalTable() {
   const router = useRouter();
   const token = useAccessToken();
-  const { department } = useUserInfo();
+  const { department, role } = useUserInfo();
 
   // Only SALES department can manage profiles & clients
   const isSalesDept = department?.toUpperCase() === "SALES";
+  const canEditOrDelete = isSalesDept || role === "PROJECT MANAGER";
 
   /* ── Modal state ────────────────────────────────────────── */
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
@@ -303,6 +304,7 @@ export function ProjectsModalTable() {
               onView={() => openView(project._id)}
               onEdit={() => openEdit(project._id)}
               onDelete={() => openDelete(project._id)}
+              hideEditAndDelete={!canEditOrDelete}
             />
           )}
           enableCheckboxes={false}
