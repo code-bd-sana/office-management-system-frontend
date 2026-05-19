@@ -6,15 +6,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { ProjectsModalTable } from "@/components/project/ProjectsModalTable";
+import { UserProjectsModalTable } from "./UserProjectsModalTable";
 
 interface ProjectsListModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   memberName?: string;
+  userId?: string;
 }
 
-export function ProjectsListModal({ open, onOpenChange, memberName }: ProjectsListModalProps) {
+export function ProjectsListModal({ open, onOpenChange, memberName, userId }: ProjectsListModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto gap-0 p-0 sm:max-w-6xl">
@@ -39,7 +40,7 @@ export function ProjectsListModal({ open, onOpenChange, memberName }: ProjectsLi
         {/* Content */}
         <div className="overflow-hidden">
           <div className="px-4 py-3 sm:px-6 sm:py-4">
-            <ProjectsModalTable />
+            {userId && <UserProjectsModalTable userId={userId} />}
           </div>
         </div>
       </DialogContent>

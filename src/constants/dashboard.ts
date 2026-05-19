@@ -6,6 +6,7 @@ import DcrIcon from "@/components/icons/dashboard-home/DcrIcon";
 import ShiftIcon from "@/components/icons/dashboard-home/ShiftIcon";
 import LearningDashboardIcon from "@/components/icons/dashboard-home/LearningDashboardIcon";
 import AttendanceDashboardIcon from "@/components/icons/dashboard-home/AttendanceDashboardIcon";
+import TeamIcon from "@/components/icons/dashboard-home/TeamIcon";
 export const DASHBOARD_CARDS: DashboardCardData[] = [
   {
     id: "tasks",
@@ -25,15 +26,15 @@ export const DASHBOARD_CARDS: DashboardCardData[] = [
     cardColor: "bg-[#E6F1FD]",
     href: "/projects",
   },
-  // {
-  //   id: "team-members",
-  //   title: "Team Members",
-  //   count: 3,
-  //   subtitle: "Total Members",
-  //   icon: TeamIcon,
-  //   cardColor: "bg-[#E0ECED]",
-  //   href: "/team-members",
-  // },
+  {
+    id: "team-members",
+    title: "Team Members",
+    count: 3,
+    subtitle: "Total Members",
+    icon: TeamIcon,
+    cardColor: "bg-[#E0ECED]",
+    href: "/team-members",
+  },
   {
     id: "dcr-submission",
     title: "DCR Submission",

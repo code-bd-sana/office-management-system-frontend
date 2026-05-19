@@ -17,6 +17,7 @@ export interface Project {
   projectFiles?: string[];
   dueDate?: string;
   projectTeam?: string;
+  value?: number;
   client?: { _id: string; name: string } | string | null;
   profile?: { _id: string; name: string } | string | null;
   assignedDepartment?: { _id: string; name: string } | string | null;

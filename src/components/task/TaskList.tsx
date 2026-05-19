@@ -345,7 +345,7 @@ export function TaskList({ refreshKey }: TaskListProps) {
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the task
-              and remove its data from our servers.
+              and remove its data.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

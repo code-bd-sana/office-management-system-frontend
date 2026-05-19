@@ -27,5 +27,9 @@ export type CreateSubProjectDto = {
      * Array of user IDs to assign to the sub-project
      */
     teamMemberIds?: Array<any[]>;
+    /**
+     * Price value of the sub-project
+     */
+    value?: number;
 };
 

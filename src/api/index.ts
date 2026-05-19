@@ -16,6 +16,7 @@ export type { ApproveShiftExchangeSuccessDto } from './models/ApproveShiftExchan
 export type { ApproveShiftExchangeUnauthorizedDto } from './models/ApproveShiftExchangeUnauthorizedDto';
 export type { ApproveShiftExchangeValidationDto } from './models/ApproveShiftExchangeValidationDto';
 export { AttendanceByAuthorityDto } from './models/AttendanceByAuthorityDto';
+export type { AvailableMembersSuccessDto } from './models/AvailableMembersSuccessDto';
 export type { ChangePasswordDto } from './models/ChangePasswordDto';
 export type { ChangePasswordInternalErrorDto } from './models/ChangePasswordInternalErrorDto';
 export type { ChangePasswordSuccessDto } from './models/ChangePasswordSuccessDto';
@@ -414,7 +415,6 @@ export type { TeamByManagerIdForbidden } from './models/TeamByManagerIdForbidden
 export type { TeamByManagerIdInternalErrorDto } from './models/TeamByManagerIdInternalErrorDto';
 export type { TeamByManagerIdNotFoundDto } from './models/TeamByManagerIdNotFoundDto';
 export type { TeamByManagerIdUnauthorizedDto } from './models/TeamByManagerIdUnauthorizedDto';
-export type { TeamByManagerIdValidationDto } from './models/TeamByManagerIdValidationDto';
 export type { TeamCreateForbidden } from './models/TeamCreateForbidden';
 export type { TeamCreateInternalErrorDto } from './models/TeamCreateInternalErrorDto';
 export type { TeamCreateSuccessDto } from './models/TeamCreateSuccessDto';
@@ -481,6 +481,11 @@ export type { UpdateTeamDto } from './models/UpdateTeamDto';
 export type { UpdateTeamMemberDto } from './models/UpdateTeamMemberDto';
 export type { UpdateUserProfileInternalErrorDto } from './models/UpdateUserProfileInternalErrorDto';
 export type { UpdateUserProfileUnauthorizedDto } from './models/UpdateUserProfileUnauthorizedDto';
+export type { UserAssignedProjectForbiddenDto } from './models/UserAssignedProjectForbiddenDto';
+export type { UserAssignedProjectInternalErrorDto } from './models/UserAssignedProjectInternalErrorDto';
+export type { UserAssignedProjectSuccessDto } from './models/UserAssignedProjectSuccessDto';
+export type { UserAssignedProjectUnauthorizedDto } from './models/UserAssignedProjectUnauthorizedDto';
+export type { UserAssignedProjectValidationDto } from './models/UserAssignedProjectValidationDto';
 export type { UserForbiddenDto } from './models/UserForbiddenDto';
 export type { UserIdDto } from './models/UserIdDto';
 export type { UserInternalErrorDto } from './models/UserInternalErrorDto';

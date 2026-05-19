@@ -166,7 +166,7 @@ export function AttendanceContent() {
   return (
     <div className='space-y-6'>
       {/* Description */}
-      <p className='text-base pr-0 leading-relaxed text-muted-foreground/80 sm:text-xl sm:pr-8 md:text-2xl'>
+      <p className='text-base font-light pr-0 leading-relaxed text-muted-foreground/80 sm:text-xl sm:pr-8 md:text-2xl'>
         {ATTENDANCE_DESCRIPTION}
       </p>
 

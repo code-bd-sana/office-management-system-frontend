@@ -27,5 +27,9 @@ export type UpdateSubProjectDto = {
      * Indicates whether the sub-project is completed
      */
     isCompleted?: boolean;
+    /**
+     * Price value of the sub-project
+     */
+    value?: number;
 };
 
