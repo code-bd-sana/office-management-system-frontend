@@ -43,6 +43,10 @@ export type CreateProjectDto = {
      * The current status of the project - NULL, NRA, WIP, DELIVERED, CANCELLED, REVISION
      */
     status: CreateProjectDto.status;
+    /**
+     * Price value of the project
+     */
+    value?: number;
 };
 export namespace CreateProjectDto {
     /**

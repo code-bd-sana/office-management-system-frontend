@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { LayoutList, Users, FolderPlus, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
@@ -10,7 +11,6 @@ import { ProfileManagementModal } from "./ProfileManagementModal";
 import { ClientManagementModal } from "./ClientManagementModal";
 import { CreateProjectModal } from "./CreateProjectModal";
 import { UpdateProjectModal } from "./UpdateProjectModal";
-import { ViewProjectModal } from "./ViewProjectModal";
 
 import {
   AlertDialog,
@@ -35,7 +35,7 @@ const COLUMNS: ColumnDef[] = [
   { key: "client",      label: "Client"       },
   { key: "orderId",     label: "Order ID"     },
   { key: "profile",     label: "Profile"      },
-  { key: "projectFile", label: "Project File" },
+  { key: "value",       label: "Value"        },
   { key: "status",      label: "Status"       },
   { key: "actions",     label: "Actions",     className: "w-[120px]" },
 ];
@@ -55,11 +55,13 @@ type FilterValue = ProjectStatus | "all";
 
 /* ─── Component ───────────────────────────────────────────── */
 export function ProjectsModalTable() {
+  const router = useRouter();
   const token = useAccessToken();
-  const { department } = useUserInfo();
+  const { department, role } = useUserInfo();
 
   // Only SALES department can manage profiles & clients
   const isSalesDept = department?.toUpperCase() === "SALES";
+  const canEditOrDelete = isSalesDept || role === "PROJECT MANAGER";
 
   /* ── Modal state ────────────────────────────────────────── */
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
@@ -68,7 +70,6 @@ export function ProjectsModalTable() {
 
   /* ── Action Modals state ────────────────────────────────── */
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [isViewOpen, setIsViewOpen] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -114,20 +115,21 @@ export function ProjectsModalTable() {
         }),
       });
 
-      const data = (res as any)?.data;
+      const data = (res as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
       // API returns { data: { projects: [], total, totalPages } }
       const list: Project[] = Array.isArray(data?.projects)
-        ? data.projects
+        ? data?.projects as Project[]
         : Array.isArray(data)
-        ? data
+        ? data as Project[]
         : [];
-      const total: number = data?.total ?? list.length;
+      const total: number = typeof data?.total === "number" ? data.total : list.length;
 
       setProjects(list);
       setTotalRecords(total);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errBody = (err as Record<string, unknown>)?.body as Record<string, unknown>;
       const msg =
-        err?.body?.message ?? "Failed to load projects. Please try again.";
+        (errBody?.message as string) ?? "Failed to load projects. Please try again.";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -135,7 +137,7 @@ export function ProjectsModalTable() {
   }, [token, currentPage, rowsPerPage, debouncedSearch, activeFilter]);
 
   useEffect(() => {
-    fetchProjects();
+    setTimeout(() => fetchProjects(), 0);
   }, [fetchProjects]);
 
   /* ── Filter / pagination handlers ────────────────────────── */
@@ -154,8 +156,7 @@ export function ProjectsModalTable() {
   };
 
   const openView = (id: string) => {
-    setSelectedProjectId(id);
-    setIsViewOpen(true);
+    router.push(`/projects/${id}`);
   };
 
   const openEdit = (id: string) => {
@@ -179,8 +180,9 @@ export function ProjectsModalTable() {
       toast.success("Project deleted successfully");
       fetchProjects();
       setIsDeleteOpen(false);
-    } catch (err: any) {
-      toast.error(err?.body?.message || "Failed to delete project");
+    } catch (err: unknown) {
+      const errBody = (err as Record<string, unknown>)?.body as Record<string, unknown>;
+      toast.error((errBody?.message as string) || "Failed to delete project");
     } finally {
       setIsDeleting(false);
     }
@@ -202,7 +204,7 @@ export function ProjectsModalTable() {
             <button
               type="button"
               onClick={() => setIsCreateProjectModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#6941C6] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#5a35b0] hover:shadow-md active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
             >
               <FolderPlus className="h-4 w-4" />
               New Project
@@ -212,7 +214,7 @@ export function ProjectsModalTable() {
             <button
               type="button"
               onClick={() => setIsClientModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#1a6b3c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#155c32] hover:shadow-md active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
             >
               <Users className="h-4 w-4" />
               Client
@@ -222,7 +224,7 @@ export function ProjectsModalTable() {
             <button
               type="button"
               onClick={() => setIsProfileModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-brand-navy px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-navy-dark hover:shadow-md active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
             >
               <LayoutList className="h-4 w-4" />
               Profile
@@ -288,7 +290,7 @@ export function ProjectsModalTable() {
           totalRecords={totalRecords}
           enableSearch={true}
           searchPlaceholder="Search by name or order ID…"
-          onFilterData={noopFilter as any}
+          onFilterData={noopFilter}
           onSearchChange={(val) => {
             setSearch(val);
           }}
@@ -302,9 +304,10 @@ export function ProjectsModalTable() {
               onView={() => openView(project._id)}
               onEdit={() => openEdit(project._id)}
               onDelete={() => openDelete(project._id)}
+              hideEditAndDelete={!canEditOrDelete}
             />
           )}
-          enableCheckboxes={true}
+          enableCheckboxes={false}
           rowsPerPageOptions={[10, 20, 50, 100]}
           defaultRowsPerPage={rowsPerPage}
         />
@@ -328,12 +331,6 @@ export function ProjectsModalTable() {
       />
 
       {/* ── Action Modals ────────────────────────────────────── */}
-      <ViewProjectModal
-        projectId={selectedProjectId}
-        open={isViewOpen}
-        onOpenChange={setIsViewOpen}
-      />
-
       <UpdateProjectModal
         projectId={selectedProjectId}
         open={isUpdateOpen}
@@ -347,7 +344,7 @@ export function ProjectsModalTable() {
             <AlertDialogTitle className="text-foreground">Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the project
-              and remove its data from our servers.
+              and remove its data from.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

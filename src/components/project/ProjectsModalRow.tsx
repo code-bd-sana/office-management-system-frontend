@@ -38,23 +38,11 @@ export function ProjectsModalRow({
   onView,
   onEdit,
   onDelete,
-}: ProjectsModalRowProps) {
+  hideEditAndDelete = false,
+}: ProjectsModalRowProps & { hideEditAndDelete?: boolean }) {
   const statusCfg = STATUS_CONFIG[project.status] ?? STATUS_CONFIG["NULL"];
-
-  // First file URL (if any)
-  const firstFile = project.projectFiles?.[0];
-
   return (
     <TableRow className="border-b border-border/40 hover:bg-muted/30">
-      {/* Checkbox */}
-      <TableCell className="py-3.5 pl-5">
-        <input
-          type="checkbox"
-          className="h-4 w-4 rounded border-gray-300"
-          aria-label={`Select project ${rowNumber}`}
-        />
-      </TableCell>
-
       {/* # */}
       <TableCell className="whitespace-nowrap py-3.5 text-sm font-medium text-foreground/70">
         {rowNumber}
@@ -85,21 +73,9 @@ export function ProjectsModalRow({
         {resolveName(project.profile)}
       </TableCell>
 
-      {/* Project File */}
-      <TableCell className="py-3.5 text-sm">
-        {firstFile ? (
-          <a
-            href={firstFile}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="max-w-40 truncate font-medium text-brand-navy underline underline-offset-2 hover:text-brand-navy-dark"
-            title={firstFile}
-          >
-            View File
-          </a>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
+      {/* Value */}
+      <TableCell className="py-3.5 text-sm font-medium text-foreground/80">
+        {project.value != null ? `$${project.value}` : "—"}
       </TableCell>
 
       {/* Status */}
@@ -121,20 +97,24 @@ export function ProjectsModalRow({
           >
             <Eye className="h-4 w-4" />
           </button>
-          <button
-            onClick={onEdit}
-            className="text-orange-500 hover:text-orange-600 transition-colors"
-            title="Update Project"
-          >
-            <Edit2 className="h-4 w-4" />
-          </button>
-          <button
-            onClick={onDelete}
-            className="text-red-500 hover:text-red-600 transition-colors"
-            title="Delete Project"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          {!hideEditAndDelete && (
+            <>
+              <button
+                onClick={onEdit}
+                className="text-orange-500 hover:text-orange-600 transition-colors"
+                title="Update Project"
+              >
+                <Edit2 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={onDelete}
+                className="text-red-500 hover:text-red-600 transition-colors"
+                title="Delete Project"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </>
+          )}
         </div>
       </TableCell>
     </TableRow>

@@ -7,7 +7,7 @@ interface TaskPageHeaderProps {
 export function TaskPageHeader({ onAddTask }: TaskPageHeaderProps) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <p className="max-w-5xl text-base leading-relaxed text-muted-foreground/80 sm:text-lg md:text-2xl">
+      <p className="max-w-5xl text-base font-light leading-relaxed text-muted-foreground/80 sm:text-lg md:text-2xl">
         Track and View your assigned tasks. Mark them as completed and submit
         your Daily Completion Report (DCR) on time.
       </p>
