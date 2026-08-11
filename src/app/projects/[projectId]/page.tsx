@@ -200,6 +200,10 @@ export default function ProjectDetailsPage() {
     );
   }
 
+  const totalPhases = subProjects.length;
+  const completedPhases = subProjects.filter((p) => p.isCompleted).length;
+  const progressPercentage = totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
+
   return (
     <MainLayout pageTitle="Project Details">
       {/* We use w-full and px/py for responsiveness instead of max-w constraints, as requested */}
@@ -326,18 +330,18 @@ export default function ProjectDetailsPage() {
             )}
           </section>
 
-          {/* Progress Section (Static for now) */}
+          {/* Progress Section */}
           <section className="mb-8">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-bold text-slate-800">
                 Project Progress
               </h2>
-              <span className="text-sm font-bold text-brand-navy">65%</span>
+              <span className="text-sm font-bold text-brand-navy">{progressPercentage}%</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-2.5">
               <div
-                className="bg-brand-navy h-2.5 rounded-full"
-                style={{ width: "65%" }}
+                className="bg-brand-navy h-2.5 rounded-full transition-all duration-500 ease-in-out"
+                style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
           </section>
