@@ -16,7 +16,11 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { DepartmentManagementService, ProjectManagementService } from '@/api';
+import {
+  DepartmentManagementService,
+  ProjectManagementService,
+  TeamManagementService,
+} from '@/api';
 import { CreateProjectDto } from '@/api/models/CreateProjectDto';
 import { useAccessToken } from '@/hooks/useAccessToken';
 
@@ -47,6 +51,7 @@ const INITIAL_FORM = {
   client: '',
   profile: '',
   assignedDepartment: '',
+  assignedTeam: '',
   projectTeam: '' as CreateProjectDto.projectTeam | '',
   dueDate: '',
   value: '',
@@ -68,13 +73,14 @@ export function UpdateProjectModal({
   const [clients, setClients] = useState<DropdownItem[]>([]);
   const [profiles, setProfiles] = useState<DropdownItem[]>([]);
   const [departments, setDepartments] = useState<DropdownItem[]>([]);
+  const [teams, setTeams] = useState<DropdownItem[]>([]);
   const [loadingDropdowns, setLoadingDropdowns] = useState(false);
 
   const fetchDropdowns = useCallback(async () => {
     if (!token) return;
     setLoadingDropdowns(true);
     try {
-      const [clientsRes, profilesRes, depsRes] = await Promise.all([
+      const [clientsRes, profilesRes, depsRes, teamsRes] = await Promise.all([
         ProjectManagementService.projectControllerGetClients({
           authorization: token,
         }),
@@ -85,12 +91,16 @@ export function UpdateProjectModal({
           pageNo: 1,
           pageSize: 100,
         }),
+        TeamManagementService.teamManagementControllerFindAll({
+          authorization: token,
+          pageNo: 1,
+          pageSize: 100,
+        }),
       ]);
       const clientsData = (clientsRes as Record<string, unknown>)?.data;
       setClients(Array.isArray(clientsData) ? (clientsData as DropdownItem[]) : []);
       const profilesData = (profilesRes as Record<string, unknown>)?.data;
       setProfiles(Array.isArray(profilesData) ? (profilesData as DropdownItem[]) : []);
-      // API returns { data: { departments: [], total, totalPages } }
       const depsData = (depsRes as Record<string, unknown>)?.data as
         | Record<string, unknown>
         | undefined;
@@ -101,6 +111,13 @@ export function UpdateProjectModal({
             ? (depsData as DropdownItem[])
             : [],
       );
+      const teamsData = (teamsRes as Record<string, unknown>)?.data as Record<string, unknown>;
+      const teamList = Array.isArray(teamsData?.teams)
+        ? teamsData.teams
+        : Array.isArray(teamsData)
+          ? teamsData
+          : [];
+      setTeams(teamList as DropdownItem[]);
     } catch {
       toast.error('Failed to load dropdown data.');
     } finally {
@@ -143,6 +160,10 @@ export function UpdateProjectModal({
                   typeof pd.assignedDepartment === 'string'
                     ? pd.assignedDepartment
                     : ((pd.assignedDepartment as Record<string, unknown>)?._id as string) || '',
+                assignedTeam:
+                  typeof pd.assignedTeam === 'string'
+                    ? pd.assignedTeam
+                    : ((pd.assignedTeam as Record<string, unknown>)?._id as string) || '',
                 projectTeam: (pd.projectTeam as CreateProjectDto.projectTeam) || '',
                 dueDate: pd.dueDate ? (pd.dueDate as string).split('T')[0] : '', // get visual YYYY-MM-DD
                 value: pd.value
@@ -211,6 +232,7 @@ export function UpdateProjectModal({
         client: form.client || null,
         profile: form.profile || null,
         assignedDepartment: form.assignedDepartment || null,
+        assignedTeam: form.assignedTeam || null,
         projectTeam: form.projectTeam || null,
         dueDate: form.dueDate || null,
         value:
@@ -371,7 +393,7 @@ export function UpdateProjectModal({
                 </div>
               </div>
 
-              {/* Row 4: Assigned Department + Due Date */}
+              {/* Row 4: Assigned Department + Assigned Team */}
               <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Assigned Department</label>
@@ -396,6 +418,27 @@ export function UpdateProjectModal({
                   </Select>
                 </div>
                 <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Assigned Team</label>
+                  <Select value={form.assignedTeam} onValueChange={(v) => set('assignedTeam', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue
+                        placeholder={teams.length === 0 ? 'No teams found' : 'Select team…'}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams.map((t) => (
+                        <SelectItem key={t._id} value={t._id}>
+                          {t.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Row 5: Due Date + Project Value */}
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Due Date</label>
                   <Input
                     type='date'
@@ -404,10 +447,6 @@ export function UpdateProjectModal({
                     className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
-              </div>
-
-              {/* Row 5: Value */}
-              <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Project Value</label>
                   <Input
@@ -419,6 +458,10 @@ export function UpdateProjectModal({
                     className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
+              </div>
+
+              {/* Row 6: Value (After 20% Cut) */}
+              <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>
                     Value (After 20% Cut)

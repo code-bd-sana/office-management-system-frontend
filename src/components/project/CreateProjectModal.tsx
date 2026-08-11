@@ -16,7 +16,11 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { DepartmentManagementService, ProjectManagementService } from '@/api';
+import {
+  DepartmentManagementService,
+  ProjectManagementService,
+  TeamManagementService,
+} from '@/api';
 import { CreateProjectDto } from '@/api/models/CreateProjectDto';
 import { useAccessToken } from '@/hooks/useAccessToken';
 
@@ -47,6 +51,7 @@ const INITIAL_FORM = {
   client: '',
   profile: '',
   assignedDepartment: '',
+  assignedTeam: '',
   projectTeam: '' as CreateProjectDto.projectTeam | '',
   dueDate: '',
   value: '',
@@ -64,6 +69,7 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
   const [clients, setClients] = useState<DropdownItem[]>([]);
   const [profiles, setProfiles] = useState<DropdownItem[]>([]);
   const [departments, setDepartments] = useState<DropdownItem[]>([]);
+  const [teams, setTeams] = useState<DropdownItem[]>([]);
   const [loadingDropdowns, setLoadingDropdowns] = useState(false);
 
   /* ── Fetch dropdown data on open ─────────────────────────── */
@@ -71,7 +77,7 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
     if (!token) return;
     setLoadingDropdowns(true);
     try {
-      const [clientsRes, profilesRes, depsRes] = await Promise.all([
+      const [clientsRes, profilesRes, depsRes, teamsRes] = await Promise.all([
         ProjectManagementService.projectControllerGetClients({
           authorization: token,
         }),
@@ -82,12 +88,16 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
           pageNo: 1,
           pageSize: 100,
         }),
+        TeamManagementService.teamManagementControllerFindAll({
+          authorization: token,
+          pageNo: 1,
+          pageSize: 100,
+        }),
       ]);
       const clientsData = (clientsRes as Record<string, unknown>)?.data;
       setClients(Array.isArray(clientsData) ? (clientsData as DropdownItem[]) : []);
       const profilesData = (profilesRes as Record<string, unknown>)?.data;
       setProfiles(Array.isArray(profilesData) ? (profilesData as DropdownItem[]) : []);
-      // API returns { data: { departments: [], total, totalPages } }
       const depsData = (depsRes as Record<string, unknown>)?.data as
         | Record<string, unknown>
         | undefined;
@@ -98,6 +108,13 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
             ? (depsData as DropdownItem[])
             : [],
       );
+      const teamsData = (teamsRes as Record<string, unknown>)?.data as Record<string, unknown>;
+      const teamList = Array.isArray(teamsData?.teams)
+        ? teamsData.teams
+        : Array.isArray(teamsData)
+          ? teamsData
+          : [];
+      setTeams(teamList as DropdownItem[]);
     } catch {
       toast.error('Failed to load dropdown data.');
     } finally {
@@ -161,11 +178,13 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
         ...(form.assignedDepartment && {
           assignedDepartment: form.assignedDepartment,
         }),
+        ...(form.assignedTeam && { assignedTeam: form.assignedTeam }),
         ...(form.projectTeam && {
           projectTeam: form.projectTeam as CreateProjectDto.projectTeam,
         }),
         ...(form.dueDate && { dueDate: form.dueDate }),
-        ...(form.value && !isNaN(Number(form.value)) && { value: Number((Number(form.value) * 0.8).toFixed(2)) }),
+        ...(form.value &&
+          !isNaN(Number(form.value)) && { value: Number((Number(form.value) * 0.8).toFixed(2)) }),
       };
 
       await ProjectManagementService.projectControllerCreate({
@@ -312,7 +331,7 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
                 </div>
               </div>
 
-              {/* Row 4: Assigned Department + Due Date */}
+              {/* Row 4: Assigned Department + Assigned Team */}
               <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Assigned Department</label>
@@ -337,6 +356,27 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
                   </Select>
                 </div>
                 <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Assigned Team</label>
+                  <Select value={form.assignedTeam} onValueChange={(v) => set('assignedTeam', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue
+                        placeholder={teams.length === 0 ? 'No teams found' : 'Select team…'}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams.map((t) => (
+                        <SelectItem key={t._id} value={t._id}>
+                          {t.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Row 5: Due Date + Project Value */}
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Due Date</label>
                   <Input
                     type='date'
@@ -345,10 +385,6 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
                     className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
-              </div>
-
-              {/* Row 5: Value */}
-              <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Project Value</label>
                   <Input
@@ -360,12 +396,22 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
                     className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
+              </div>
+
+              {/* Row 6: Value (After 20% Cut) */}
+              <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
-                  <label className='text-sm font-medium text-foreground'>Value (After 20% Cut)</label>
+                  <label className='text-sm font-medium text-foreground'>
+                    Value (After 20% Cut)
+                  </label>
                   <Input
                     type='text'
                     disabled
-                    value={form.value && !isNaN(Number(form.value)) ? (Number(form.value) * 0.8).toFixed(2).replace(/\.00$/, '') : ''}
+                    value={
+                      form.value && !isNaN(Number(form.value))
+                        ? (Number(form.value) * 0.8).toFixed(2).replace(/\.00$/, '')
+                        : ''
+                    }
                     className='h-9 rounded-sm border-border/60 text-sm bg-muted text-muted-foreground'
                   />
                 </div>

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { LayoutList, Users, FolderPlus, Loader2, RefreshCw } from "lucide-react";
-import { toast } from "sonner";
+import { FolderPlus, LayoutList, Loader2, RefreshCw, Users } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
-import { ModalTable, type ColumnDef } from "@/components/shared";
-import { ProjectsModalRow } from "./ProjectsModalRow";
-import { ProfileManagementModal } from "./ProfileManagementModal";
-import { ClientManagementModal } from "./ClientManagementModal";
-import { CreateProjectModal } from "./CreateProjectModal";
-import { UpdateProjectModal } from "./UpdateProjectModal";
+import { ModalTable, type ColumnDef } from '@/components/shared';
+import { ClientManagementModal } from './ClientManagementModal';
+import { CreateProjectModal } from './CreateProjectModal';
+import { ProfileManagementModal } from './ProfileManagementModal';
+import { ProjectsModalRow } from './ProjectsModalRow';
+import { UpdateProjectModal } from './UpdateProjectModal';
 
 import {
   AlertDialog,
@@ -21,38 +21,39 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
-import { ProjectManagementService } from "@/api";
-import { useAccessToken } from "@/hooks/useAccessToken";
-import { useUserInfo } from "@/hooks/useUserInfo";
-import type { Project, ProjectStatus } from "@/types/project";
+import { ProjectManagementService, TeamManagementService } from '@/api';
+import { useAccessToken } from '@/hooks/useAccessToken';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import type { Project, ProjectStatus } from '@/types/project';
 
 /* ─── Table columns ───────────────────────────────────────── */
 const COLUMNS: ColumnDef[] = [
-  { key: "number",      label: "#"            },
-  { key: "project",     label: "Project"      },
-  { key: "client",      label: "Client"       },
-  { key: "orderId",     label: "Order ID"     },
-  { key: "profile",     label: "Profile"      },
-  { key: "fiverrValue", label: "Fiverr Value" },
-  { key: "value",       label: "Actual Value" },
-  { key: "status",      label: "Status"       },
-  { key: "actions",     label: "Actions",     className: "w-[120px]" },
+  { key: 'number', label: '#' },
+  { key: 'project', label: 'Project' },
+  { key: 'client', label: 'Client' },
+  { key: 'orderId', label: 'Order ID' },
+  { key: 'profile', label: 'Profile' },
+  { key: 'team', label: 'Team' },
+  { key: 'fiverrValue', label: 'Fiverr Value' },
+  { key: 'value', label: 'Actual Value' },
+  { key: 'status', label: 'Status' },
+  { key: 'actions', label: 'Actions', className: 'w-[120px]' },
 ];
 
 /* ─── Status filter tabs ──────────────────────────────────── */
 const FILTER_TABS = [
-  { label: "All",       value: "all"       as const },
-  { label: "WIP",       value: "WIP"       as const },
-  { label: "NRA",       value: "NRA"       as const },
-  { label: "Delivered", value: "DELIVERED" as const },
-  { label: "Revision",  value: "REVISION"  as const },
-  { label: "Cancelled", value: "CANCELLED" as const },
-  { label: "Not Set",   value: "NULL"      as const },
+  { label: 'All', value: 'all' as const },
+  { label: 'WIP', value: 'WIP' as const },
+  { label: 'NRA', value: 'NRA' as const },
+  { label: 'Delivered', value: 'DELIVERED' as const },
+  { label: 'Revision', value: 'REVISION' as const },
+  { label: 'Cancelled', value: 'CANCELLED' as const },
+  { label: 'Not Set', value: 'NULL' as const },
 ];
 
-type FilterValue = ProjectStatus | "all";
+type FilterValue = ProjectStatus | 'all';
 
 /* ─── Component ───────────────────────────────────────────── */
 export function ProjectsModalTable() {
@@ -61,8 +62,8 @@ export function ProjectsModalTable() {
   const { department, role } = useUserInfo();
 
   // Only SALES department can manage profiles & clients
-  const isSalesDept = department?.toUpperCase() === "SALES";
-  const canEditOrDelete = isSalesDept || role === "PROJECT MANAGER";
+  const isSalesDept = department?.toUpperCase() === 'SALES';
+  const canEditOrDelete = isSalesDept || role === 'PROJECT MANAGER';
 
   /* ── Modal state ────────────────────────────────────────── */
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
@@ -79,16 +80,40 @@ export function ProjectsModalTable() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [teamsMap, setTeamsMap] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      if (!token) return;
+      try {
+        const res = await TeamManagementService.teamManagementControllerFindAll({
+          authorization: token,
+          pageNo: 1,
+          pageSize: 100,
+        });
+        const data = (res as Record<string, unknown>)?.data as Record<string, unknown>;
+        const teamList = Array.isArray(data?.teams) ? data.teams : Array.isArray(data) ? data : [];
+        const map: Record<string, string> = {};
+        teamList.forEach((t: any) => {
+          if (t._id && t.name) map[t._id] = t.name;
+        });
+        setTeamsMap(map);
+      } catch (err) {
+        console.error('Failed to fetch teams for mapping', err);
+      }
+    };
+    fetchTeams();
+  }, [token]);
 
   /* ── Server-driven filters (these drive the API call) ────── */
-  const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterValue>("all");
+  const [search, setSearch] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterValue>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // debounce search so we don't hit API on every keystroke
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   useEffect(() => {
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
@@ -111,26 +136,25 @@ export function ProjectsModalTable() {
         pageNo: currentPage,
         pageSize: rowsPerPage,
         ...(debouncedSearch && { searchKey: debouncedSearch }),
-        ...(activeFilter !== "all" && {
-          status: activeFilter as Exclude<FilterValue, "all">,
+        ...(activeFilter !== 'all' && {
+          status: activeFilter as Exclude<FilterValue, 'all'>,
         }),
       });
 
       const data = (res as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
       // API returns { data: { projects: [], total, totalPages } }
       const list: Project[] = Array.isArray(data?.projects)
-        ? data?.projects as Project[]
+        ? (data?.projects as Project[])
         : Array.isArray(data)
-        ? data as Project[]
-        : [];
-      const total: number = typeof data?.total === "number" ? data.total : list.length;
+          ? (data as Project[])
+          : [];
+      const total: number = typeof data?.total === 'number' ? data.total : list.length;
 
       setProjects(list);
       setTotalRecords(total);
     } catch (err: unknown) {
       const errBody = (err as Record<string, unknown>)?.body as Record<string, unknown>;
-      const msg =
-        (errBody?.message as string) ?? "Failed to load projects. Please try again.";
+      const msg = (errBody?.message as string) ?? 'Failed to load projects. Please try again.';
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -178,12 +202,12 @@ export function ProjectsModalTable() {
         id: selectedProjectId,
         authorization: token,
       });
-      toast.success("Project deleted successfully");
+      toast.success('Project deleted successfully');
       fetchProjects();
       setIsDeleteOpen(false);
     } catch (err: unknown) {
       const errBody = (err as Record<string, unknown>)?.body as Record<string, unknown>;
-      toast.error((errBody?.message as string) || "Failed to delete project");
+      toast.error((errBody?.message as string) || 'Failed to delete project');
     } finally {
       setIsDeleting(false);
     }
@@ -196,38 +220,38 @@ export function ProjectsModalTable() {
 
   /* ─── Render ─────────────────────────────────────────────── */
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {/* ── Action buttons ──────────────────────────────────── */}
-      <div className="flex justify-end gap-2">
+      <div className='flex justify-end gap-2'>
         {isSalesDept && (
           <>
             {/* New Project */}
             <button
-              type="button"
+              type='button'
               onClick={() => setIsCreateProjectModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
+              className='inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]'
             >
-              <FolderPlus className="h-4 w-4" />
+              <FolderPlus className='h-4 w-4' />
               New Project
             </button>
 
             {/* Client */}
             <button
-              type="button"
+              type='button'
               onClick={() => setIsClientModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
+              className='inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]'
             >
-              <Users className="h-4 w-4" />
+              <Users className='h-4 w-4' />
               Client
             </button>
 
             {/* Profile */}
             <button
-              type="button"
+              type='button'
               onClick={() => setIsProfileModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]"
+              className='inline-flex items-center gap-2 rounded-sm bg-[#044192] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#042d63] hover:shadow-md active:scale-[0.98]'
             >
-              <LayoutList className="h-4 w-4" />
+              <LayoutList className='h-4 w-4' />
               Profile
             </button>
           </>
@@ -235,16 +259,16 @@ export function ProjectsModalTable() {
       </div>
 
       {/* ── Filter tabs ─────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+      <div className='flex flex-wrap items-center gap-1 sm:gap-2'>
         {FILTER_TABS.map((tab) => (
           <button
             key={tab.value}
-            type="button"
+            type='button'
             onClick={() => handleFilterChange(tab.value)}
             className={`rounded-sm px-3 py-1.5 text-xs font-medium transition-colors sm:px-4 sm:py-2 sm:text-sm ${
               activeFilter === tab.value
-                ? "bg-brand-navy text-white"
-                : "bg-gray-100 text-foreground/70 hover:bg-gray-200"
+                ? 'bg-brand-navy text-white'
+                : 'bg-gray-100 text-foreground/70 hover:bg-gray-200'
             }`}
           >
             {tab.label}
@@ -253,35 +277,31 @@ export function ProjectsModalTable() {
 
         {/* Refresh button */}
         <button
-          type="button"
+          type='button'
           onClick={() => fetchProjects()}
           disabled={loading}
-          className="ml-auto flex h-8 w-8 items-center justify-center rounded-sm border border-border/40 bg-white text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
-          aria-label="Refresh"
-          title="Refresh projects"
+          className='ml-auto flex h-8 w-8 items-center justify-center rounded-sm border border-border/40 bg-white text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50'
+          aria-label='Refresh'
+          title='Refresh projects'
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
 
       {/* ── Table ───────────────────────────────────────────── */}
       {loading && projects.length === 0 ? (
         /* Initial skeleton / empty loading screen */
-        <div className="flex items-center justify-center rounded-sm border border-border/40 py-20">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          <span className="ml-2 text-sm text-muted-foreground">
-            Loading projects…
-          </span>
+        <div className='flex items-center justify-center rounded-sm border border-border/40 py-20'>
+          <Loader2 className='h-6 w-6 animate-spin text-muted-foreground' />
+          <span className='ml-2 text-sm text-muted-foreground'>Loading projects…</span>
         </div>
       ) : projects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-sm border border-border/40 py-16 text-center">
-          <p className="text-sm font-medium text-foreground/70">
-            No projects found
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {activeFilter !== "all" || debouncedSearch
-              ? "Try adjusting your filters or search term."
-              : "Create your first project using the button above."}
+        <div className='flex flex-col items-center justify-center rounded-sm border border-border/40 py-16 text-center'>
+          <p className='text-sm font-medium text-foreground/70'>No projects found</p>
+          <p className='mt-1 text-xs text-muted-foreground'>
+            {activeFilter !== 'all' || debouncedSearch
+              ? 'Try adjusting your filters or search term.'
+              : 'Create your first project using the button above.'}
           </p>
         </div>
       ) : (
@@ -290,7 +310,7 @@ export function ProjectsModalTable() {
           columns={COLUMNS}
           totalRecords={totalRecords}
           enableSearch={true}
-          searchPlaceholder="Search by name or order ID…"
+          searchPlaceholder='Search by name or order ID…'
           onFilterData={noopFilter}
           onSearchChange={(val) => {
             setSearch(val);
@@ -301,6 +321,11 @@ export function ProjectsModalTable() {
             <ProjectsModalRow
               key={project._id}
               project={project}
+              teamName={
+                typeof project.assignedTeam === 'string'
+                  ? teamsMap[project.assignedTeam]
+                  : undefined
+              }
               rowNumber={(currentPage - 1) * rowsPerPage + index + 1}
               onView={() => openView(project._id)}
               onEdit={() => openEdit(project._id)}
@@ -321,15 +346,9 @@ export function ProjectsModalTable() {
         onCreated={fetchProjects}
       />
 
-      <ProfileManagementModal
-        open={isProfileModalOpen}
-        onOpenChange={setIsProfileModalOpen}
-      />
+      <ProfileManagementModal open={isProfileModalOpen} onOpenChange={setIsProfileModalOpen} />
 
-      <ClientManagementModal
-        open={isClientModalOpen}
-        onOpenChange={setIsClientModalOpen}
-      />
+      <ClientManagementModal open={isClientModalOpen} onOpenChange={setIsClientModalOpen} />
 
       {/* ── Action Modals ────────────────────────────────────── */}
       <UpdateProjectModal
@@ -340,20 +359,22 @@ export function ProjectsModalTable() {
       />
 
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <AlertDialogContent className="rounded-sm">
+        <AlertDialogContent className='rounded-sm'>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle className='text-foreground'>
+              Are you absolutely sure?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the project
-              and remove its data from.
+              This action cannot be undone. This will permanently delete the project and remove its
+              data from.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting} className="rounded-sm h-9">
+            <AlertDialogCancel disabled={isDeleting} className='rounded-sm h-9'>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700 text-white rounded-sm h-9"
+              className='bg-red-600 hover:bg-red-700 text-white rounded-sm h-9'
               onClick={(e) => {
                 e.preventDefault();
                 confirmDelete();
@@ -362,11 +383,11 @@ export function ProjectsModalTable() {
             >
               {isDeleting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                   Deleting
                 </>
               ) : (
-                "Delete Project"
+                'Delete Project'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

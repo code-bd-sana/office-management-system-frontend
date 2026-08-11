@@ -1,11 +1,5 @@
 /** Possible statuses for a project — matches API enum */
-export type ProjectStatus =
-  | "NULL"
-  | "NRA"
-  | "WIP"
-  | "DELIVERED"
-  | "CANCELLED"
-  | "REVISION";
+export type ProjectStatus = 'NULL' | 'NRA' | 'WIP' | 'DELIVERED' | 'CANCELLED' | 'REVISION';
 
 /** A single project item returned from GET /api/project */
 export interface Project {
@@ -21,6 +15,7 @@ export interface Project {
   client?: { _id: string; name: string } | string | null;
   profile?: { _id: string; name: string } | string | null;
   assignedDepartment?: { _id: string; name: string } | string | null;
+  assignedTeam?: { _id: string; name: string } | string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -28,5 +23,5 @@ export interface Project {
 /** Filter tab for the project list */
 export interface ProjectFilterTab {
   label: string;
-  value: ProjectStatus | "all";
+  value: ProjectStatus | 'all';
 }
