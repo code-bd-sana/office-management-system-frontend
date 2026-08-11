@@ -241,7 +241,13 @@ export default function ProjectDetailsPage() {
                 </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Value</p>
+                <p className="text-sm font-medium text-gray-600">Fiverr Value</p>
+                <p className="text-sm text-gray-400">
+                  {project.value != null ? `$${(project.value / 0.8).toFixed(2).replace(/\.00$/, "")}` : "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-600">Actual Value</p>
                 <p className="text-sm text-gray-400">
                   {project.value != null ? `$${project.value}` : "—"}
                 </p>

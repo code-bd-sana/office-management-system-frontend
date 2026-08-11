@@ -73,7 +73,12 @@ export function ProjectsModalRow({
         {resolveName(project.profile)}
       </TableCell>
 
-      {/* Value */}
+      {/* Fiverr Value (20% Up) */}
+      <TableCell className="py-3.5 text-sm font-medium text-foreground/80">
+        {project.value != null ? `$${(project.value / 0.8).toFixed(2).replace(/\.00$/, "")}` : "—"}
+      </TableCell>
+
+      {/* Actual Value */}
       <TableCell className="py-3.5 text-sm font-medium text-foreground/80">
         {project.value != null ? `$${project.value}` : "—"}
       </TableCell>
