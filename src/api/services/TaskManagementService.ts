@@ -78,7 +78,7 @@ export class TaskManagementService {
         /**
          * Filter projects by status
          */
-        status?: 'PENDING' | 'WORK_IN_PROGRESS' | 'COMPLETED' | 'BLOCKED' | 'DELIVERED',
+        status?: 'PENDING' | 'WORK_IN_PROGRESS' | 'COMPLETED' | 'BLOCKED' | 'REJECTED' | 'DELIVERED',
     }): CancelablePromise<TaskListSuccessDto> {
         return __request(OpenAPI, {
             method: 'GET',

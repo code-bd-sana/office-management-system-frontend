@@ -28,9 +28,13 @@ export type CreateTaskDto = {
      */
     description: string;
     /**
-     * The current status of the task - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, DELIVERED
+     * The current status of the task - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, REJECTED, DELIVERED
      */
     status: CreateTaskDto.status;
+    /**
+     * Required explanation when status is BLOCKED. It records why the task cannot proceed.
+     */
+    blockedReason?: string;
     /**
      * List of user IDs to assign the task to
      */
@@ -47,13 +51,14 @@ export namespace CreateTaskDto {
         CRITICAL = 'CRITICAL',
     }
     /**
-     * The current status of the task - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, DELIVERED
+     * The current status of the task - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, REJECTED, DELIVERED
      */
     export enum status {
         PENDING = 'PENDING',
         WORK_IN_PROGRESS = 'WORK_IN_PROGRESS',
         COMPLETED = 'COMPLETED',
         BLOCKED = 'BLOCKED',
+        REJECTED = 'REJECTED',
         DELIVERED = 'DELIVERED',
     }
 }

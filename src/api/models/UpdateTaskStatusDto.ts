@@ -4,8 +4,12 @@
 /* eslint-disable */
 export type UpdateTaskStatusDto = {
     /**
-     * The new status - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, DELIVERED
+     * The new status - PENDING, WORK_IN_PROGRESS, COMPLETED, BLOCKED, REJECTED, DELIVERED
      */
     status: Record<string, any>;
+    /**
+     * Required explanation when status is BLOCKED
+     */
+    blockedReason?: string;
 };
 
