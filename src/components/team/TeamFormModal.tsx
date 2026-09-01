@@ -262,6 +262,7 @@ export function TeamFormModal({
                 <SelectItem value="UI_UX">UI/UX</SelectItem>
                 <SelectItem value="WORDPRESS">Wordpress</SelectItem>
                 <SelectItem value="SHOPIFY">Shopify</SelectItem>
+                <SelectItem value="SALES">Sales</SelectItem>
               </SelectContent>
             </Select>
           </div>
