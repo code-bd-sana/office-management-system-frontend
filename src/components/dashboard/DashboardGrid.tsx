@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { DashboardCard } from "./DashboardCard";
 import { TasksModal } from "@/components/task/TasksModal";
 import { ProjectsModal } from "@/components/project/ProjectsModal";
@@ -8,7 +9,6 @@ import { LearningModal } from "@/components/learning/LearningModal";
 import { AttendanceModal } from "@/components/attendance/AttendanceModal";
 import { DCRSubmissionModal } from "@/components/dcr/DCRSubmissionModal";
 import { ShiftAssignmentModal } from "@/components/shift-assignment/ShiftAssignmentModal";
-import { TeamMembersModal } from "@/components/team/TeamMembersModal";
 import { DASHBOARD_CARDS } from "@/constants/dashboard";
 import {
   DepartmentManagementService,
@@ -101,6 +101,7 @@ function getSubmittedDcrCount(tasks: unknown[]): number {
 }
 
 export function DashboardGrid() {
+  const router = useRouter();
   const token = useAccessToken();
   const { role, department } = useUserInfo();
 
@@ -141,7 +142,6 @@ export function DashboardGrid() {
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
   const [isDCRModalOpen, setIsDCRModalOpen] = useState(false);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
-  const [isTeamMembersModalOpen, setIsTeamMembersModalOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -285,7 +285,7 @@ export function DashboardGrid() {
     } else if (cardId === "shift-assignment") {
       setIsShiftModalOpen(true);
     } else if (cardId === "team-members") {
-      setIsTeamMembersModalOpen(true);
+      router.push("/team-members");
     }
   };
 
@@ -332,12 +332,6 @@ export function DashboardGrid() {
       <ShiftAssignmentModal
         open={isShiftModalOpen}
         onClose={() => setIsShiftModalOpen(false)}
-      />
-
-      {/* Team Members Modal */}
-      <TeamMembersModal
-        open={isTeamMembersModalOpen}
-        onOpenChange={setIsTeamMembersModalOpen}
       />
     </section>
   );
