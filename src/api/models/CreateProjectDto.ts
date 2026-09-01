@@ -4,6 +4,14 @@
 /* eslint-disable */
 export type CreateProjectDto = {
     /**
+     * Project start date (ISO date string)
+     */
+    startDate?: string;
+    /**
+     * Project end date (ISO date string)
+     */
+    endDate?: string;
+    /**
      * The name of the project
      */
     name: string;
@@ -24,7 +32,11 @@ export type CreateProjectDto = {
      */
     assignedDepartment?: string;
     /**
-     * The team assigned to the project - Wordpress, Shopify, Custom
+     * The team assigned to the project
+     */
+    assignedTeam?: string;
+    /**
+     * The team assigned to the project - Wordpress, Shopify, Custom, Sales
      */
     projectTeam?: CreateProjectDto.projectTeam;
     /**
@@ -50,12 +62,13 @@ export type CreateProjectDto = {
 };
 export namespace CreateProjectDto {
     /**
-     * The team assigned to the project - Wordpress, Shopify, Custom
+     * The team assigned to the project - Wordpress, Shopify, Custom, Sales
      */
     export enum projectTeam {
         WORDPRESS = 'Wordpress',
         SHOPIFY = 'Shopify',
         CUSTOM = 'Custom',
+        SALES = 'Sales',
     }
     /**
      * The current status of the project - NULL, NRA, WIP, DELIVERED, CANCELLED, REVISION

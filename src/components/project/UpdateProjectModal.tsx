@@ -1,32 +1,28 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import { Loader2, Plus, X, FolderPlus } from "lucide-react";
-import { toast } from "sonner";
+import { FolderPlus, Loader2, Plus, X } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
-import { useAccessToken } from "@/hooks/useAccessToken";
 import {
-  ProjectManagementService,
   DepartmentManagementService,
-} from "@/api";
-import { CreateProjectDto } from "@/api/models/CreateProjectDto";
+  ProjectManagementService,
+  TeamManagementService,
+} from '@/api';
+import { CreateProjectDto } from '@/api/models/CreateProjectDto';
+import { useAccessToken } from '@/hooks/useAccessToken';
 
 /* ─── Types ───────────────────────────────────────────────── */
 interface DropdownItem {
@@ -47,17 +43,18 @@ interface UpdateProjectModalProps {
 
 /* ─── Initial form state ──────────────────────────────────── */
 const INITIAL_FORM = {
-  name: "",
-  orderId: "",
-  status: "" as CreateProjectDto.status | "",
-  projectRemarks: "",
-  projectFiles: [""], // start with one empty file URL slot
-  client: "",
-  profile: "",
-  assignedDepartment: "",
-  projectTeam: "" as CreateProjectDto.projectTeam | "",
-  dueDate: "",
-  value: "",
+  name: '',
+  orderId: '',
+  status: '' as CreateProjectDto.status | '',
+  projectRemarks: '',
+  projectFiles: [''], // start with one empty file URL slot
+  client: '',
+  profile: '',
+  assignedDepartment: '',
+  assignedTeam: '',
+  projectTeam: '' as CreateProjectDto.projectTeam | '',
+  dueDate: '',
+  value: '',
 };
 
 export function UpdateProjectModal({
@@ -76,13 +73,14 @@ export function UpdateProjectModal({
   const [clients, setClients] = useState<DropdownItem[]>([]);
   const [profiles, setProfiles] = useState<DropdownItem[]>([]);
   const [departments, setDepartments] = useState<DropdownItem[]>([]);
+  const [teams, setTeams] = useState<DropdownItem[]>([]);
   const [loadingDropdowns, setLoadingDropdowns] = useState(false);
 
   const fetchDropdowns = useCallback(async () => {
     if (!token) return;
     setLoadingDropdowns(true);
     try {
-      const [clientsRes, profilesRes, depsRes] = await Promise.all([
+      const [clientsRes, profilesRes, depsRes, teamsRes] = await Promise.all([
         ProjectManagementService.projectControllerGetClients({
           authorization: token,
         }),
@@ -93,22 +91,35 @@ export function UpdateProjectModal({
           pageNo: 1,
           pageSize: 100,
         }),
+        TeamManagementService.teamManagementControllerFindAll({
+          authorization: token,
+          pageNo: 1,
+          pageSize: 100,
+        }),
       ]);
       const clientsData = (clientsRes as Record<string, unknown>)?.data;
-      setClients(Array.isArray(clientsData) ? clientsData as DropdownItem[] : []);
+      setClients(Array.isArray(clientsData) ? (clientsData as DropdownItem[]) : []);
       const profilesData = (profilesRes as Record<string, unknown>)?.data;
-      setProfiles(Array.isArray(profilesData) ? profilesData as DropdownItem[] : []);
-      // API returns { data: { departments: [], total, totalPages } }
-      const depsData = (depsRes as Record<string, unknown>)?.data as Record<string, unknown> | undefined;
+      setProfiles(Array.isArray(profilesData) ? (profilesData as DropdownItem[]) : []);
+      const depsData = (depsRes as Record<string, unknown>)?.data as
+        | Record<string, unknown>
+        | undefined;
       setDepartments(
         Array.isArray(depsData?.departments)
-          ? depsData?.departments as DropdownItem[]
+          ? (depsData?.departments as DropdownItem[])
           : Array.isArray(depsData)
-            ? depsData as DropdownItem[]
-            : []
+            ? (depsData as DropdownItem[])
+            : [],
       );
+      const teamsData = (teamsRes as Record<string, unknown>)?.data as Record<string, unknown>;
+      const teamList = Array.isArray(teamsData?.teams)
+        ? teamsData.teams
+        : Array.isArray(teamsData)
+          ? teamsData
+          : [];
+      setTeams(teamList as DropdownItem[]);
     } catch {
-      toast.error("Failed to load dropdown data.");
+      toast.error('Failed to load dropdown data.');
     } finally {
       setLoadingDropdowns(false);
     }
@@ -129,24 +140,44 @@ export function UpdateProjectModal({
             const pd = (res as Record<string, unknown>)?.data as Record<string, unknown>;
             if (pd) {
               setForm({
-                name: (pd.name as string) || "",
-                orderId: (pd.orderId as string) || "",
-                status: (pd.status as CreateProjectDto.status) || "",
-                projectRemarks: (pd.projectRemarks as string) || "",
-                projectFiles: Array.isArray(pd.projectFiles) && pd.projectFiles.length ? pd.projectFiles as string[] : [""],
-                client: typeof pd.client === "string" ? pd.client : (pd.client as Record<string, unknown>)?._id as string || "",
-                profile: typeof pd.profile === "string" ? pd.profile : (pd.profile as Record<string, unknown>)?._id as string || "",
-                assignedDepartment: typeof pd.assignedDepartment === "string"
-                  ? pd.assignedDepartment
-                  : (pd.assignedDepartment as Record<string, unknown>)?._id as string || "",
-                projectTeam: (pd.projectTeam as CreateProjectDto.projectTeam) || "",
-                dueDate: pd.dueDate ? (pd.dueDate as string).split("T")[0] : "", // get visual YYYY-MM-DD
-                value: pd.value ? String(pd.value) : "",
+                name: (pd.name as string) || '',
+                orderId: (pd.orderId as string) || '',
+                status: (pd.status as CreateProjectDto.status) || '',
+                projectRemarks: (pd.projectRemarks as string) || '',
+                projectFiles:
+                  Array.isArray(pd.projectFiles) && pd.projectFiles.length
+                    ? (pd.projectFiles as string[])
+                    : [''],
+                client:
+                  typeof pd.client === 'string'
+                    ? pd.client
+                    : ((pd.client as Record<string, unknown>)?._id as string) || '',
+                profile:
+                  typeof pd.profile === 'string'
+                    ? pd.profile
+                    : ((pd.profile as Record<string, unknown>)?._id as string) || '',
+                assignedDepartment:
+                  typeof pd.assignedDepartment === 'string'
+                    ? pd.assignedDepartment
+                    : ((pd.assignedDepartment as Record<string, unknown>)?._id as string) || '',
+                assignedTeam:
+                  typeof pd.assignedTeam === 'string'
+                    ? pd.assignedTeam
+                    : ((pd.assignedTeam as Record<string, unknown>)?._id as string) || '',
+                projectTeam: (pd.projectTeam as CreateProjectDto.projectTeam) || '',
+                dueDate: pd.dueDate ? (pd.dueDate as string).split('T')[0] : '', // get visual YYYY-MM-DD
+                value: pd.value
+                  ? String(
+                      Number((Number(pd.value) / 0.8).toFixed(2))
+                        .toString()
+                        .replace(/\.00$/, ''),
+                    )
+                  : '',
               });
             }
           })
           .catch(() => {
-            toast.error("Failed to load project details for editing.");
+            toast.error('Failed to load project details for editing.');
           });
       }, 0);
     } else if (!open) {
@@ -168,7 +199,7 @@ export function UpdateProjectModal({
   const addFileSlot = () =>
     setForm((prev) => ({
       ...prev,
-      projectFiles: [...prev.projectFiles, ""],
+      projectFiles: [...prev.projectFiles, ''],
     }));
 
   const removeFileSlot = (index: number) =>
@@ -179,11 +210,11 @@ export function UpdateProjectModal({
 
   /* ── Validation ──────────────────────────────────────────── */
   const isValid =
-    form.name.trim() !== "" &&
-    form.orderId.trim() !== "" &&
-    form.status !== "" &&
-    form.projectRemarks.trim() !== "" &&
-    form.projectFiles.some((f) => f.trim() !== "");
+    form.name.trim() !== '' &&
+    form.orderId.trim() !== '' &&
+    form.status !== '' &&
+    form.projectRemarks.trim() !== '' &&
+    form.projectFiles.some((f) => f.trim() !== '');
 
   /* ── Submit ──────────────────────────────────────────────── */
   const handleSubmit = async () => {
@@ -197,19 +228,24 @@ export function UpdateProjectModal({
         orderId: form.orderId.trim(),
         status: form.status,
         projectRemarks: form.projectRemarks.trim(),
-        projectFiles: form.projectFiles.filter((f) => f.trim() !== ""),
+        projectFiles: form.projectFiles.filter((f) => f.trim() !== ''),
         client: form.client || null,
         profile: form.profile || null,
         assignedDepartment: form.assignedDepartment || null,
+        assignedTeam: form.assignedTeam || null,
         projectTeam: form.projectTeam || null,
         dueDate: form.dueDate || null,
-        value: form.value ? Number(form.value) : null,
+        value:
+          form.value && !isNaN(Number(form.value))
+            ? Number((Number(form.value) * 0.8).toFixed(2))
+            : null,
       };
 
       await ProjectManagementService.projectControllerUpdate({
         id: projectId,
         authorization: token,
-        requestBody: payload as Record<string, unknown> & import("../../api/models/UpdateProjectDto").UpdateProjectDto, // Pass all updated data
+        requestBody: payload as Record<string, unknown> &
+          import('../../api/models/UpdateProjectDto').UpdateProjectDto, // Pass all updated data
       });
 
       toast.success(`Project updated successfully!`);
@@ -220,11 +256,9 @@ export function UpdateProjectModal({
       const body = errorObj?.body as Record<string, unknown>;
       const errors = body?.errors as Array<Record<string, unknown>>;
       const msg =
-        errors
-          ?.map((e) => (e.message as string) ?? (e.field as string))
-          ?.join(", ") ??
+        errors?.map((e) => (e.message as string) ?? (e.field as string))?.join(', ') ??
         (body?.message as string) ??
-        "Failed to update project. Please try again.";
+        'Failed to update project. Please try again.';
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -234,71 +268,64 @@ export function UpdateProjectModal({
   /* ─── Render ─────────────────────────────────────────────── */
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[92vh] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
-        <DialogTitle className="sr-only">Update Project</DialogTitle>
-        <DialogDescription className="sr-only">
+      <DialogContent className='flex max-h-[92vh] w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl'>
+        <DialogTitle className='sr-only'>Update Project</DialogTitle>
+        <DialogDescription className='sr-only'>
           Fill in the details to update the project
         </DialogDescription>
 
         {/* ── Header ───────────────────────────────────────── */}
-        <div className="shrink-0 px-4 pt-4 sm:px-6 sm:pt-5">
-          <h2 className="text-lg font-semibold text-foreground sm:text-xl">
-            Update Project
-          </h2>
-          <p className="mt-0.5 text-sm text-muted-foreground">
+        <div className='shrink-0 px-4 pt-4 sm:px-6 sm:pt-5'>
+          <h2 className='text-lg font-semibold text-foreground sm:text-xl'>Update Project</h2>
+          <p className='mt-0.5 text-sm text-muted-foreground'>
             Update the necessary fields of this project.
           </p>
         </div>
 
         {/* ── Form body (scrollable) ────────────────────────── */}
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6">
+        <div className='min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6'>
           {loadingDropdowns ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-              <span className="ml-2 text-sm text-muted-foreground">
-                Loading form data…
-              </span>
+            <div className='flex items-center justify-center py-12'>
+              <Loader2 className='h-5 w-5 animate-spin text-muted-foreground' />
+              <span className='ml-2 text-sm text-muted-foreground'>Loading form data…</span>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {/* Row 1: Project Name + Order ID */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Project Name <span className="text-red-500">*</span>
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>
+                    Project Name <span className='text-red-500'>*</span>
                   </label>
                   <Input
-                    placeholder="e.g. Acme E-commerce Redesign"
+                    placeholder='e.g. Acme E-commerce Redesign'
                     value={form.name}
-                    onChange={(e) => set("name", e.target.value)}
-                    className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                    onChange={(e) => set('name', e.target.value)}
+                    className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Order ID <span className="text-red-500">*</span>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>
+                    Order ID <span className='text-red-500'>*</span>
                   </label>
                   <Input
-                    placeholder="e.g. ORD-20240001"
+                    placeholder='e.g. ORD-20240001'
                     value={form.orderId}
-                    onChange={(e) => set("orderId", e.target.value)}
-                    className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                    onChange={(e) => set('orderId', e.target.value)}
+                    className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
               </div>
 
               {/* Row 2: Status + Project Team */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Status <span className="text-red-500">*</span>
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>
+                    Status <span className='text-red-500'>*</span>
                   </label>
-                  <Select
-                    value={form.status}
-                    onValueChange={(v) => set("status", v)}
-                  >
-                    <SelectTrigger className="h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1">
-                      <SelectValue placeholder="Select status…" />
+                  <Select value={form.status} onValueChange={(v) => set('status', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue placeholder='Select status…' />
                     </SelectTrigger>
                     <SelectContent>
                       {STATUS_OPTIONS.map((s) => (
@@ -309,16 +336,11 @@ export function UpdateProjectModal({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Project Team
-                  </label>
-                  <Select
-                    value={form.projectTeam}
-                    onValueChange={(v) => set("projectTeam", v)}
-                  >
-                    <SelectTrigger className="h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1">
-                      <SelectValue placeholder="Select team…" />
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Project Team</label>
+                  <Select value={form.projectTeam} onValueChange={(v) => set('projectTeam', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue placeholder='Select team…' />
                     </SelectTrigger>
                     <SelectContent>
                       {TEAM_OPTIONS.map((t) => (
@@ -332,17 +354,14 @@ export function UpdateProjectModal({
               </div>
 
               {/* Row 3: Client + Profile */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Client
-                  </label>
-                  <Select
-                    value={form.client}
-                    onValueChange={(v) => set("client", v)}
-                  >
-                    <SelectTrigger className="h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1">
-                      <SelectValue placeholder={clients.length === 0 ? "No clients found" : "Select client…"} />
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Client</label>
+                  <Select value={form.client} onValueChange={(v) => set('client', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue
+                        placeholder={clients.length === 0 ? 'No clients found' : 'Select client…'}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {clients.map((c) => (
@@ -353,16 +372,15 @@ export function UpdateProjectModal({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Profile
-                  </label>
-                  <Select
-                    value={form.profile}
-                    onValueChange={(v) => set("profile", v)}
-                  >
-                    <SelectTrigger className="h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1">
-                      <SelectValue placeholder={profiles.length === 0 ? "No profiles found" : "Select profile…"} />
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Profile</label>
+                  <Select value={form.profile} onValueChange={(v) => set('profile', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue
+                        placeholder={
+                          profiles.length === 0 ? 'No profiles found' : 'Select profile…'
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {profiles.map((p) => (
@@ -375,18 +393,20 @@ export function UpdateProjectModal({
                 </div>
               </div>
 
-              {/* Row 4: Assigned Department + Due Date */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Assigned Department
-                  </label>
+              {/* Row 4: Assigned Department + Assigned Team */}
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Assigned Department</label>
                   <Select
                     value={form.assignedDepartment}
-                    onValueChange={(v) => set("assignedDepartment", v)}
+                    onValueChange={(v) => set('assignedDepartment', v)}
                   >
-                    <SelectTrigger className="h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1">
-                      <SelectValue placeholder={departments.length === 0 ? "No departments found" : "Select department…"} />
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue
+                        placeholder={
+                          departments.length === 0 ? 'No departments found' : 'Select department…'
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {departments.map((d) => (
@@ -397,85 +417,116 @@ export function UpdateProjectModal({
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Due Date
-                  </label>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Assigned Team</label>
+                  <Select value={form.assignedTeam} onValueChange={(v) => set('assignedTeam', v)}>
+                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
+                      <SelectValue
+                        placeholder={teams.length === 0 ? 'No teams found' : 'Select team…'}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams.map((t) => (
+                        <SelectItem key={t._id} value={t._id}>
+                          {t.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Row 5: Due Date + Project Value */}
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Due Date</label>
                   <Input
-                    type="date"
+                    type='date'
                     value={form.dueDate}
-                    onChange={(e) => set("dueDate", e.target.value)}
-                    className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                    onChange={(e) => set('dueDate', e.target.value)}
+                    className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
+                  />
+                </div>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>Project Value</label>
+                  <Input
+                    type='text'
+                    inputMode='numeric'
+                    placeholder='e.g. 1500'
+                    value={form.value}
+                    onChange={(e) => set('value', e.target.value.replace(/[^0-9.]/g, ''))}
+                    className='h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                   />
                 </div>
               </div>
 
-              {/* Row 5: Value */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">
-                    Project Value
+              {/* Row 6: Value (After 20% Cut) */}
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-1.5'>
+                  <label className='text-sm font-medium text-foreground'>
+                    Value (After 20% Cut)
                   </label>
                   <Input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="e.g. 1500"
-                    value={form.value}
-                    onChange={(e) => set("value", e.target.value.replace(/[^0-9.]/g, ""))}
-                    className="h-9 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                    type='text'
+                    disabled
+                    value={
+                      form.value && !isNaN(Number(form.value))
+                        ? (Number(form.value) * 0.8).toFixed(2).replace(/\.00$/, '')
+                        : ''
+                    }
+                    className='h-9 rounded-sm border-border/60 text-sm bg-muted text-muted-foreground'
                   />
                 </div>
               </div>
 
               {/* Row 6: Project Remarks */}
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">
-                  Project Remarks <span className="text-red-500">*</span>
+              <div className='space-y-1.5'>
+                <label className='text-sm font-medium text-foreground'>
+                  Project Remarks <span className='text-red-500'>*</span>
                 </label>
                 <Textarea
-                  placeholder="Internal notes or remarks about this project…"
+                  placeholder='Internal notes or remarks about this project…'
                   value={form.projectRemarks}
-                  onChange={(e) => set("projectRemarks", e.target.value)}
+                  onChange={(e) => set('projectRemarks', e.target.value)}
                   rows={3}
-                  className="rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0 resize-none"
+                  className='rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0 resize-none'
                 />
               </div>
 
               {/* Row 7: Project File URLs */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-foreground">
-                    Project Files{" "}
-                    <span className="text-red-500">*</span>
-                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+              <div className='space-y-1.5'>
+                <div className='flex items-center justify-between'>
+                  <label className='text-sm font-medium text-foreground'>
+                    Project Files <span className='text-red-500'>*</span>
+                    <span className='ml-1 text-xs font-normal text-muted-foreground'>
                       (at least one URL required)
                     </span>
                   </label>
                   <button
-                    type="button"
+                    type='button'
                     onClick={addFileSlot}
-                    className="flex items-center gap-1 text-xs font-medium text-brand-navy hover:underline"
+                    className='flex items-center gap-1 text-xs font-medium text-brand-navy hover:underline'
                   >
-                    <Plus className="h-3.5 w-3.5" />
+                    <Plus className='h-3.5 w-3.5' />
                     Add another
                   </button>
                 </div>
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   {form.projectFiles.map((url, i) => (
-                    <div key={i} className="flex items-center gap-2">
+                    <div key={i} className='flex items-center gap-2'>
                       <Input
                         placeholder={`File URL ${i + 1}…`}
                         value={url}
                         onChange={(e) => setFileUrl(i, e.target.value)}
-                        className="h-9 flex-1 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0"
+                        className='h-9 flex-1 rounded-sm border-border/60 text-sm focus-visible:ring-1 focus-visible:ring-offset-0'
                       />
                       {form.projectFiles.length > 1 && (
                         <button
-                          type="button"
+                          type='button'
                           onClick={() => removeFileSlot(i)}
-                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-red-50 hover:text-red-600"
+                          className='flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-red-50 hover:text-red-600'
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <X className='h-3.5 w-3.5' />
                         </button>
                       )}
                     </div>
@@ -487,29 +538,29 @@ export function UpdateProjectModal({
         </div>
 
         {/* ── Footer ───────────────────────────────────────── */}
-        <div className="shrink-0 border-t border-border/40 bg-muted/30 px-4 py-3 sm:px-6">
-          <div className="flex justify-end gap-2">
+        <div className='shrink-0 border-t border-border/40 bg-muted/30 px-4 py-3 sm:px-6'>
+          <div className='flex justify-end gap-2'>
             <Button
-              variant="outline"
+              variant='outline'
               onClick={() => onOpenChange(false)}
               disabled={submitting}
-              className="h-9 rounded-sm border-border/60 text-sm"
+              className='h-9 rounded-sm border-border/60 text-sm'
             >
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={!isValid || submitting}
-              className="h-9 gap-1.5 rounded-sm bg-brand-navy px-5 text-sm font-semibold text-white hover:bg-brand-navy-dark disabled:opacity-50"
+              className='h-9 gap-1.5 rounded-sm bg-brand-navy px-5 text-sm font-semibold text-white hover:bg-brand-navy-dark disabled:opacity-50'
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className='h-4 w-4 animate-spin' />
                   Updating…
                 </>
               ) : (
                 <>
-                  <FolderPlus className="h-4 w-4" />
+                  <FolderPlus className='h-4 w-4' />
                   Update Project
                 </>
               )}

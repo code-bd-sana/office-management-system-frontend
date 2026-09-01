@@ -1,16 +1,12 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useCallback } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { MainLayout } from "@/components/layout";
-import { ProjectManagementService, SubProjectManagementService } from "@/api";
-import { useAccessToken } from "@/hooks/useAccessToken";
-import { useUserInfo } from "@/hooks/useUserInfo";
-import { Loader2, Edit2, Trash2 } from "lucide-react";
-import { format } from "date-fns";
-import type { Project } from "@/types/project";
-import { AddPhaseModal } from "@/components/project/AddPhaseModal";
-import { toast } from "sonner";
+import {
+  ProjectManagementService,
+  SubProjectManagementService,
+  TeamManagementService,
+} from '@/api';
+import { MainLayout } from '@/components/layout';
+import { AddPhaseModal } from '@/components/project/AddPhaseModal';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +16,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
+import { useAccessToken } from '@/hooks/useAccessToken';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import type { Project } from '@/types/project';
+import { format } from 'date-fns';
+import { Edit2, Loader2, Trash2 } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
@@ -30,17 +34,20 @@ export default function ProjectDetailsPage() {
   const { role } = useUserInfo();
 
   const [project, setProject] = useState<Project | null>(null);
+  const [teamName, setTeamName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAddPhaseOpen, setIsAddPhaseOpen] = useState(false);
   const [subProjects, setSubProjects] = useState<Record<string, unknown>[]>([]);
   const [loadingSubProjects, setLoadingSubProjects] = useState(true);
   const [updatingPhaseId, setUpdatingPhaseId] = useState<string | null>(null);
-  
+
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [phaseToComplete, setPhaseToComplete] = useState<string | null>(null);
 
   // Edit and Delete states
-  const [selectedPhaseToEdit, setSelectedPhaseToEdit] = useState<Record<string, unknown> | null>(null);
+  const [selectedPhaseToEdit, setSelectedPhaseToEdit] = useState<Record<string, unknown> | null>(
+    null,
+  );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [phaseToDelete, setPhaseToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -63,14 +70,14 @@ export default function ProjectDetailsPage() {
         id: phaseToDelete,
         authorization: token,
       });
-      toast.success("Phase deleted successfully!");
+      toast.success('Phase deleted successfully!');
       setIsDeleteModalOpen(false);
       setPhaseToDelete(null);
       fetchSubProjects(); // Refresh the list
     } catch (err: unknown) {
       const errObj = err as Record<string, unknown>;
       const body = errObj?.body as Record<string, unknown>;
-      toast.error((body?.message as string) || "Failed to delete phase.");
+      toast.error((body?.message as string) || 'Failed to delete phase.');
     } finally {
       setIsDeleting(false);
     }
@@ -92,14 +99,14 @@ export default function ProjectDetailsPage() {
           isCompleted: true,
         },
       });
-      toast.success("Phase marked as completed!");
+      toast.success('Phase marked as completed!');
       setIsCompleteModalOpen(false);
       setPhaseToComplete(null);
       fetchSubProjects(); // Refresh the list
     } catch (err: unknown) {
       const errObj = err as Record<string, unknown>;
       const body = errObj?.body as Record<string, unknown>;
-      toast.error((body?.message as string) || "Failed to update phase status.");
+      toast.error((body?.message as string) || 'Failed to update phase status.');
     } finally {
       setUpdatingPhaseId(null);
     }
@@ -116,9 +123,27 @@ export default function ProjectDetailsPage() {
       .then((res: unknown) => {
         const payload = (res as Record<string, unknown>)?.data as Project;
         setProject(payload || null);
+
+        if (payload?.assignedTeam && token) {
+          const tId =
+            typeof payload.assignedTeam === 'string'
+              ? payload.assignedTeam
+              : payload.assignedTeam._id;
+          if (tId) {
+            TeamManagementService.teamManagementControllerFindById({
+              id: tId,
+              authorization: token,
+            })
+              .then((tRes) => {
+                const tData = (tRes as Record<string, unknown>)?.data as Record<string, unknown>;
+                if (tData?.name) setTeamName(tData.name as string);
+              })
+              .catch(console.error);
+          }
+        }
       })
       .catch((err) => {
-        console.error("Error fetching project:", err);
+        console.error('Error fetching project:', err);
       })
       .finally(() => {
         setLoading(false);
@@ -141,7 +166,7 @@ export default function ProjectDetailsPage() {
         setSubProjects(items as Record<string, unknown>[]);
       })
       .catch((err) => {
-        console.error("Error fetching sub-projects:", err);
+        console.error('Error fetching sub-projects:', err);
       })
       .finally(() => {
         setLoadingSubProjects(false);
@@ -156,9 +181,9 @@ export default function ProjectDetailsPage() {
   }, [fetchProjectData, fetchSubProjects]);
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return "—";
+    if (!dateString) return '—';
     try {
-      return format(new Date(dateString), "dd MMM, yyyy");
+      return format(new Date(dateString), 'dd MMM, yyyy');
     } catch {
       return dateString;
     }
@@ -167,16 +192,16 @@ export default function ProjectDetailsPage() {
   const resolveName = (
     field: { _id: string; name: string } | string | null | undefined,
   ): string => {
-    if (!field) return "—";
-    if (typeof field === "string") return field;
-    return field.name || "—";
+    if (!field) return '—';
+    if (typeof field === 'string') return field;
+    return field.name || '—';
   };
 
   if (loading) {
     return (
-      <MainLayout pageTitle="Project Details">
-        <div className="flex items-center justify-center h-64 w-full">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <MainLayout pageTitle='Project Details'>
+        <div className='flex items-center justify-center h-64 w-full'>
+          <Loader2 className='h-8 w-8 animate-spin text-muted-foreground' />
         </div>
       </MainLayout>
     );
@@ -184,15 +209,10 @@ export default function ProjectDetailsPage() {
 
   if (!project) {
     return (
-      <MainLayout pageTitle="Project Details">
-        <div className="flex flex-col items-center justify-center h-64 w-full">
-          <p className="text-lg font-medium text-foreground">
-            Project not found
-          </p>
-          <button
-            onClick={() => router.back()}
-            className="mt-4 text-brand-navy hover:underline"
-          >
+      <MainLayout pageTitle='Project Details'>
+        <div className='flex flex-col items-center justify-center h-64 w-full'>
+          <p className='text-lg font-medium text-foreground'>Project not found</p>
+          <button onClick={() => router.back()} className='mt-4 text-brand-navy hover:underline'>
             Go Back
           </button>
         </div>
@@ -200,116 +220,109 @@ export default function ProjectDetailsPage() {
     );
   }
 
+  const totalPhases = subProjects.length;
+  const completedPhases = subProjects.filter((p) => p.isCompleted).length;
+  const progressPercentage =
+    totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
+
   return (
-    <MainLayout pageTitle="Project Details">
+    <MainLayout pageTitle='Project Details'>
       {/* We use w-full and px/py for responsiveness instead of max-w constraints, as requested */}
-      <div className="w-full ">
-        <main className="w-full overflow-hidden relative p-4 sm:p-6">
+      <div className='w-full '>
+        <main className='w-full overflow-hidden relative p-4 sm:p-6'>
           {/* Header */}
-          <header className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-800">
-              View Project Details
-            </h1>
+          <header className='mb-8'>
+            <h1 className='text-2xl font-bold text-slate-800'>View Project Details</h1>
           </header>
 
           {/* Metadata Section */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8">
+          <section className='grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8'>
             {/* Left Column */}
-            <div className="space-y-4">
+            <div className='space-y-4'>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Project Name
-                </p>
-                <p className="text-sm text-gray-400">{project.name || "—"}</p>
+                <p className='text-sm font-medium text-gray-600'>Project Name</p>
+                <p className='text-sm text-gray-400'>{project.name || '—'}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Order ID</p>
-                <p className="text-sm text-gray-400">
-                  {project.orderId || "—"}
-                </p>
+                <p className='text-sm font-medium text-gray-600'>Order ID</p>
+                <p className='text-sm text-gray-400'>{project.orderId || '—'}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Start Date</p>
-                <p className="text-sm text-gray-400">
-                  {formatDate(project.createdAt)}
-                </p>
+                <p className='text-sm font-medium text-gray-600'>Start Date</p>
+                <p className='text-sm text-gray-400'>{formatDate(project.createdAt)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Status</p>
-                <span className="inline-block px-3 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-600 mt-1">
-                  {project.status || "—"}
+                <p className='text-sm font-medium text-gray-600'>Status</p>
+                <span className='inline-block px-3 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-600 mt-1'>
+                  {project.status || '—'}
                 </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Value</p>
-                <p className="text-sm text-gray-400">
-                  {project.value != null ? `$${project.value}` : "—"}
+                <p className='text-sm font-medium text-gray-600'>Fiverr Value</p>
+                <p className='text-sm text-gray-400'>
+                  {project.value != null
+                    ? `$${(project.value / 0.8).toFixed(2).replace(/\.00$/, '')}`
+                    : '—'}
+                </p>
+              </div>
+              <div>
+                <p className='text-sm font-medium text-gray-600'>Actual Value</p>
+                <p className='text-sm text-gray-400'>
+                  {project.value != null ? `$${project.value}` : '—'}
                 </p>
               </div>
             </div>
 
             {/* Right Column */}
-            <div className="space-y-4">
+            <div className='space-y-4'>
               <div>
-                <p className="text-sm font-medium text-gray-600">Client Name</p>
-                <p className="text-sm text-gray-400">
-                  {resolveName(project.client)}
-                </p>
+                <p className='text-sm font-medium text-gray-600'>Client Name</p>
+                <p className='text-sm text-gray-400'>{resolveName(project.client)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Profile Name
-                </p>
-                <p className="text-sm text-gray-400">
-                  {resolveName(project.profile)}
-                </p>
+                <p className='text-sm font-medium text-gray-600'>Profile Name</p>
+                <p className='text-sm text-gray-400'>{resolveName(project.profile)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">Due Date</p>
-                <p className="text-sm text-gray-400">
-                  {formatDate(project.dueDate)}
-                </p>
+                <p className='text-sm font-medium text-gray-600'>Due Date</p>
+                <p className='text-sm text-gray-400'>{formatDate(project.dueDate)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Project Team
-                </p>
-                <span className="inline-block px-3 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-600 mt-1">
-                  {project.projectTeam || "—"}
+                <p className='text-sm font-medium text-gray-600'>Project Team</p>
+                <span className='inline-block px-3 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-600 mt-1'>
+                  {project.projectTeam || '—'}
                 </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Assigned Department
-                </p>
-                <p className="text-sm text-gray-400">
-                  {resolveName(project.assignedDepartment)}
+                <p className='text-sm font-medium text-gray-600'>Assigned Department</p>
+                <p className='text-sm text-gray-400'>{resolveName(project.assignedDepartment)}</p>
+              </div>
+              <div>
+                <p className='text-sm font-medium text-gray-600'>Assigned Team</p>
+                <p className='text-sm text-gray-400'>
+                  {teamName || resolveName(project.assignedTeam)}
                 </p>
               </div>
             </div>
           </section>
 
           {/* Description Section */}
-          <section className="mb-8">
-            <h2 className="text-lg font-bold text-slate-800 mb-2">
-              Project Description
-            </h2>
-            <p className="text-sm text-gray-400 leading-relaxed mb-4">
-              {project.projectRemarks || "No description provided."}
+          <section className='mb-8'>
+            <h2 className='text-lg font-bold text-slate-800 mb-2'>Project Description</h2>
+            <p className='text-sm text-gray-400 leading-relaxed mb-4'>
+              {project.projectRemarks || 'No description provided.'}
             </p>
             {project.projectFiles && project.projectFiles.length > 0 && (
               <div>
-                <h3 className="text-sm font-bold text-slate-800 mb-2">
-                  Project Files
-                </h3>
-                <ul className="list-disc list-inside space-y-1 pl-4">
+                <h3 className='text-sm font-bold text-slate-800 mb-2'>Project Files</h3>
+                <ul className='list-disc list-inside space-y-1 pl-4'>
                   {project.projectFiles.map((file, i) => (
                     <li key={i}>
                       <a
                         href={file}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-brand-navy hover:text-brand-navy-dark hover:underline break-all"
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-sm text-brand-navy hover:text-brand-navy-dark hover:underline break-all'
                       >
                         {file}
                       </a>
@@ -320,140 +333,142 @@ export default function ProjectDetailsPage() {
             )}
           </section>
 
-          {/* Progress Section (Static for now) */}
-          <section className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-bold text-slate-800">
-                Project Progress
-              </h2>
-              <span className="text-sm font-bold text-brand-navy">65%</span>
+          {/* Progress Section */}
+          <section className='mb-8'>
+            <div className='flex justify-between items-center mb-2'>
+              <h2 className='text-lg font-bold text-slate-800'>Project Progress</h2>
+              <span className='text-sm font-bold text-brand-navy'>{progressPercentage}%</span>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-2.5">
+            <div className='w-full bg-gray-100 rounded-full h-2.5'>
               <div
-                className="bg-brand-navy h-2.5 rounded-full"
-                style={{ width: "65%" }}
+                className='bg-brand-navy h-2.5 rounded-full transition-all duration-500 ease-in-out'
+                style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
           </section>
 
           {/* Breakdown Section */}
-          <section className="mb-8">
-            <h2 className="text-lg font-bold text-slate-800 mb-4">
-              Project Breakdown
-            </h2>
-            <div className="overflow-x-auto border border-border/40 rounded-lg">
-              <table className="min-w-full divide-y divide-border/40">
-                <thead className="bg-muted/30">
+          <section className='mb-8'>
+            <h2 className='text-lg font-bold text-slate-800 mb-4'>Project Breakdown</h2>
+            <div className='overflow-x-auto border border-border/40 rounded-lg'>
+              <table className='min-w-full divide-y divide-border/40'>
+                <thead className='bg-muted/30'>
                   <tr>
                     <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                      scope='col'
+                      className='px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
                     >
                       #
                     </th>
                     <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                      scope='col'
+                      className='px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
                     >
                       PHASE NAME
                     </th>
                     <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                      scope='col'
+                      className='px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
                     >
                       START DATE
                     </th>
                     <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                      scope='col'
+                      className='px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
                     >
                       END DATE
                     </th>
                     <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                      scope='col'
+                      className='px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
                     >
                       VALUE
                     </th>
                     <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                      scope='col'
+                      className='px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
                     >
                       STATUS
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-border/40">
+                <tbody className='bg-white divide-y divide-border/40'>
                   {loadingSubProjects ? (
                     <tr>
-                      <td colSpan={role === "PROJECT MANAGER" ? 7 : 6} className="px-4 py-8 text-center">
-                        <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
+                      <td
+                        colSpan={role === 'PROJECT MANAGER' ? 7 : 6}
+                        className='px-4 py-8 text-center'
+                      >
+                        <Loader2 className='h-6 w-6 animate-spin mx-auto text-muted-foreground' />
                       </td>
                     </tr>
                   ) : subProjects.length === 0 ? (
                     <tr>
-                      <td colSpan={role === "PROJECT MANAGER" ? 7 : 6} className="px-4 py-8 text-center text-sm text-muted-foreground">
+                      <td
+                        colSpan={role === 'PROJECT MANAGER' ? 7 : 6}
+                        className='px-4 py-8 text-center text-sm text-muted-foreground'
+                      >
                         No phases found for this project.
                       </td>
                     </tr>
                   ) : (
                     subProjects.map((phase, index) => (
-                      <tr key={phase._id as string} className="hover:bg-muted/20 transition-colors">
-                        <td className="px-4 py-3 text-sm text-gray-500">{index + 1}</td>
-                        <td className="px-4 py-3 text-sm font-semibold text-slate-700">
+                      <tr key={phase._id as string} className='hover:bg-muted/20 transition-colors'>
+                        <td className='px-4 py-3 text-sm text-gray-500'>{index + 1}</td>
+                        <td className='px-4 py-3 text-sm font-semibold text-slate-700'>
                           {phase.name as string}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
+                        <td className='px-4 py-3 text-sm text-gray-500'>
                           {formatDate(phase.startDate as string)}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
+                        <td className='px-4 py-3 text-sm text-gray-500'>
                           {formatDate(phase.endDate as string)}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
-                          {phase.value != null ? `$${phase.value}` : "—"}
+                        <td className='px-4 py-3 text-sm text-gray-500'>
+                          {phase.value != null ? `$${phase.value}` : '—'}
                         </td>
-                        <td className="px-4 py-3 text-sm">
+                        <td className='px-4 py-3 text-sm'>
                           {phase.isCompleted ? (
-                            <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-700 cursor-not-allowed opacity-80">
+                            <span className='inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-700 cursor-not-allowed opacity-80'>
                               Completed
                             </span>
-                          ) : role === "PROJECT MANAGER" ? (
+                          ) : role === 'PROJECT MANAGER' ? (
                             <button
                               onClick={() => handleCompleteClick(phase._id as string)}
                               disabled={updatingPhaseId === phase._id}
-                              className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-brand-navy text-white hover:bg-brand-navy-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                              className='inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-brand-navy text-white hover:bg-brand-navy-dark transition-colors disabled:opacity-70 disabled:cursor-not-allowed'
                             >
                               {updatingPhaseId === phase._id ? (
                                 <>
-                                  <Loader2 className="h-3 w-3 mr-1.5 animate-spin" />
+                                  <Loader2 className='h-3 w-3 mr-1.5 animate-spin' />
                                   Updating...
                                 </>
                               ) : (
-                                "Complete Phase"
+                                'Complete Phase'
                               )}
                             </button>
                           ) : (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
                               Active
                             </span>
                           )}
                         </td>
-                        {role === "PROJECT MANAGER" && (
-                          <td className="px-4 py-3 text-sm text-right">
-                            <div className="flex items-center justify-end gap-2">
+                        {role === 'PROJECT MANAGER' && (
+                          <td className='px-4 py-3 text-sm text-right'>
+                            <div className='flex items-center justify-end gap-2'>
                               <button
                                 onClick={() => handleEditClick(phase)}
-                                className="p-1.5 text-muted-foreground hover:text-brand-blue transition-colors"
-                                title="Edit Phase"
+                                className='p-1.5 text-muted-foreground hover:text-brand-blue transition-colors'
+                                title='Edit Phase'
                               >
-                                <Edit2 className="h-4 w-4" />
+                                <Edit2 className='h-4 w-4' />
                               </button>
                               <button
                                 onClick={() => handleDeleteClick(phase._id as string)}
-                                className="p-1.5 text-red-400 hover:text-red-600 transition-colors"
-                                title="Delete Phase"
+                                className='p-1.5 text-red-400 hover:text-red-600 transition-colors'
+                                title='Delete Phase'
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className='h-4 w-4' />
                               </button>
                             </div>
                           </td>
@@ -467,11 +482,11 @@ export default function ProjectDetailsPage() {
           </section>
 
           {/* Actions Footer */}
-          {role === "PROJECT MANAGER" && (
-            <footer className="flex justify-end mt-4">
+          {role === 'PROJECT MANAGER' && (
+            <footer className='flex justify-end mt-4'>
               <button
                 onClick={() => setIsAddPhaseOpen(true)}
-                className="bg-brand-navy text-white px-6 py-2.5 rounded-md text-sm font-semibold shadow-sm hover:bg-brand-navy-dark transition-colors"
+                className='bg-brand-navy text-white px-6 py-2.5 rounded-md text-sm font-semibold shadow-sm hover:bg-brand-navy-dark transition-colors'
               >
                 Project Breakdown
               </button>
@@ -496,19 +511,19 @@ export default function ProjectDetailsPage() {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-        <AlertDialogContent className="rounded-sm">
+        <AlertDialogContent className='rounded-sm'>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">Delete Phase?</AlertDialogTitle>
+            <AlertDialogTitle className='text-foreground'>Delete Phase?</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this phase? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting} className="rounded-sm h-9">
+            <AlertDialogCancel disabled={isDeleting} className='rounded-sm h-9'>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700 text-white rounded-sm h-9"
+              className='bg-red-600 hover:bg-red-700 text-white rounded-sm h-9'
               onClick={(e) => {
                 e.preventDefault();
                 handleDeletePhase();
@@ -517,11 +532,11 @@ export default function ProjectDetailsPage() {
             >
               {isDeleting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                   Deleting...
                 </>
               ) : (
-                "Delete Phase"
+                'Delete Phase'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -530,19 +545,19 @@ export default function ProjectDetailsPage() {
 
       {/* Complete Confirmation Modal */}
       <AlertDialog open={isCompleteModalOpen} onOpenChange={setIsCompleteModalOpen}>
-        <AlertDialogContent className="rounded-sm">
+        <AlertDialogContent className='rounded-sm'>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">Complete Phase?</AlertDialogTitle>
+            <AlertDialogTitle className='text-foreground'>Complete Phase?</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to mark this phase as completed? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={updatingPhaseId !== null} className="rounded-sm h-9">
+            <AlertDialogCancel disabled={updatingPhaseId !== null} className='rounded-sm h-9'>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-brand-navy hover:bg-brand-navy-dark text-white rounded-sm h-9"
+              className='bg-brand-navy hover:bg-brand-navy-dark text-white rounded-sm h-9'
               onClick={(e) => {
                 e.preventDefault();
                 handleCompletePhase();
@@ -551,11 +566,11 @@ export default function ProjectDetailsPage() {
             >
               {updatingPhaseId !== null ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                   Updating...
                 </>
               ) : (
-                "Complete Phase"
+                'Complete Phase'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
