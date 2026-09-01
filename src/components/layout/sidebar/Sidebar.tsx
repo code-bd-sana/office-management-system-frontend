@@ -36,6 +36,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       return false;
     }
 
+    if (isSalesDepartment && (item.href === "/task" || item.label === "Task")) {
+      return false;
+    }
+
     // if (!isSalesDepartment && isEmployeeRole && item.href === "/projects") {
     //   return false;
     // }
