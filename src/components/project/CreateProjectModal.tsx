@@ -22,6 +22,7 @@ import {
   TeamManagementService,
 } from '@/api';
 import { CreateProjectDto } from '@/api/models/CreateProjectDto';
+import { CreatableCombobox } from '@/components/shared';
 import { useAccessToken } from '@/hooks/useAccessToken';
 
 /* ─── Types ───────────────────────────────────────────────── */
@@ -153,6 +154,66 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
       ...prev,
       projectFiles: prev.projectFiles.filter((_, i) => i !== index),
     }));
+
+  /* ── Dynamic Create Client ───────────────────────────────── */
+  const handleCreateClient = async (name: string) => {
+    if (!token) return;
+    try {
+      const res = await ProjectManagementService.projectControllerCreateClient({
+        authorization: token,
+        requestBody: { name: name.trim() },
+      });
+      const data = (res as Record<string, unknown>)?.data ?? res;
+      const createdItem: DropdownItem = {
+        _id:
+          ((data as Record<string, unknown>)?._id as string) ||
+          ((data as Record<string, unknown>)?.id as string),
+        name:
+          ((data as Record<string, unknown>)?.name as string) || name.trim(),
+      };
+      if (createdItem._id) {
+        setClients((prev) => [...prev, createdItem]);
+        set('client', createdItem._id);
+        toast.success(`Client "${createdItem.name}" created.`);
+        return createdItem;
+      }
+    } catch (err: unknown) {
+      const errorObj = err as Record<string, unknown>;
+      const body = errorObj?.body as Record<string, unknown>;
+      const msg = (body?.message as string) ?? 'Failed to create client.';
+      toast.error(msg);
+    }
+  };
+
+  /* ── Dynamic Create Profile ──────────────────────────────── */
+  const handleCreateProfile = async (name: string) => {
+    if (!token) return;
+    try {
+      const res = await ProjectManagementService.projectControllerCreateProfile({
+        authorization: token,
+        requestBody: { name: name.trim() },
+      });
+      const data = (res as Record<string, unknown>)?.data ?? res;
+      const createdItem: DropdownItem = {
+        _id:
+          ((data as Record<string, unknown>)?._id as string) ||
+          ((data as Record<string, unknown>)?.id as string),
+        name:
+          ((data as Record<string, unknown>)?.name as string) || name.trim(),
+      };
+      if (createdItem._id) {
+        setProfiles((prev) => [...prev, createdItem]);
+        set('profile', createdItem._id);
+        toast.success(`Profile "${createdItem.name}" created.`);
+        return createdItem;
+      }
+    } catch (err: unknown) {
+      const errorObj = err as Record<string, unknown>;
+      const body = errorObj?.body as Record<string, unknown>;
+      const msg = (body?.message as string) ?? 'Failed to create profile.';
+      toast.error(msg);
+    }
+  };
 
   /* ── Validation ──────────────────────────────────────────── */
   const isValid =
@@ -295,39 +356,29 @@ export function CreateProjectModal({ open, onOpenChange, onCreated }: CreateProj
               <div className='grid gap-4 sm:grid-cols-2'>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Client</label>
-                  <Select value={form.client} onValueChange={(v) => set('client', v)}>
-                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
-                      <SelectValue
-                        placeholder={clients.length === 0 ? 'No clients found' : 'Select client…'}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clients.map((c) => (
-                        <SelectItem key={c._id} value={c._id}>
-                          {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <CreatableCombobox
+                    options={clients}
+                    value={form.client}
+                    onChange={(v) => set('client', v)}
+                    onCreate={handleCreateClient}
+                    placeholder='Select client…'
+                    searchPlaceholder='Search or create client…'
+                    emptyText='No clients found.'
+                    createText={(name) => `Create client "${name}"`}
+                  />
                 </div>
                 <div className='space-y-1.5'>
                   <label className='text-sm font-medium text-foreground'>Profile</label>
-                  <Select value={form.profile} onValueChange={(v) => set('profile', v)}>
-                    <SelectTrigger className='h-9 w-full rounded-sm border-border/60 text-sm focus-visible:ring-1'>
-                      <SelectValue
-                        placeholder={
-                          profiles.length === 0 ? 'No profiles found' : 'Select profile…'
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {profiles.map((p) => (
-                        <SelectItem key={p._id} value={p._id}>
-                          {p.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <CreatableCombobox
+                    options={profiles}
+                    value={form.profile}
+                    onChange={(v) => set('profile', v)}
+                    onCreate={handleCreateProfile}
+                    placeholder='Select profile…'
+                    searchPlaceholder='Search or create profile…'
+                    emptyText='No profiles found.'
+                    createText={(name) => `Create profile "${name}"`}
+                  />
                 </div>
               </div>
 
